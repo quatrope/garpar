@@ -55,8 +55,8 @@ def test_RissoNormal_make_stock_price():
 @pytest.mark.parametrize(
     "windows_size, loss_prob",
     [
-        (1, 0.),
-        (2, 0.),
+        (1, 0.0),
+        (2, 0.0),
         (3, 0.33333),
         (4, 0.25000),
         (5, 0.20000),
@@ -123,8 +123,6 @@ def test_RissoNormal_make_market():
         }
     )
 
-    maker = risso.RissoNormal(random_state=42)
-    result = maker.make_market(
-        window_number=2, window_size=5, stock_number=2
-    )
+    maker = risso.RissoNormal(random_state=42, mu=0.0, sigma=1.0)
+    result = maker.make_market(window_number=2, window_size=5, stock_number=2)
     pd.testing.assert_frame_equal(result, expected, atol=1e-10)

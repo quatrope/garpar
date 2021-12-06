@@ -1,11 +1,6 @@
-
-
-
-
 import numpy as np
 
 from . import base
-
 
 
 # =============================================================================
@@ -21,8 +16,8 @@ def argnearest(arr, v):
 
 class RissoNormal(base.MarketMakerABC):
 
-    mu = base.hparam(default=0)
-    sigma = base.hparam(default=.2)
+    mu = base.hparam(default=0, converter=float)
+    sigma = base.hparam(default=0.2, converter=float)
 
     def risso_candidate_entropy(self, windows_size):
         if windows_size <= 0:

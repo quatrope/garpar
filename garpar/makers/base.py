@@ -99,7 +99,7 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
 
     # API =====================================================================
 
-    def loss_sequence(self, windows_size, loss_probability, seed=None):
+    def get_loss_sequence(self, windows_size, loss_probability, seed=None):
         random = np.random.default_rng(seed=seed)
         probability_win = 1 - loss_probability
         sequence = random.choice(
@@ -124,10 +124,10 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
         rows = []
         price = initial_price
         for window in range(window_number):
-            lsequence = self.loss_sequence(
+            loss_sequence = self.get_loss_sequence(
                 window_size, window_loss_probability, random
             )
-            for day, loss in enumerate(lsequence):
+            for day, loss in enumerate(loss_sequence):
                 price = self.make_stock_price(price, loss, random)
                 row = {"window": window, "day": day, "price": price}
                 rows.append(row)
@@ -149,15 +149,15 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
             window_size, entropy
         )
 
-        stocks, initial_prices = [], {}
+        stocks, stock_initial_prices = [], {}
 
-        for stock_idx, initial_stock_price in enumerate(initial_prices):
+        for stock_idx, stock_price in enumerate(initial_prices):
             stock_df = self.make_stock(
                 window_number=window_number,
                 window_size=window_size,
                 window_loss_probability=window_loss_probability,
-                initial_stock_price=initial_stock_price,
-                random=self.random,
+                initial_price=stock_price,
+                random=self.random_state,
             )
 
             if stocks:
@@ -167,9 +167,9 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
             )
             stocks.append(stock_df)
 
-            initial_prices[f"stock_{stock_idx}"] = initial_stock_price
+            stock_initial_prices[f"stock_{stock_idx}"] = stock_price
 
         stock_df = pd.concat(stocks, axis=1)
-        stock_df.attrs["initial_prices"] = pd.Series(initial_prices)
+        stock_df.attrs["initial_prices"] = pd.Series(stock_initial_prices)
 
         return stock_df
