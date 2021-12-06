@@ -41,7 +41,9 @@ def hparam(default, **kwargs):
 @attr.s(frozen=True, repr=False)
 class MarketMakerABC(metaclass=abc.ABCMeta):
 
-    random_state = hparam(default=None, converter=np.random.default_rng)
+    random_state = hparam(
+        default=None, converter=np.random.default_rng, repr=False
+    )
 
     __marker_maker_cls_config__ = {"repr": False, "frozen": True}
 
@@ -99,8 +101,7 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
 
     # API =====================================================================
 
-    def get_loss_sequence(self, windows_size, loss_probability, seed=None):
-        random = np.random.default_rng(seed=seed)
+    def get_loss_sequence(self, windows_size, loss_probability, random):
         probability_win = 1 - loss_probability
         sequence = random.choice(
             [True, False],

@@ -1,8 +1,12 @@
 # This file is part of the
-#   Garpar Project (https://github.com/nluczywo/GARPAR).
+#   Garpar Project (https://github.com/quatrope/garpar).
 # Copyright (c) 2021, Juan Cabral, Nadia Luczywo
 # License: MIT
-#   Full Text: https://github.com/nluczywo/GARPAR/blob/master/LICENSE
+#   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 from garpar.makers import risso
 
@@ -11,6 +15,11 @@ import numpy as np
 import pandas as pd
 
 import pytest
+
+
+# =============================================================================
+# TESTS
+# =============================================================================
 
 
 def test_risso_argnearest():

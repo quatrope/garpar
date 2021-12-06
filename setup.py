@@ -4,7 +4,7 @@
 # License: MIT
 #   Full Text: https://github.com/nluczywo/GARPAR/blob/master/LICENSE
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 with open("README.md", "r") as fp:
     LONG_DESCRIPTION = fp.read()
@@ -12,20 +12,19 @@ with open("README.md", "r") as fp:
 REQUIREMENTS = ["numpy", "pandas"]
 
 setup(
-    name="GARPAR",
+    name="garpar",
     version="0.1.1",
     description="Market generation and portfolio analysis",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     author="Nadia Luczywo",
     author_email="nluczywo@gmail.com",
-    url="https://github.com/nluczywo/GARPAR",
-    py_modules=["garpar"],
+    url="https://github.com/quatrope/garpar",
     license="The MIT License",
     install_requires=REQUIREMENTS,
     keywords=[
         "market simulation",
-        "informacional eficiency",
+        "informational efficiency",
         "portfolio optimization",
     ],
     classifiers=[
@@ -35,8 +34,10 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
     ],
+    packages=find_packages(".", include=["garpar*"]),
 )
