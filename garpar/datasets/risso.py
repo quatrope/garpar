@@ -1,3 +1,13 @@
+# This file is part of the
+#   Garpar Project (https://github.com/quatrope/garpar).
+# Copyright (c) 2021, 2022, Nadia Luczywo, Juan Cabral and QuatroPe
+# License: MIT
+#   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 import numpy as np
 
 from . import base
@@ -14,6 +24,9 @@ def argnearest(arr, v):
     return idx
 
 
+# =============================================================================
+# NORMAL
+# =============================================================================
 class RissoNormal(base.MarketMakerABC):
 
     mu = base.hparam(default=0, converter=float)

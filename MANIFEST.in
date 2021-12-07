@@ -7,4 +7,5 @@ exclude .header-template
 
 recursive-exclude tests *
 recursive-exclude draft *
+recursive-exclude tools *
 
