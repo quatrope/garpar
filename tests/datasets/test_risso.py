@@ -10,7 +10,7 @@
 
 from io import StringIO
 
-from garpar.makers import risso
+from garpar.datasets import risso
 
 import numpy as np
 
@@ -100,6 +100,12 @@ def test_RissoNormal_make_market():
     expected = pd.read_csv(StringIO(csv_code))
 
     maker = risso.RissoNormal(random_state=42, mu=0.0, sigma=1.0)
-    result = maker.make_market(days=10, window_size=5, stock_number=2)
+    result = maker.make_market(
+        days=10, window_size=5, stock_number=2, entropy=0.5
+    )
 
-    pd.testing.assert_frame_equal(result, expected, atol=1e-10)
+    assert result.entropy == 0.5
+    assert result.window_size == 5
+    assert len(result) == 10
+    assert np.all(result.initial_prices == [100, 100])
+    pd.testing.assert_frame_equal(result._df, expected, atol=1e-10)

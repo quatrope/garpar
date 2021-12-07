@@ -6,6 +6,8 @@ import numpy as np
 
 import pandas as pd
 
+from .. import portfolio as pf
+
 # =============================================================================
 # BASE
 # =============================================================================
@@ -102,18 +104,18 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
     # API =====================================================================
 
     def get_loss_sequence(self, days, loss_probability, random):
-        probability_win = 1 - loss_probability
+        win_probability = 1 - loss_probability
 
         # primero seleccionamos con las probabilidades adecuadas si en cada
         # dia se pierde o se gana
         sequence = random.choice(
             [True, False],
             size=days,
-            p=[loss_probability, probability_win],
+            p=[loss_probability, win_probability],
         )
 
         # con esto generamos lugares al azar donde vamos a invertir la
-        # secuencia anterior dado que los las probabilidades representan
+        # secuencia anterior dado que las probabilidades representan
         # una distribucion simétrica
         reverse_mask = random.choice([True, False], size=days)
 
@@ -176,6 +178,10 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
             stock_initial_prices[f"stock_{stock_idx}"] = stock_price
 
         stock_df = pd.concat(stocks, axis=1)
-        stock_df.attrs["initial_prices"] = pd.Series(stock_initial_prices)
 
-        return stock_df
+        return pf.Portfolio.mkportfolio(
+            stock_df,
+            initial_prices=pd.Series(stock_initial_prices),
+            entropy=entropy,
+            window_size=window_size,
+        )

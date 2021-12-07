@@ -8,7 +8,7 @@
 # IMPORTS
 # =============================================================================
 
-from garpar.makers import base
+from garpar.datasets import base
 
 import numpy as np
 
