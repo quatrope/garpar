@@ -101,44 +101,52 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
 
     # API =====================================================================
 
-    def get_loss_sequence(self, windows_size, loss_probability, random):
+    def get_loss_sequence(self, days, loss_probability, random):
         probability_win = 1 - loss_probability
+
+        # primero seleccionamos con las probabilidades adecuadas si en cada
+        # dia se pierde o se gana
         sequence = random.choice(
             [True, False],
-            size=windows_size,
+            size=days,
             p=[loss_probability, probability_win],
         )
-        if random.choice([True, False]):
-            sequence = ~sequence
-        return sequence
+
+        # con esto generamos lugares al azar donde vamos a invertir la
+        # secuencia anterior dado que los las probabilidades representan
+        # una distribucion simétrica
+        reverse_mask = random.choice([True, False], size=days)
+
+        # finalmente invertimos esos lugares
+        final_sequence = np.where(reverse_mask, ~sequence, sequence)
+
+        return final_sequence
 
     def make_stock(
         self,
         *,
-        window_number,
         window_size,
+        days,
         window_loss_probability,
         initial_price,
         random,
     ):
 
-        rows = []
-        price = initial_price
-        for window in range(window_number):
-            loss_sequence = self.get_loss_sequence(
-                window_size, window_loss_probability, random
-            )
-            for day, loss in enumerate(loss_sequence):
-                price = self.make_stock_price(price, loss, random)
-                row = {"window": window, "day": day, "price": price}
-                rows.append(row)
-        return pd.DataFrame(rows)
+        loss_sequence = self.get_loss_sequence(
+            days, window_loss_probability, random
+        )
+        current_price = initial_price
+        timeserie = np.empty(days, dtype=float)
+        for day, loss in enumerate(loss_sequence):
+            current_price = self.make_stock_price(current_price, loss, random)
+            timeserie[day] = current_price
+        return pd.DataFrame({"price": timeserie})
 
     def make_market(
         self,
         *,
-        window_number=100,
         window_size=5,
+        days=365,
         entropy=0.5,
         stock_number=100,
         price=100,
@@ -154,15 +162,12 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
 
         for stock_idx, stock_price in enumerate(initial_prices):
             stock_df = self.make_stock(
-                window_number=window_number,
+                days=days,
                 window_size=window_size,
                 window_loss_probability=window_loss_probability,
                 initial_price=stock_price,
                 random=self.random_state,
             )
-
-            if stocks:
-                del stock_df["window"], stock_df["day"]
             stock_df.rename(
                 columns={"price": f"stock_{stock_idx}_price"}, inplace=True
             )

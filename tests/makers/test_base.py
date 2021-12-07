@@ -67,18 +67,18 @@ def test_MarketMakerABC_bad_coherce_price():
 
 
 @pytest.mark.parametrize(
-    "windows_size, sequence",
+    "days, sequence",
     [
         (1, [True]),
         (2, [False, True]),
-        (3, [False, True, False]),
-        (4, [False, True, False, True]),
-        (5, [True, False, True, False, True]),
-        (6, [True, False, True, False, True, False]),
-        (7, [True, False, True, False, True, False, True]),
+        (3, [False, False, False]),
+        (4, [False, True, True, False]),
+        (5, [True, False, True, True, True]),
+        (6, [True, True, True, True, True, False]),
+        (7, [True, True, True, False, False, True, True]),
     ],
 )
-def test_MarketMakerABC_get_loss_sequence(windows_size, sequence):
+def test_MarketMakerABC_get_loss_sequence(days, sequence):
     class Foo(base.MarketMakerABC):
         def get_window_loss_probability(self, windows_size, entropy):
             ...
@@ -90,7 +90,9 @@ def test_MarketMakerABC_get_loss_sequence(windows_size, sequence):
 
     result = maker.get_loss_sequence(
         loss_probability=0.33,
-        windows_size=windows_size,
+        days=days,
         random=maker.random_state,
     )
+
+    assert len(result) == days
     assert np.all(result == sequence)
