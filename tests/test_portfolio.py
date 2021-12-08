@@ -23,18 +23,20 @@ import pytest
 # =============================================================================
 
 
-def test_Portfilio_creation():
+def test_Portfolio_creation():
 
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
     df.attrs[GARPAR_METADATA_KEY] = Metadata(
-        initial_prices=pd.Series({"stock": [1]}), entropy=0.5, window_size=5
+        {
+            "entropy": 0.5,
+            "window_size": 5,
+        }
     )
 
     manual_pf = Portfolio(df=df.copy())
 
     mk_pf = Portfolio.from_dfkws(
         df=df,
-        initial_prices=pd.Series({"stock": [1]}),
         entropy=0.5,
         window_size=5,
     )
@@ -45,25 +47,25 @@ def test_Portfilio_creation():
 def test_Portfolio_copy_eq_ne():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
-        initial_prices=pd.Series({"stock": [1]}),
         entropy=0.5,
         window_size=5,
     )
     copy = pf.copy()
 
+    assert pf == copy
+    assert pf is not copy
     assert (
-        pf == copy
-        and pf is not copy
-        and pf._df.attrs[GARPAR_METADATA_KEY]
+        pf._df.attrs[GARPAR_METADATA_KEY]
         == copy._df.attrs[GARPAR_METADATA_KEY]
-        and pf._df.attrs[GARPAR_METADATA_KEY]
+    )
+    assert (
+        pf._df.attrs[GARPAR_METADATA_KEY]
         is not copy._df.attrs[GARPAR_METADATA_KEY]
     )
 
     other = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
-        initial_prices=pd.Series({"stock": [2]}),
-        entropy=0.5,
+        entropy=0.25,
         window_size=5,
     )
 
@@ -125,3 +127,27 @@ def test_Portfolio_repr():
 
     result = repr(pf)
     assert result == expected
+
+
+@pytest.mark.xfail
+def test_Portfolio_to_dataframe():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
+        ),
+        initial_prices=pd.Series({"stock0": [1], "stock1": [10]}),
+        entropy=0.5,
+        window_size=5,
+    )
+
+    expected = pd.DataFrame(
+        {
+            "stock0": [1, 5, 0.5, 1, 2, 3, 4, 5],
+            "stock1": [10, 5, 0.5, 10, 20, 30, 40, 50],
+        },
+        index=["initial_price", "window_size", "entropy", 0, 1, 2, 3, 4],
+    )
+
+    result = pf.to_dataframe()
+
+    pd.testing.assert_frame_equal(result, expected)
