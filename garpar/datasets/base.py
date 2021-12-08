@@ -50,13 +50,13 @@ def hparam(default, **kwargs):
 
 
 @attr.s(frozen=True, repr=False)
-class MarketMakerABC(metaclass=abc.ABCMeta):
+class PortfolioMakerABC(metaclass=abc.ABCMeta):
 
     random_state = hparam(
         default=None, converter=np.random.default_rng, repr=False
     )
 
-    __marker_maker_cls_config__ = {"repr": False, "frozen": True}
+    __portfolio_maker_cls_config__ = {"repr": False, "frozen": True}
 
     # internal ================================================================
 
@@ -65,18 +65,18 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
 
         It ensures that every inherited class is decorated by ``attr.s()`` and
         assigns as class configuration the parameters defined in the class
-        variable `__marker_maker_cls_config__`.
+        variable `__portfolio_maker_cls_config__`.
 
         In other words it is slightly equivalent to:
 
         .. code-block:: python
 
-            @attr.s(**MarketMakerABC.__marker_maker_cls_config__)
-            class Decomposer(MarketMakerABC):
+            @attr.s(**PortfolioMakerABC.__portfolio_maker_cls_config__)
+            class Decomposer(PortfolioMakerABC):
                 pass
 
         """
-        model_config = getattr(cls, "__marker_maker_cls_config__")
+        model_config = getattr(cls, "__portfolio_maker_cls_config__")
         attr.s(maybe_cls=cls, **model_config)
 
     def __repr__(self):
@@ -153,7 +153,7 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
             timeserie[day] = current_price
         return pd.DataFrame({"price": timeserie})
 
-    def make_market(
+    def make_portfolio(
         self,
         *,
         window_size=5,
@@ -188,7 +188,7 @@ class MarketMakerABC(metaclass=abc.ABCMeta):
 
         stock_df = pd.concat(stocks, axis=1)
 
-        return pf.Portfolio.mkportfolio(
+        return pf.Portfolio.from_dfkws(
             stock_df,
             initial_prices=pd.Series(stock_initial_prices),
             entropy=entropy,

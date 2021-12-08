@@ -8,7 +8,11 @@
 # IMPORTS
 # =============================================================================
 
+import attr
+
 import numpy as np
+
+import scipy.stats
 
 from . import base
 
@@ -27,11 +31,9 @@ def argnearest(arr, v):
 # =============================================================================
 # NORMAL
 # =============================================================================
-class RissoNormal(base.MarketMakerABC):
 
-    mu = base.hparam(default=0, converter=float)
-    sigma = base.hparam(default=0.2, converter=float)
 
+class RissoMixin:
     def risso_candidate_entropy(self, windows_size):
         if windows_size <= 0:
             raise ValueError("'windows_size' must be > 0")
@@ -60,10 +62,40 @@ class RissoNormal(base.MarketMakerABC):
 
         return loss_probability
 
+
+class RissoNormal(RissoMixin, base.PortfolioMakerABC):
+
+    mu = base.hparam(default=0, converter=float)
+    sigma = base.hparam(default=0.2, converter=float)
+
     def make_stock_price(self, price, loss, random):
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
         day_return = sign * np.abs(random.normal(self.mu, self.sigma))
+        new_price = price + day_return
+        return 0.0 if new_price < 0 else new_price
+
+
+class RissoLevyStable(RissoMixin, base.PortfolioMakerABC):
+
+    alpha = base.hparam(1, converter=float)
+    beta = base.hparam(0, converter=float)
+    delta = base.hparam(0, converter=float)  # loc
+    gamma = base.hparam(1, converter=float)  # scale
+
+    _levy_stable = attr.ib(repr=False, init=False)
+
+    @_levy_stable.default
+    def _levy_stable_default(self):
+        return scipy.stats.levy_stable(
+            alpha=self.alpha, beta=self.beta, loc=self.delta, scale=self.gamma
+        )
+
+    def make_stock_price(self, price, loss, random):
+        if price == 0.0:
+            return 0.0
+        sign = -1 if loss else 1
+        day_return = sign * np.abs(self._levy_stable.rvs(random_state=random))
         new_price = price + day_return
         return 0.0 if new_price < 0 else new_price

@@ -17,7 +17,7 @@ from setuptools import find_packages, setup
 with open("README.md", "r") as fp:
     LONG_DESCRIPTION = fp.read()
 
-REQUIREMENTS = ["numpy", "pandas"]
+REQUIREMENTS = ["numpy", "pandas", "scipy", "seaborn", "matplotlib"]
 
 # =============================================================================
 # SETUP

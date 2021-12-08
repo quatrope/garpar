@@ -20,7 +20,7 @@ import pytest
 
 
 def test_MarketMakerABC_not_implementhed_methods():
-    class Foo(base.MarketMakerABC):
+    class Foo(base.PortfolioMakerABC):
         def get_window_loss_probability(self, windows_size, entropy):
             super().get_window_loss_probability(windows_size, entropy)
 
@@ -37,7 +37,7 @@ def test_MarketMakerABC_not_implementhed_methods():
 
 
 def test_MarketMakerABC_repr():
-    class Foo(base.MarketMakerABC):
+    class Foo(base.PortfolioMakerABC):
 
         faa = base.hparam(default=12)
 
@@ -53,7 +53,7 @@ def test_MarketMakerABC_repr():
 
 
 def test_MarketMakerABC_bad_coherce_price():
-    class Foo(base.MarketMakerABC):
+    class Foo(base.PortfolioMakerABC):
         def get_window_loss_probability(self, windows_size, entropy):
             ...
 
@@ -63,7 +63,7 @@ def test_MarketMakerABC_bad_coherce_price():
     maker = Foo()
 
     with pytest.raises(ValueError):
-        maker.make_market(price=[100])
+        maker.make_portfolio(price=[100])
 
 
 @pytest.mark.parametrize(
@@ -79,7 +79,7 @@ def test_MarketMakerABC_bad_coherce_price():
     ],
 )
 def test_MarketMakerABC_get_loss_sequence(days, sequence):
-    class Foo(base.MarketMakerABC):
+    class Foo(base.PortfolioMakerABC):
         def get_window_loss_probability(self, windows_size, entropy):
             ...
 

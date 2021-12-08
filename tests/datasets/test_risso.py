@@ -100,7 +100,7 @@ def test_RissoNormal_make_market():
     expected = pd.read_csv(StringIO(csv_code))
 
     maker = risso.RissoNormal(random_state=42, mu=0.0, sigma=1.0)
-    result = maker.make_market(
+    result = maker.make_portfolio(
         days=10, window_size=5, stock_number=2, entropy=0.5
     )
 
@@ -109,3 +109,10 @@ def test_RissoNormal_make_market():
     assert len(result) == 10
     assert np.all(result.initial_prices == [100, 100])
     pd.testing.assert_frame_equal(result._df, expected, atol=1e-10)
+
+
+# def test_RissoLevyStable():
+#     maker = risso.RissoLevyStable()
+#     import ipdb
+
+#     ipdb.set_trace()
