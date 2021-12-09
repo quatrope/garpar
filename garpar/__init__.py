@@ -8,8 +8,8 @@
 # IMPORTS
 # =============================================================================
 
-from .datasets import risso
+from . import datasets
 from .portfolio import Portfolio
 
 
-__all__ = ["Portfolio", "risso"]
+__all__ = ["Portfolio", "datasets"]
