@@ -9,8 +9,6 @@
 # IMPORTS
 # =============================================================================
 
-import attr
-
 from garpar.portfolio import GARPAR_METADATA_KEY, Metadata, Portfolio
 
 import pandas as pd
@@ -83,7 +81,6 @@ def test_Portfolio_bad_metadata():
 def test_Portfolio_access_df():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
-        initial_prices=pd.Series({"stock": [1]}),
         entropy=0.5,
         window_size=5,
     )
@@ -94,23 +91,19 @@ def test_Portfolio_access_df():
 def test_Portfolio_dir():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
-        initial_prices=pd.Series({"stock": [1]}),
         entropy=0.5,
         window_size=5,
     )
 
     pf_dir = dir(pf)
-    df_dir = dir(pf._df)
-    meta_dir = attr.asdict(pf._df.attrs[GARPAR_METADATA_KEY])
 
-    assert set(pf_dir).issuperset(df_dir)
-    assert set(pf_dir).issuperset(meta_dir)
+    assert set(pf_dir).issuperset(Portfolio._DF_WHITELIST)
+    assert set(pf_dir).issuperset(pf._df.attrs[GARPAR_METADATA_KEY])
 
 
 def test_Portfolio_repr():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
-        initial_prices=pd.Series({"stock": [1]}),
         entropy=0.5,
         window_size=5,
     )
@@ -129,25 +122,22 @@ def test_Portfolio_repr():
     assert result == expected
 
 
-@pytest.mark.xfail
 def test_Portfolio_to_dataframe():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
-        initial_prices=pd.Series({"stock0": [1], "stock1": [10]}),
         entropy=0.5,
         window_size=5,
     )
 
     expected = pd.DataFrame(
         {
-            "stock0": [1, 5, 0.5, 1, 2, 3, 4, 5],
-            "stock1": [10, 5, 0.5, 10, 20, 30, 40, 50],
+            "stock0": [0.5, 5, 1, 2, 3, 4, 5],
+            "stock1": [0.5, 5, 10, 20, 30, 40, 50],
         },
-        index=["initial_price", "window_size", "entropy", 0, 1, 2, 3, 4],
+        index=["entropy", "window_size", 0, 1, 2, 3, 4],
     )
 
     result = pf.to_dataframe()
-
     pd.testing.assert_frame_equal(result, expected)

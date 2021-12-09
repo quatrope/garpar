@@ -13,11 +13,31 @@ import pandas as pd
 
 from .plot import PortfolioPlotter
 
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
 GARPAR_METADATA_KEY = "__garpar_metadata__"
 
 
+# =============================================================================
+# UTILS
+# =============================================================================
+@attr.s(cmp=False, frozen=True, slots=True)
+class _WrapSlicer:
+
+    slicer = attr.ib()
+    frame_to = attr.ib()
+
+    def __getitem__(self, slice):
+        result = self.slicer.__getitem__(slice)
+        if isinstance(result, pd.DataFrame):
+            result = self.frame_to(result)
+        return result
+
+
 @attr.s(slots=True, frozen=True, repr=False)
-class Metadata:
+class Metadata(Mapping):
 
     _data = attr.ib(validator=vldt.instance_of(Mapping))
 
@@ -47,10 +67,16 @@ class Metadata:
         return Metadata(data=self._data.copy())
 
 
+# =============================================================================
+# PORTFOLIO
+# =============================================================================
 @attr.s(repr=False, cmp=False)
 class Portfolio:
 
     _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
+
+    _DF_WHITELIST = ["info", "describe", "cumsum", "cumprod", "T", "transpose"]
+    _VALID_METADATA = {"entropy": float, "window_size": int}
 
     def __attrs_post_init__(self):
         metadata = self._df.attrs[GARPAR_METADATA_KEY]
@@ -59,6 +85,15 @@ class Portfolio:
                 f"{GARPAR_METADATA_KEY} metadata must be an instance of "
                 "'garpar.portfolio.Metadata'"
             )
+        for k, v in metadata.items():
+            if k not in self._VALID_METADATA:
+                raise ValueError(f"Invalid metadata '{k}'")
+            mtype = self._VALID_METADATA[k]
+            if not isinstance(v, mtype):
+                raise TypeError(
+                    f"Metadata '{k}' must be instance of {mtype}. "
+                    f"Found {type(v)}"
+                )
 
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
@@ -82,7 +117,11 @@ class Portfolio:
     def __ne__(self, other):
         return not self == other
 
+    # GETATTR =================================================================
+
     def __getattr__(self, a):
+        if a not in dir(self):
+            raise AttributeError(a)
         metadata = self._df.attrs[GARPAR_METADATA_KEY]
         if a in metadata:
             return metadata[a]
@@ -90,7 +129,8 @@ class Portfolio:
 
     def __dir__(self):
         metadata_dir = list(self._df.attrs[GARPAR_METADATA_KEY])
-        return super().__dir__() + dir(self._df) + metadata_dir
+        df_dir = [d for d in dir(self._df) if d in self._DF_WHITELIST]
+        return super().__dir__() + df_dir + metadata_dir
 
     # UTILS ===================================================================
     @property
@@ -113,15 +153,35 @@ class Portfolio:
         pass
 
     def to_dataframe(self):
-        pass
+        df = self._df.copy(deep=True)
+
+        # creating metadata rows in another df with the same columns of df
+        metadata = df.attrs.pop(GARPAR_METADATA_KEY)
+        mindex, mcols = sorted(metadata), {}
+        for col in df.columns:
+            mcols[col] = [metadata[mdi] for mdi in mindex]
+        md_df = pd.DataFrame(mcols, index=mindex)
+
+        return pd.concat([md_df, df])
+
+    # SLICERS =================================================================
+
+    def __getitem__(self, slice):
+        return _WrapSlicer(self._df, frame_to=type(self)).__getitem__(slice)
+
+    @property
+    def iloc(self):
+        return _WrapSlicer(self._df.iloc, frame_to=type(self))
+
+    @property
+    def loc(self):
+        return _WrapSlicer(self._df.loc, frame_to=type(self))
 
     # REPR ====================================================================
 
     def __repr__(self):
-        kwargs = {"show_dimensions": False}
-
-        # retrieve the original string
-        original_string = self._df.to_string(**kwargs)
+        with pd.option_context("display.show_dimensions", False):
+            original_string = repr(self._df)
 
         days, cols = self.shape
         dim = f"{days} days x {cols} stocks"
