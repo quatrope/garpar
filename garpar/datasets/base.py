@@ -188,7 +188,7 @@ class PortfolioMakerABC(metaclass=abc.ABCMeta):
         window_size=5,
         days=365,
         entropy=0.5,
-        stock_number=100,
+        stock_number=10,
         price=100,
     ):
 

@@ -188,3 +188,9 @@ class PortfolioPlotter:
         if kwargs.get("legend", True):
             ax.legend(self._stocks_labels)
         return ax
+
+    def ogive(self, **kwargs):
+        ax = sns.ecdfplot(data=self._ddf, **kwargs)
+        if kwargs.get("legend", True):
+            ax.legend(self._stocks_labels)
+        return ax
