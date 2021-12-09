@@ -8,8 +8,10 @@
 # IMPORTS
 # =============================================================================
 
-from . import datasets
+__version__ = "0.1"
+
+from . import datasets, io
 from .portfolio import Portfolio
 
 
-__all__ = ["Portfolio", "datasets"]
+__all__ = ["Portfolio", "datasets", "io"]

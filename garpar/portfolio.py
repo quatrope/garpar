@@ -9,6 +9,8 @@ from collections.abc import Mapping
 import attr
 from attr import validators as vldt
 
+import numpy as np
+
 import pandas as pd
 
 from .plot import PortfolioPlotter
@@ -76,7 +78,10 @@ class Portfolio:
     _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
 
     _DF_WHITELIST = ["info", "describe", "cumsum", "cumprod", "T", "transpose"]
-    _VALID_METADATA = {"entropy": float, "window_size": int}
+    _VALID_METADATA = {
+        "entropy": (float, np.floating),
+        "window_size": (int, np.integer),
+    }
 
     def __attrs_post_init__(self):
         metadata = self._df.attrs[GARPAR_METADATA_KEY]
@@ -134,6 +139,10 @@ class Portfolio:
 
     # UTILS ===================================================================
     @property
+    def metadata(self):
+        return self._df.attrs[GARPAR_METADATA_KEY]
+
+    @property
     def shape(self):
         return self._df.shape
 
@@ -149,8 +158,10 @@ class Portfolio:
 
         return Portfolio(copy_df)
 
-    def to_hdf5(self, stream_or_buff):
-        pass
+    def to_hdf5(self, stream_or_buff, **kwargs):
+        from . import io
+
+        return io.to_hdf5(stream_or_buff, self, **kwargs)
 
     def to_dataframe(self):
         df = self._df.copy(deep=True)

@@ -8,16 +8,37 @@
 # IMPORTS
 # =============================================================================
 
+import os
+
 from setuptools import find_packages, setup
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
 
+REQUIREMENTS = [
+    "numpy",
+    "pandas",
+    "scipy",
+    "seaborn",
+    "matplotlib",
+    "h5py",
+    "joblib",
+]
+
+
 with open("README.md", "r") as fp:
     LONG_DESCRIPTION = fp.read()
 
-REQUIREMENTS = ["numpy", "pandas", "scipy", "seaborn", "matplotlib"]
+
+GARPAR_INIT_PATH = os.path.join("garpar", "__init__.py")
+
+with open(GARPAR_INIT_PATH, "r") as f:
+    for line in f:
+        if line.startswith("__version__"):
+            VERSION = line.split("=", 1)[-1].replace('"', "").strip()
+            break
+
 
 # =============================================================================
 # SETUP
@@ -25,7 +46,7 @@ REQUIREMENTS = ["numpy", "pandas", "scipy", "seaborn", "matplotlib"]
 
 setup(
     name="garpar",
-    version="0.2",
+    version=VERSION,
     description="Market generation and portfolio analysis",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",

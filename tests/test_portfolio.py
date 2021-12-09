@@ -9,6 +9,9 @@
 # IMPORTS
 # =============================================================================
 
+from io import BytesIO
+
+from garpar.io import read_hdf5
 from garpar.portfolio import GARPAR_METADATA_KEY, Metadata, Portfolio
 
 import pandas as pd
@@ -141,3 +144,20 @@ def test_Portfolio_to_dataframe():
 
     result = pf.to_dataframe()
     pd.testing.assert_frame_equal(result, expected)
+
+
+def test_Portfolio_to_hdf5():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
+        ),
+        entropy=0.5,
+        window_size=5,
+    )
+
+    buff = BytesIO()
+    pf.to_hdf5(buff)
+    buff.seek(0)
+    result = read_hdf5(buff)
+
+    assert pf == result
