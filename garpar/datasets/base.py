@@ -11,6 +11,8 @@ import abc
 
 import attr
 
+import joblib
+
 import numpy as np
 
 import pandas as pd
@@ -55,6 +57,8 @@ class PortfolioMakerABC(metaclass=abc.ABCMeta):
     random_state = hparam(
         default=None, converter=np.random.default_rng, repr=False
     )
+    n_jobs = hparam(default=None)
+    verbose = hparam(default=0)
 
     __portfolio_maker_cls_config__ = {"repr": False, "frozen": True}
 
@@ -88,7 +92,8 @@ class PortfolioMakerABC(metaclass=abc.ABCMeta):
             recurse=False,
             filter=lambda attr, _: attr.repr,
         )
-        attrs_str = ", ".join([f"{k}={repr(v)}" for k, v in selfd.items()])
+        hparams = sorted(selfd.items())
+        attrs_str = ", ".join([f"{k}={repr(v)}" for k, v in hparams])
         return f"{clsname}({attrs_str})"
 
     # Internal ================================================================
@@ -147,11 +152,35 @@ class PortfolioMakerABC(metaclass=abc.ABCMeta):
             days, window_loss_probability, random
         )
         current_price = initial_price
-        timeserie = np.empty(days, dtype=float)
-        for day, loss in enumerate(loss_sequence):
+        timeserie = np.empty(days + 1, dtype=float)
+
+        # first price is the initial one
+        timeserie[0] = current_price
+
+        for day, loss in enumerate(loss_sequence, start=1):
             current_price = self.make_stock_price(current_price, loss, random)
             timeserie[day] = current_price
+
         return pd.DataFrame({"price": timeserie})
+
+    def _make_portfolio_stock(
+        self,
+        days,
+        window_size,
+        window_loss_probability,
+        stock_idx,
+        initial_price,
+        seed,
+    ):
+        stock_df = self.make_stock(
+            days=days,
+            window_size=window_size,
+            window_loss_probability=window_loss_probability,
+            initial_price=initial_price,
+            random=np.random.default_rng(seed),
+        )
+        stock_df.rename(columns={"price": f"stock_{stock_idx}"}, inplace=True)
+        return stock_df
 
     def make_portfolio(
         self,
@@ -169,28 +198,38 @@ class PortfolioMakerABC(metaclass=abc.ABCMeta):
             window_size, entropy
         )
 
-        stocks, stock_initial_prices = [], {}
+        iinfo = np.iinfo(int)
+        seeds = self.random_state.integers(
+            low=0,
+            high=iinfo.max,
+            size=stock_number,
+            dtype=iinfo.dtype,
+            endpoint=True,
+        )
+        idx_prices_seed = zip(range(stock_number), initial_prices, seeds)
 
-        for stock_idx, stock_price in enumerate(initial_prices):
-            stock_df = self.make_stock(
-                days=days,
-                window_size=window_size,
-                window_loss_probability=window_loss_probability,
-                initial_price=stock_price,
-                random=self.random_state,
+        with joblib.Parallel(
+            n_jobs=self.n_jobs,
+            verbose=self.verbose,
+            prefer="processes",
+        ) as P:
+            dmaker = joblib.delayed(self._make_portfolio_stock)
+            stocks = P(
+                dmaker(
+                    days=days,
+                    window_size=window_size,
+                    window_loss_probability=window_loss_probability,
+                    stock_idx=stock_idx,
+                    initial_price=stock_price,
+                    seed=seed,
+                )
+                for stock_idx, stock_price, seed in idx_prices_seed
             )
-            stock_df.rename(
-                columns={"price": f"stock_{stock_idx}_price"}, inplace=True
-            )
-            stocks.append(stock_df)
-
-            stock_initial_prices[f"stock_{stock_idx}"] = stock_price
 
         stock_df = pd.concat(stocks, axis=1)
 
         return pf.Portfolio.from_dfkws(
             stock_df,
-            initial_prices=pd.Series(stock_initial_prices),
             entropy=entropy,
             window_size=window_size,
         )

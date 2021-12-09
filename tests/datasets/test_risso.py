@@ -83,17 +83,18 @@ def test_RissoNormal_window_loss_probability(windows_size, loss_prob):
 
 def test_RissoNormal_make_market():
     csv_code = """
-        stock_0_price,stock_1_price
-        100.859292,99.256746
-        100.490542,98.713592
-        99.531659,99.379101
-        100.410109,99.611263
-        100.360183,99.727948
-        100.545046,99.509260
-        99.864116,98.637831
-        101.086658,98.414235
-        100.932128,99.093149
-        100.503800,99.160728
+        stock_0,stock_1
+        100.0,100.0
+        99.02931831863204,100.32115321044361
+        99.38784621362541,99.24453448301965
+        100.5873440645507,98.57487450859107
+        98.62470345859326,98.51963131866582
+        99.90113262492291,98.36839118627071
+        100.53720154766552,97.55390256922513
+        102.03265245202749,97.38582085879943
+        102.77096111189339,95.22202331363184
+        103.27002361023591,94.22856659442415
+        103.87722294703771,93.37468399671351
     """
 
     csv_code = "\n".join([line.strip() for line in csv_code.splitlines()])
@@ -106,8 +107,8 @@ def test_RissoNormal_make_market():
 
     assert result.entropy == 0.5
     assert result.window_size == 5
-    assert len(result) == 10
-    assert np.all(result.initial_prices == [100, 100])
+    assert len(result) == 11
+
     pd.testing.assert_frame_equal(result._df, expected, atol=1e-10)
 
 

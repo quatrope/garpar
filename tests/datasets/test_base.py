@@ -49,7 +49,7 @@ def test_MarketMakerABC_repr():
 
     maker = Foo()
 
-    assert repr(maker) == "Foo(faa=12)"
+    assert repr(maker) == "Foo(faa=12, n_jobs=None, verbose=0)"
 
 
 def test_MarketMakerABC_bad_coherce_price():
