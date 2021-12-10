@@ -1,3 +1,6 @@
-# GARPAR
+# Welcome to GARPAR
 
-Generación y análisis de retornos de portafolios artificiales y reales 
+![logo](res/logo_wb.png)
+
+
+_Generación y análisis de retornos de portafolios artificiales y reales_
