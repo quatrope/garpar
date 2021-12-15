@@ -14,7 +14,8 @@ import numpy as np
 
 import scipy.stats
 
-from . import base
+from .base import PortfolioMakerABC
+from ..utils.mabc import hparam, mproperty
 
 
 # =============================================================================
@@ -63,10 +64,10 @@ class RissoMixin:
         return loss_probability
 
 
-class RissoNormal(RissoMixin, base.PortfolioMakerABC):
+class RissoNormal(RissoMixin, PortfolioMakerABC):
 
-    mu = base.hparam(default=0, converter=float)
-    sigma = base.hparam(default=0.2, converter=float)
+    mu = hparam(default=0, converter=float)
+    sigma = hparam(default=0.2, converter=float)
 
     def make_stock_price(self, price, loss, random):
         if price == 0.0:
@@ -77,16 +78,16 @@ class RissoNormal(RissoMixin, base.PortfolioMakerABC):
         return 0.0 if new_price < 0 else new_price
 
 
-class RissoLevyStable(RissoMixin, base.PortfolioMakerABC):
+class RissoLevyStable(RissoMixin, PortfolioMakerABC):
 
-    alpha = base.hparam(1, converter=float)
-    beta = base.hparam(0, converter=float)
-    delta = base.hparam(0, converter=float)  # loc
-    gamma = base.hparam(1, converter=float)  # scale
+    alpha = hparam(default=1, converter=float)
+    beta = hparam(default=0, converter=float)
+    delta = hparam(default=0, converter=float)  # loc
+    gamma = hparam(default=1, converter=float)  # scale
 
-    _levy_stable = attr.ib(repr=False, init=False)
+    levy_stable_ = mproperty(repr=False)
 
-    @_levy_stable.default
+    @levy_stable_.default
     def _levy_stable_default(self):
         return scipy.stats.levy_stable(
             alpha=self.alpha, beta=self.beta, loc=self.delta, scale=self.gamma
@@ -96,6 +97,6 @@ class RissoLevyStable(RissoMixin, base.PortfolioMakerABC):
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
-        day_return = sign * np.abs(self._levy_stable.rvs(random_state=random))
+        day_return = sign * np.abs(self.levy_stable_.rvs(random_state=random))
         new_price = price + day_return
         return 0.0 if new_price < 0 else new_price
