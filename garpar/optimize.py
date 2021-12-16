@@ -8,6 +8,7 @@ from pypfopt import expected_returns, risk_models, EfficientFrontier
 
 from .utils.mabc import ModelABC, hparam, abstractmethod
 
+from .portfolio import Portfolio
 
 # =============================================================================
 # PYPORTFOLIO WRAPPER FUNCTIONS
@@ -30,15 +31,15 @@ def sample_covariance(portfolio):
 class OptimizerABC(ModelABC):
     @abstractmethod
     def serialize(self, port):
-        ...
+        raise NotImplementedError()
 
     @abstractmethod
-    def deserialize(self):
-        ...
+    def deserialize(self, port, weights):
+        raise NotImplementedError()
 
     @abstractmethod
-    def optimize():
-        ...
+    def optimize(self, port, target_return):
+        raise NotImplementedError()
 
 
 class Markowitz(OptimizerABC):
@@ -64,5 +65,5 @@ class Markowitz(OptimizerABC):
         ef = EfficientFrontier(**kwargs)
         weights = ef.efficient_return(target_return, self.market_neutral)
 
-        # new_port = self.deserialize(port, weights)
-        return weights
+        weights_list = [weights[stock] for stock in port._df.columns]
+        return Portfolio(port._df.copy(), weights_list)
