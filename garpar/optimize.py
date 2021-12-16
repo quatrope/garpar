@@ -31,15 +31,15 @@ def sample_covariance(portfolio):
 class OptimizerABC(ModelABC):
     @abstractmethod
     def serialize(self, port):
-        ...
+        raise NotImplementedError()
 
     @abstractmethod
-    def deserialize(self):
-        ...
+    def deserialize(self, port, weights):
+        raise NotImplementedError()
 
     @abstractmethod
-    def optimize():
-        ...
+    def optimize(self, port, target_return):
+        raise NotImplementedError()
 
 
 class Markowitz(OptimizerABC):

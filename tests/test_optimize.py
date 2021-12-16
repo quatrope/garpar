@@ -11,13 +11,15 @@
 
 from garpar.portfolio import Portfolio
 from garpar.optimize import mean_historical_return, sample_covariance
+from garpar.optimize import OptimizerABC, Markowitz
 
 import pandas as pd
 import pandas.testing as pdt
 
+import pytest
 
 # =============================================================================
-# TESTS
+# TESTS WRAPPER FUNCTIONS
 # =============================================================================
 
 
@@ -66,3 +68,34 @@ def test_sample_covariance():
     )
 
     pdt.assert_frame_equal(result, expected)
+
+
+# =============================================================================
+# TESTS OPTIMIZER
+# =============================================================================
+
+
+def test_OptimizerABC_not_implementhed_methods():
+    class Foo(OptimizerABC):
+        def serialize(self, port):
+            return super().serialize(port)
+
+        def deserialize(self, port, weights):
+            return super().deserialize(port, weights)
+
+        def optimize(self, port, target_return):
+            return super().optimize(port, target_return)
+
+    opt = Foo()
+    with pytest.raises(NotImplementedError):
+        opt.serialize(0)
+
+    with pytest.raises(NotImplementedError):
+        opt.deserialize(0, 0)
+
+    with pytest.raises(NotImplementedError):
+        opt.optimize(0, 0)
+
+
+def test_Markowitz_is_OptimizerABC():
+    assert issubclass(Markowitz, OptimizerABC)
