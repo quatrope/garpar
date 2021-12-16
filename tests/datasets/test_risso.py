@@ -105,15 +105,10 @@ def test_RissoNormal_make_market():
         days=10, window_size=5, stock_number=2, entropy=0.5
     )
 
-    assert result.entropy == 0.5
-    assert result.window_size == 5
+    assert result.metadata.entropy == 0.5
+    assert result.metadata.window_size == 5
     assert len(result) == 11
 
     pd.testing.assert_frame_equal(result._df, expected, atol=1e-10)
 
 
-# def test_RissoLevyStable():
-#     maker = risso.RissoLevyStable()
-#     import ipdb
-
-#     ipdb.set_trace()
