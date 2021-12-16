@@ -36,12 +36,7 @@ def test_mean_historical_return():
     )
 
     result = mean_historical_return(pf)
-    expected = pd.Series(
-        {
-            "stock0": 46.121466,
-            "stock1": 287.122362,
-        }
-    )
+    expected = pd.Series({"stock0": 46.121466, "stock1": 287.122362})
 
     pdt.assert_series_equal(result, expected)
 
@@ -99,3 +94,41 @@ def test_OptimizerABC_not_implementhed_methods():
 
 def test_Markowitz_is_OptimizerABC():
     assert issubclass(Markowitz, OptimizerABC)
+
+
+def test_Markowitz_defaults():
+    markowitz = Markowitz()
+
+    assert markowitz.weight_bounds == (0, 1)
+    assert markowitz.market_neutral is False
+
+
+def test_Markowitz_serialize():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1.11, 1.12, 1.10, 1.13, 1.18],
+                "stock1": [10.10, 10.32, 10.89, 10.93, 11.05],
+            },
+        ),
+        entropy=0.5,
+        window_size=5,
+    )
+
+    markowitz = Markowitz()
+    result = markowitz.serialize(pf)
+
+    expected_mu = pd.Series({"stock0": 46.121466, "stock1": 287.122362})
+    expected_cov = pd.DataFrame(
+        data={
+            "stock0": [0.17805911, -0.13778805],
+            "stock1": [-0.13778805, 0.13090794],
+        },
+        index=["stock0", "stock1"],
+    )
+
+    assert isinstance(result, dict)
+    assert result.keys() == {"expected_returns", "cov_matrix", "weight_bounds"}
+    pdt.assert_series_equal(expected_mu, result["expected_returns"])
+    pdt.assert_frame_equal(expected_cov, result["cov_matrix"])
+    assert result["weight_bounds"] == (0, 1)
