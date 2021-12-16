@@ -24,6 +24,7 @@ REQUIREMENTS = [
     "matplotlib",
     "h5py",
     "joblib",
+    "PyPortfolioOpt",
 ]
 
 
@@ -50,8 +51,8 @@ setup(
     description="Market generation and portfolio analysis",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    author="Nadia Luczywo",
-    author_email="nluczywo@gmail.com",
+    author="Nadia Luczywo, Juan B Cabral & Trinchi Chalela",
+    author_email="jbcabral@unc.edu.ar",
     url="https://github.com/quatrope/garpar",
     license="The MIT License",
     install_requires=REQUIREMENTS,

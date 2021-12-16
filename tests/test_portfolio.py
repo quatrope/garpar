@@ -34,8 +34,7 @@ def test_Portfolio_creation():
         }
     )
 
-    manual_pf = Portfolio(df=df.copy())
-
+    manual_pf = Portfolio(df=df.copy(), weights=[1.0])
     mk_pf = Portfolio.from_dfkws(
         df=df,
         entropy=0.5,
@@ -112,12 +111,12 @@ def test_Portfolio_repr():
     )
 
     expected = (
-        "   stock\n"
-        "0      1\n"
-        "1      2\n"
-        "2      3\n"
-        "3      4\n"
-        "4      5\n"
+        "  stock[1.0]\n"
+        "0          1\n"
+        "1          2\n"
+        "2          3\n"
+        "3          4\n"
+        "4          5\n"
         "Portfolio [5 days x 1 stocks]"
     )
 
@@ -136,10 +135,10 @@ def test_Portfolio_to_dataframe():
 
     expected = pd.DataFrame(
         {
-            "stock0": [0.5, 5, 1, 2, 3, 4, 5],
-            "stock1": [0.5, 5, 10, 20, 30, 40, 50],
+            "stock0": [0.5, 0.5, 5, 1, 2, 3, 4, 5],
+            "stock1": [0.5, 0.5, 5, 10, 20, 30, 40, 50],
         },
-        index=["entropy", "window_size", 0, 1, 2, 3, 4],
+        index=["Weights", "entropy", "window_size", 0, 1, 2, 3, 4],
     )
 
     result = pf.to_dataframe()

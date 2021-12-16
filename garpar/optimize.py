@@ -4,13 +4,9 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-import abc
+from pypfopt import expected_returns, risk_models, EfficientFrontier
 
-import attr
-
-from pypfopt import expected_returns
-from pypfopt import risk_models
-from pypfopt.efficient_frontier import EfficientFrontier
+from .utils.mabc import ModelABC, hparam, abstractmethod
 
 
 # =============================================================================
@@ -31,28 +27,26 @@ def sample_covariance(portfolio):
 # =============================================================================
 
 
-class OptimizerABC(metaclass=abc.ABCMeta):
+class OptimizerABC(ModelABC):
 
-    # parametros  = hparam(...)
 
-    @abc.abstractmethod
+    @abstractmethod
     def serialize(self, port):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def deserialize(self):
         ...
 
-    @abc.abstractmethod
+    @abstractmethod
     def optimize():
         ...
 
 
-@attr.s(frozen=True)
 class Markowitz(OptimizerABC):
 
-    weight_bounds = attr.ib(default=(0, 1))
-    market_neutral = attr.ib(default=False)
+    weight_bounds = hparam(default=(0, 1))
+    market_neutral = hparam(default=False)
 
     def serialize(self, port):
         mu = mean_historical_return(port)

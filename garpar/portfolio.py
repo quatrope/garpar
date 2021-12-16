@@ -12,8 +12,10 @@ from attr import validators as vldt
 import numpy as np
 
 import pandas as pd
+from pandas.io.formats import format as pd_fmt
 
 from .plot import PortfolioPlotter
+from .risk import RiskAccessor
 
 # =============================================================================
 # CONSTANTS
@@ -25,17 +27,6 @@ GARPAR_METADATA_KEY = "__garpar_metadata__"
 # =============================================================================
 # UTILS
 # =============================================================================
-@attr.s(cmp=False, frozen=True, slots=True)
-class _WrapSlicer:
-
-    slicer = attr.ib()
-    frame_to = attr.ib()
-
-    def __getitem__(self, slice):
-        result = self.slicer.__getitem__(slice)
-        if isinstance(result, pd.DataFrame):
-            result = self.frame_to(result)
-        return result
 
 
 @attr.s(slots=True, frozen=True, repr=False)
@@ -76,14 +67,37 @@ class Metadata(Mapping):
 class Portfolio:
 
     _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
+    _weights = attr.ib(converter=np.asarray)
 
-    _DF_WHITELIST = ["info", "describe", "cumsum", "cumprod", "T", "transpose"]
+    _DF_WHITELIST = [
+        "corr",
+        "cov",
+        "describe",
+        "info",
+        "kurtosis",
+        "mad",
+        "max",
+        "mean",
+        "median",
+        "min",
+        "pct_change",
+        "quantile",
+        "sem",
+        "skew",
+        "std",
+        "var",
+    ]
     _VALID_METADATA = {
         "entropy": (float, np.floating),
         "window_size": (int, np.integer),
     }
 
     def __attrs_post_init__(self):
+        if len(self._weights) != len(self._df.columns):
+            raise ValueError(
+                f"The number of weights must be the same as number of stocks"
+            )
+
         metadata = self._df.attrs[GARPAR_METADATA_KEY]
         if not isinstance(metadata, Metadata):
             raise TypeError(
@@ -102,10 +116,16 @@ class Portfolio:
 
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
-    def from_dfkws(cls, df, **kwargs):
+    def from_dfkws(cls, df, weights=None, **kwargs):
         dfwmd = df.copy()
         dfwmd.attrs[GARPAR_METADATA_KEY] = Metadata(kwargs)
-        return cls(df=dfwmd)
+
+        if weights is None or not hasattr(weights, "__iter__"):
+            cols = len(dfwmd.columns)
+            weights = 1.0 / cols if weights is None else weights
+            weights = np.full(cols, weights, dtype=float)
+
+        return cls(df=dfwmd, weights=weights)
 
     # INTERNALS
     def __len__(self):
@@ -139,6 +159,10 @@ class Portfolio:
 
     # UTILS ===================================================================
     @property
+    def weights(self):
+        return pd.Series(self._weights, index=self._df.columns)
+
+    @property
     def metadata(self):
         return self._df.attrs[GARPAR_METADATA_KEY]
 
@@ -150,13 +174,18 @@ class Portfolio:
     def plot(self):
         return PortfolioPlotter(self)
 
+    @property
+    def risk(self):
+        return RiskAccessor(self)
+
     def copy(self):
         copy_df = self._df.copy(deep=True)
+        copy_weights = self._weights.copy()
 
         metadata = copy_df.attrs[GARPAR_METADATA_KEY].copy()
         copy_df.attrs[GARPAR_METADATA_KEY] = metadata
 
-        return Portfolio(copy_df)
+        return Portfolio(copy_df, weights=copy_weights)
 
     def to_hdf5(self, stream_or_buff, **kwargs):
         from . import io
@@ -166,6 +195,10 @@ class Portfolio:
     def to_dataframe(self):
         df = self._df.copy(deep=True)
 
+        # transform the weitgh "series" into a compatible dataframe
+        weights_df = self.weights.to_frame().T
+        weights_df.index = ["Weights"]
+
         # creating metadata rows in another df with the same columns of df
         metadata = df.attrs.pop(GARPAR_METADATA_KEY)
         mindex, mcols = sorted(metadata), {}
@@ -173,26 +206,38 @@ class Portfolio:
             mcols[col] = [metadata[mdi] for mdi in mindex]
         md_df = pd.DataFrame(mcols, index=mindex)
 
-        return pd.concat([md_df, df])
-
-    # SLICERS =================================================================
-
-    def __getitem__(self, slice):
-        return _WrapSlicer(self._df, frame_to=type(self)).__getitem__(slice)
-
-    @property
-    def iloc(self):
-        return _WrapSlicer(self._df.iloc, frame_to=type(self))
-
-    @property
-    def loc(self):
-        return _WrapSlicer(self._df.loc, frame_to=type(self))
+        return pd.concat([weights_df, md_df, df])
 
     # REPR ====================================================================
 
+    def _get_sw_headers(self):
+        """Columns names with weights."""
+        headers = []
+        fmt_weights = pd_fmt.format_array(self.weights, None)
+        for c, w in zip(self._df.columns, fmt_weights):
+            header = f"{c}[{w.strip()}]"
+            headers.append(header)
+        return headers
+
     def __repr__(self):
-        with pd.option_context("display.show_dimensions", False):
-            original_string = repr(self._df)
+        max_rows = pd.get_option("display.max_rows")
+        min_rows = pd.get_option("display.min_rows")
+        max_cols = pd.get_option("display.max_columns")
+        max_colwidth = pd.get_option("display.max_colwidth")
+
+        if pd.get_option("display.expand_frame_repr"):
+            width, _ = pd.io.formats.console.get_console_size()
+        else:
+            width = None
+        original_string = self._df.to_string(
+            max_rows=max_rows,
+            min_rows=min_rows,
+            max_cols=max_cols,
+            line_width=width,
+            max_colwidth=max_colwidth,
+            show_dimensions=False,
+            header=self._get_sw_headers(),
+        )
 
         days, cols = self.shape
         dim = f"{days} days x {cols} stocks"

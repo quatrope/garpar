@@ -10,8 +10,9 @@
 
 __version__ = "0.1"
 
-from . import datasets, io
+from . import datasets, io, optimize
 from .portfolio import Portfolio
 
 
-__all__ = ["Portfolio", "datasets", "io"]
+
+__all__ = ["Portfolio", "datasets", "io", "optimize"]

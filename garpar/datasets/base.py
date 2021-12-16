@@ -38,6 +38,8 @@ class PortfolioMakerABC(ModelABC):
             raise ValueError(f"The q of prices must be equal {stock_number}")
         return np.asarray(prices, dtype=float)
 
+
+
     # Abstract=================================================================
 
     @abstractmethod
@@ -123,6 +125,7 @@ class PortfolioMakerABC(ModelABC):
         entropy=0.5,
         stock_number=10,
         price=100,
+        weights=None,
     ):
 
         initial_prices = self._coerce_price(stock_number, price)
@@ -163,6 +166,7 @@ class PortfolioMakerABC(ModelABC):
 
         return pf.Portfolio.from_dfkws(
             stock_df,
+            weights=weights,
             entropy=entropy,
             window_size=window_size,
         )
