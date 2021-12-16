@@ -110,5 +110,3 @@ def test_RissoNormal_make_market():
     assert len(result) == 11
 
     pd.testing.assert_frame_equal(result._df, expected, atol=1e-10)
-
-

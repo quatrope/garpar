@@ -38,8 +38,6 @@ class PortfolioMakerABC(ModelABC):
             raise ValueError(f"The q of prices must be equal {stock_number}")
         return np.asarray(prices, dtype=float)
 
-
-
     # Abstract=================================================================
 
     @abstractmethod

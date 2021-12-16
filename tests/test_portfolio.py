@@ -14,6 +14,8 @@ from io import BytesIO
 from garpar.io import read_hdf5
 from garpar.portfolio import GARPAR_METADATA_KEY, Metadata, Portfolio
 
+import numpy as np
+
 import pandas as pd
 
 import pytest
@@ -137,3 +139,43 @@ def test_Portfolio_to_hdf5():
     result = read_hdf5(buff)
 
     assert pf == result
+
+
+def test_Portfolio_prune():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1, 2, 3, 4, 5],
+                "stock1": [10, 20, 30, 40, 50],
+                "stock2": [10, 20, 30, 40, 50],
+            },
+        ),
+        weights=[0.7, 0.29999, 0.00001],
+        entropy=0.5,
+        window_size=5,
+    )
+
+    ppf = pf.prune()
+
+    assert np.all(ppf.stocks == ["stock0", "stock1"])
+
+
+def test_Portfolio_rescaleweights():
+
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1, 2, 3, 4, 5],
+                "stock1": [10, 20, 30, 40, 50],
+                "stock2": [10, 20, 30, 40, 50],
+            },
+        ),
+        weights=[10, 75, 15],
+        entropy=0.5,
+        window_size=5,
+    )
+
+    swpf = pf.scale_weights()
+
+    assert np.all(swpf.weights == [0.1, 0.75, 0.15])
+    assert swpf.weights.sum() == 1.0

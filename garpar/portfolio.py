@@ -178,6 +178,10 @@ class Portfolio:
         return pd.Series(self._weights, index=self._df.columns, name="Weights")
 
     @property
+    def stocks(self):
+        return self._df.columns.copy()
+
+    @property
     def metadata(self):
         return self._df.attrs[GARPAR_METADATA_KEY]
 
@@ -229,6 +233,21 @@ class Portfolio:
         md_df = pd.DataFrame(mcols, index=mindex)
 
         return pd.concat([weights_df, md_df, df])
+
+    def prune(self, threshold=0.0, decimals=3):
+        weights = self.weights
+
+        atol = 10 ** (-decimals)
+        mask = ~np.isclose(weights, threshold, atol=atol, rtol=1)
+
+        pruned_df = self._df[weights[mask].index].copy()
+        pruned_weights = weights[mask].to_numpy()
+
+        return Portfolio(pruned_df, pruned_weights)
+
+    def scale_weights(self):
+        scaled_weights = self._weights / self._weights.sum()
+        return Portfolio(self._df.copy(), scaled_weights)
 
     # REPR ====================================================================
 

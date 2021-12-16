@@ -28,8 +28,6 @@ def sample_covariance(portfolio):
 
 
 class OptimizerABC(ModelABC):
-
-
     @abstractmethod
     def serialize(self, port):
         ...
