@@ -83,7 +83,7 @@ def test_RissoNormal_window_loss_probability(windows_size, loss_prob):
 
 def test_RissoNormal_make_market():
     csv_code = """
-        stock_0,stock_1
+        S0,S1
         100.0,100.0
         99.02931831863204,100.32115321044361
         99.38784621362541,99.24453448301965

@@ -88,12 +88,12 @@ def test_Portfolio_repr():
     )
 
     expected = (
-        "  stock[1.0]\n"
-        "0          1\n"
-        "1          2\n"
-        "2          3\n"
-        "3          4\n"
-        "4          5\n"
+        "  stock[\u2696 1.0]\n"
+        "0            1\n"
+        "1            2\n"
+        "2            3\n"
+        "3            4\n"
+        "4            5\n"
         "Portfolio [5 days x 1 stocks]"
     )
 

@@ -27,7 +27,7 @@ GARPAR_METADATA_KEY = "__garpar_metadata__"
 
 
 # =============================================================================
-# UTILS
+# METADATA
 # =============================================================================
 
 
@@ -60,6 +60,11 @@ class Metadata(Mapping):
 
     def copy(self):
         return Metadata(data=self._data.copy())
+
+
+# =============================================================================
+# STATISTIC ACCESSOR
+# =============================================================================
 
 
 @attr.s(repr=False, cmp=False)
@@ -201,6 +206,9 @@ class Portfolio:
 
         return Portfolio(copy_df, weights=copy_weights)
 
+    def info(self):
+        return self._df.info()
+
     def to_hdf5(self, stream_or_buff, **kwargs):
         from . import io
 
@@ -229,7 +237,7 @@ class Portfolio:
         headers = []
         fmt_weights = pd_fmt.format_array(self.weights, None)
         for c, w in zip(self._df.columns, fmt_weights):
-            header = f"{c}[⚖{w}]"
+            header = f"{c}[\u2696{w}]"
             headers.append(header)
         return headers
 
