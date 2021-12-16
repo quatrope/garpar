@@ -14,6 +14,8 @@ import numpy as np
 import pandas as pd
 from pandas.io.formats import format as pd_fmt
 
+import pyquery as pq
+
 from .plot import PortfolioPlotter
 from .risk import RiskAccessor
 
@@ -168,7 +170,7 @@ class Portfolio:
     # UTILS ===================================================================
     @property
     def weights(self):
-        return pd.Series(self._weights, index=self._df.columns)
+        return pd.Series(self._weights, index=self._df.columns, name="Weights")
 
     @property
     def metadata(self):
@@ -227,9 +229,15 @@ class Portfolio:
         headers = []
         fmt_weights = pd_fmt.format_array(self.weights, None)
         for c, w in zip(self._df.columns, fmt_weights):
-            header = f"{c}[{w.strip()}]"
+            header = f"{c}[⚖{w}]"
             headers.append(header)
         return headers
+
+    def _get_dxs_dimensions(self):
+        """Dimension foote with dxs (Days x Stock)."""
+        days, cols = self.shape
+        dim = f"{days} days x {cols} stocks"
+        return dim
 
     def __repr__(self):
         max_rows = pd.get_option("display.max_rows")
@@ -251,10 +259,38 @@ class Portfolio:
             header=self._get_sw_headers(),
         )
 
-        days, cols = self.shape
-        dim = f"{days} days x {cols} stocks"
+        dim = self._get_dxs_dimensions()
 
         # add dimension
         string = f"{original_string}\nPortfolio [{dim}]"
 
         return string
+
+    def _repr_html_(self):
+        """Return a html representation for a the Portfolio.
+
+        Mainly for IPython notebook.
+        """
+        header = dict(zip(self._df.columns, self._get_sw_headers()))
+        dimensions = self._get_dxs_dimensions()
+
+        # retrieve the original string
+        with pd.option_context("display.show_dimensions", False):
+            original_html = self._df._repr_html_()
+
+        # add dimension
+        html = (
+            "<div class='portfolio'>\n"
+            f"{original_html}"
+            f"<em class='portfolio-dim'>{dimensions}</em>\n"
+            "</div>"
+        )
+
+        # now we need to change the table header
+        d = pq.PyQuery(html)
+        for th in d("div.portfolio table.dataframe > thead > tr > th"):
+            crit = th.text
+            if crit:
+                th.text = header[crit]
+
+        return str(d)

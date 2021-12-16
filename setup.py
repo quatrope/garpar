@@ -25,6 +25,7 @@ REQUIREMENTS = [
     "h5py",
     "joblib",
     "PyPortfolioOpt",
+    "pyquery",
 ]
 
 

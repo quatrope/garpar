@@ -114,7 +114,7 @@ class PortfolioMakerABC(ModelABC):
             initial_price=initial_price,
             random=np.random.default_rng(seed),
         )
-        stock_df.rename(columns={"price": f"stock_{stock_idx}"}, inplace=True)
+        stock_df.rename(columns={"price": f"S{stock_idx}"}, inplace=True)
         return stock_df
 
     def make_portfolio(
