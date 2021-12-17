@@ -80,17 +80,17 @@ class RissoNormal(RissoMixin, PortfolioMakerABC):
 
 class RissoLevyStable(RissoMixin, PortfolioMakerABC):
 
-    alpha = hparam(default=1, converter=float)
-    beta = hparam(default=0, converter=float)
-    delta = hparam(default=0, converter=float)  # loc
-    gamma = hparam(default=1, converter=float)  # scale
+    alpha = hparam(default=1.6411, converter=float)
+    beta = hparam(default=-0.0126, converter=float)
+    mu = hparam(default=0.0005, converter=float)  # loc
+    sigma = hparam(default=0.005, converter=float)  # scale
 
     levy_stable_ = mproperty(repr=False)
 
     @levy_stable_.default
     def _levy_stable_default(self):
         return scipy.stats.levy_stable(
-            alpha=self.alpha, beta=self.beta, loc=self.delta, scale=self.gamma
+            alpha=self.alpha, beta=self.beta, loc=self.mu, scale=self.sigma
         )
 
     def make_stock_price(self, price, loss, random):
