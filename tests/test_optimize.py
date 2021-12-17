@@ -9,9 +9,9 @@
 # IMPORTS
 # =============================================================================
 
-from garpar.portfolio import Portfolio
+from garpar.optimize import Markowitz, OptimizerABC
 from garpar.optimize import mean_historical_return, sample_covariance
-from garpar.optimize import OptimizerABC, Markowitz
+from garpar.portfolio import Portfolio
 
 import pandas as pd
 import pandas.testing as pdt
@@ -75,9 +75,6 @@ def test_OptimizerABC_not_implementhed_methods():
         def serialize(self, port):
             return super().serialize(port)
 
-        def deserialize(self, port, weights):
-            return super().deserialize(port, weights)
-
         def optimize(self, port, target_return):
             return super().optimize(port, target_return)
 
@@ -86,10 +83,12 @@ def test_OptimizerABC_not_implementhed_methods():
         opt.serialize(0)
 
     with pytest.raises(NotImplementedError):
-        opt.deserialize(0, 0)
-
-    with pytest.raises(NotImplementedError):
         opt.optimize(0, 0)
+
+
+# =============================================================================
+# TESTS MARKOWITZ
+# =============================================================================
 
 
 def test_Markowitz_is_OptimizerABC():
@@ -132,3 +131,31 @@ def test_Markowitz_serialize():
     pdt.assert_series_equal(expected_mu, result["expected_returns"])
     pdt.assert_frame_equal(expected_cov, result["cov_matrix"])
     assert result["weight_bounds"] == (0, 1)
+
+
+def test_Markowitz_optimize():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1.11, 1.12, 1.10, 1.13, 1.18],
+                "stock1": [10.10, 10.32, 10.89, 10.93, 11.05],
+            },
+        ),
+        weights=[0.5, 0.5],
+        entropy=0.5,
+        window_size=5,
+    )
+
+    markowitz = Markowitz()
+    result = markowitz.optimize(pf, target_return=1.0)
+    expected_weights = pd.Series(
+        data={"stock0": 0.45966836, "stock1": 0.54033164}, name="Weights"
+    )
+
+    # Assert everything is the same except for the weights
+    assert result is not pf
+    assert isinstance(result, Portfolio)
+    pdt.assert_frame_equal(pf._df, result._df)
+
+    assert isinstance(result.weights, pd.Series)
+    pdt.assert_series_equal(result.weights, expected_weights)
