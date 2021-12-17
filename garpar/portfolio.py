@@ -256,7 +256,7 @@ class Portfolio:
         headers = []
         fmt_weights = pd_fmt.format_array(self.weights, None)
         for c, w in zip(self._df.columns, fmt_weights):
-            header = f"{c}[\u2696{w}]"
+            header = f"{c} [\u2696{w}]"
             headers.append(header)
         return headers
 
@@ -316,8 +316,7 @@ class Portfolio:
         # now we need to change the table header
         d = pq.PyQuery(html)
         for th in d("div.portfolio table.dataframe > thead > tr > th"):
-            crit = th.text
-            if crit:
-                th.text = header[crit]
+            stock = th.text
+            th.text = header.get(stock, stock)
 
         return str(d)
