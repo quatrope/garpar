@@ -4,11 +4,10 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-from pypfopt import expected_returns, risk_models, EfficientFrontier
-
-from .utils.mabc import ModelABC, hparam, abstractmethod
+from pypfopt import EfficientFrontier, expected_returns, risk_models
 
 from .portfolio import Portfolio
+from .utils.mabc import ModelABC, abstractmethod, hparam
 
 # =============================================================================
 # PYPORTFOLIO WRAPPER FUNCTIONS
@@ -34,10 +33,6 @@ class OptimizerABC(ModelABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def deserialize(self, port, weights):
-        raise NotImplementedError()
-
-    @abstractmethod
     def optimize(self, port, target_return):
         raise NotImplementedError()
 
@@ -55,9 +50,6 @@ class Markowitz(OptimizerABC):
             "cov_matrix": cov,
             "weight_bounds": self.weight_bounds,
         }
-
-    def deserialize(self, port, weights):
-        pass
 
     def optimize(self, port, target_return):
         kwargs = self.serialize(port)
