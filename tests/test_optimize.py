@@ -9,7 +9,7 @@
 # IMPORTS
 # =============================================================================
 
-from garpar.optimize import Markowitz, OptimizerABC
+from garpar.optimize import BlackLitterman, Markowitz, OptimizerABC
 from garpar.optimize import mean_historical_return, sample_covariance
 from garpar.portfolio import Portfolio
 
@@ -75,15 +75,15 @@ def test_OptimizerABC_not_implementhed_methods():
         def serialize(self, port):
             return super().serialize(port)
 
-        def optimize(self, port, target_return):
-            return super().optimize(port, target_return)
+        def optimize(self, port):
+            return super().optimize(port)
 
     opt = Foo()
     with pytest.raises(NotImplementedError):
         opt.serialize(0)
 
     with pytest.raises(NotImplementedError):
-        opt.optimize(0, 0)
+        opt.optimize(0)
 
 
 # =============================================================================
@@ -114,9 +114,13 @@ def test_Markowitz_serialize():
         window_size=5,
     )
 
+    # Instance
     markowitz = Markowitz()
+
+    # Tested method
     result = markowitz.serialize(pf)
 
+    # Expectations
     expected_mu = pd.Series({"stock0": 46.121466, "stock1": 287.122362})
     expected_cov = pd.DataFrame(
         data={
@@ -126,6 +130,7 @@ def test_Markowitz_serialize():
         index=["stock0", "stock1"],
     )
 
+    # Assert
     assert isinstance(result, dict)
     assert result.keys() == {"expected_returns", "cov_matrix", "weight_bounds"}
     pdt.assert_series_equal(expected_mu, result["expected_returns"])
@@ -146,10 +151,107 @@ def test_Markowitz_optimize():
         window_size=5,
     )
 
+    # Instance
     markowitz = Markowitz()
+
+    # Tested method
     result = markowitz.optimize(pf, target_return=1.0)
+
+    # Expectations
     expected_weights = pd.Series(
         data={"stock0": 0.45966836, "stock1": 0.54033164}, name="Weights"
+    )
+
+    # Assert everything is the same except for the weights
+    assert result is not pf
+    assert isinstance(result, Portfolio)
+    pdt.assert_frame_equal(pf._df, result._df)
+
+    assert isinstance(result.weights, pd.Series)
+    pdt.assert_series_equal(result.weights, expected_weights)
+
+
+# =============================================================================
+# TESTS BLACK LITTERMAN
+# =============================================================================
+
+
+def test_BlackLitterman_is_OptimizerABC():
+    assert issubclass(BlackLitterman, OptimizerABC)
+
+
+def test_BlackLitterman_defaults():
+    bl = BlackLitterman()
+
+    assert bl.prior == "equal"
+    assert bl.absolute_views is None
+    assert bl.P is None
+    assert bl.Q is None
+
+
+def test_BlackLitterman_serialize():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1.11, 1.12, 1.10, 1.13, 1.18],
+                "stock1": [10.10, 10.32, 10.89, 10.93, 11.05],
+            },
+        ),
+        entropy=0.5,
+        window_size=5,
+    )
+
+    # Instance
+    viewdict = {"stock0": 0.01, "stock1": 0.03}
+    bl = BlackLitterman(prior="algo", absolute_views=viewdict)
+
+    # Tested method
+    result = bl.serialize(pf)
+
+    # Expectations
+    expected_views = {"stock0": 0.01, "stock1": 0.03}
+    expected_cov = pd.DataFrame(
+        data={
+            "stock0": [0.17805911, -0.13778805],
+            "stock1": [-0.13778805, 0.13090794],
+        },
+        index=["stock0", "stock1"],
+    )
+
+    # Assert
+    assert isinstance(result, dict)
+    assert result.keys() == {"pi", "absolute_views", "cov_matrix", "P", "Q"}
+
+    assert result["pi"] == "algo"
+    assert result["absolute_views"] == expected_views
+    pdt.assert_frame_equal(expected_cov, result["cov_matrix"])
+    assert result["P"] is None
+    assert result["Q"] is None
+
+
+def test_BlackLitterman_optimize():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1.11, 1.12, 1.10, 1.13, 1.18],
+                "stock1": [10.10, 10.32, 10.89, 10.93, 11.05],
+            },
+        ),
+        entropy=0.5,
+        window_size=5,
+    )
+
+    # Instance
+    viewdict = {"stock0": 0.01, "stock1": 0.03}
+    prior = pd.Series(data={"stock0": 0.02, "stock1": 0.04})
+    bl = BlackLitterman(prior=prior, absolute_views=viewdict)
+
+    # Tested method
+    result = bl.optimize(pf)
+
+    # Expectations
+    expected_weights = pd.Series(
+        data={"stock0": 0.45157882, "stock1": 0.54842117}, name="Weights"
     )
 
     # Assert everything is the same except for the weights
