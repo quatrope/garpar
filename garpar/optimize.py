@@ -34,6 +34,10 @@ class OptimizerABC(ModelABC):
         raise NotImplementedError()
 
     @abstractmethod
+    def deserialize(self, port, weights):
+        raise NotImplementedError()
+
+    @abstractmethod
     def optimize(self, port):
         raise NotImplementedError()
 
@@ -52,14 +56,17 @@ class Markowitz(OptimizerABC):
             "weight_bounds": self.weight_bounds,
         }
 
+    def deserialize(self, port, weights):
+        weights_list = [weights[stock] for stock in port._df.columns]
+        return Portfolio(port._df.copy(), weights_list)
+
     def optimize(self, port, target_return):
         kwargs = self.serialize(port)
 
         ef = EfficientFrontier(**kwargs)
         weights = ef.efficient_return(target_return, self.market_neutral)
 
-        weights_list = [weights[stock] for stock in port._df.columns]
-        return Portfolio(port._df.copy(), weights_list)
+        return self.deserialize(port, weights)
 
 
 class BlackLitterman(OptimizerABC):
@@ -79,11 +86,14 @@ class BlackLitterman(OptimizerABC):
             "Q": self.Q,
         }
 
+    def deserialize(self, port, weights):
+        weights_list = [weights[stock] for stock in port._df.columns]
+        return Portfolio(port._df.copy(), weights_list)
+
     def optimize(self, port, risk_aversion=None):
         kwargs = self.serialize(port)
 
         blm = BlackLittermanModel(**kwargs)
         weights = blm.bl_weights(risk_aversion)
 
-        weights_list = [weights[stock] for stock in port._df.columns]
-        return Portfolio(port._df.copy(), weights_list)
+        return self.deserialize(port, weights)
