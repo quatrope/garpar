@@ -12,7 +12,7 @@
 from io import BytesIO
 
 from garpar.io import read_hdf5
-from garpar.portfolio import GARPAR_METADATA_KEY, Metadata, Portfolio
+from garpar.core.portfolio import GARPAR_METADATA_KEY, Metadata, Portfolio
 
 import numpy as np
 

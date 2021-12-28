@@ -6,7 +6,7 @@
 
 from pypfopt import EfficientFrontier, expected_returns, risk_models
 
-from .portfolio import Portfolio
+from .core import Portfolio
 from .utils.mabc import ModelABC, abstractmethod, hparam
 
 # =============================================================================

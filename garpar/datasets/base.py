@@ -15,7 +15,7 @@ import numpy as np
 
 import pandas as pd
 
-from .. import portfolio as pf
+from ..core import portfolio as pf
 from ..utils.mabc import ModelABC, hparam, abstractmethod
 
 # =============================================================================

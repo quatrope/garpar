@@ -26,6 +26,7 @@ REQUIREMENTS = [
     "joblib",
     "PyPortfolioOpt",
     "pyquery",
+    "scikit-learn"
 ]
 
 

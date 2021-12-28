@@ -11,7 +11,7 @@
 
 from garpar.optimize import Markowitz, OptimizerABC
 from garpar.optimize import mean_historical_return, sample_covariance
-from garpar.portfolio import Portfolio
+from garpar.core import Portfolio
 
 import pandas as pd
 import pandas.testing as pdt

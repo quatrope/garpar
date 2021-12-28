@@ -28,7 +28,8 @@ import numpy as np
 
 import pandas as pd
 
-from . import __version__ as VERSION, portfolio
+from . import __version__ as VERSION
+from .core import Portfolio
 
 # =============================================================================
 # CONSTANTS
@@ -129,4 +130,4 @@ def read_hdf5(path_or_stream, group="portfolio"):
         weights_ds = grp[f"{group}_weights"]
         weights = weights_ds[:]
 
-        return portfolio.Portfolio.from_dfkws(df, weights, **grp.attrs)
+        return Portfolio.from_dfkws(df, weights, **grp.attrs)

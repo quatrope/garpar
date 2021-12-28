@@ -16,8 +16,9 @@ from pandas.io.formats import format as pd_fmt
 
 import pyquery as pq
 
-from .plot import PortfolioPlotter
-from .risk import RiskAccessor
+
+from . import plot, prices, returns, risk
+
 
 # =============================================================================
 # CONSTANTS
@@ -60,52 +61,6 @@ class Metadata(Mapping):
 
     def copy(self):
         return Metadata(data=self._data.copy())
-
-
-# =============================================================================
-# STATISTIC ACCESSOR
-# =============================================================================
-
-
-@attr.s(repr=False, cmp=False)
-class StatisticsAccessor:
-
-    _pf = attr.ib()
-
-    _DF_WHITELIST = [
-        "corr",
-        "cov",
-        "describe",
-        "kurtosis",
-        "mad",
-        "max",
-        "mean",
-        "median",
-        "info",
-        "min",
-        "pct_change",
-        "quantile",
-        "sem",
-        "skew",
-        "std",
-        "var",
-    ]
-
-    def __call__(self, statistic="describe", **kwargs):
-        if statistic.startswith("_"):
-            raise ValueError(f"invalid statistic name '{statistic}'")
-        method = getattr(self, statistic, None)
-        if not callable(method):
-            raise ValueError(f"invalid statistic name '{statistic}'")
-        return method(**kwargs)
-
-    def __getattr__(self, a):
-        if a not in self._DF_WHITELIST:
-            raise AttributeError(a)
-        return getattr(self._pf._df, a)
-
-    def __dir__(self):
-        return [e for e in dir(self._pf._df) if e in self._DF_WHITELIST]
 
 
 # =============================================================================
@@ -172,6 +127,26 @@ class Portfolio:
     def __ne__(self, other):
         return not self == other
 
+
+    # ACCESSORS ================================================================
+
+    @property
+    def plot(self):
+        return plot.PortfolioPlotter(self)
+
+    @property
+    def prices(self):
+        return prices.PricesAccessor(self)
+
+    @property
+    def returns(self):
+        return returns.ReturnsAccessor(self)
+
+    @property
+    def risk(self):
+        return risk.RiskAccessor(self)
+
+
     # UTILS ===================================================================
     @property
     def weights(self):
@@ -189,18 +164,6 @@ class Portfolio:
     def shape(self):
         return self._df.shape
 
-    @property
-    def plot(self):
-        return PortfolioPlotter(self)
-
-    @property
-    def stats(self):
-        return StatisticsAccessor(self)
-
-    @property
-    def risk(self):
-        return RiskAccessor(self)
-
     def copy(self):
         copy_df = self._df.copy(deep=True)
         copy_weights = self._weights.copy()
@@ -210,11 +173,8 @@ class Portfolio:
 
         return Portfolio(copy_df, weights=copy_weights)
 
-    def info(self):
-        return self._df.info()
-
     def to_hdf5(self, stream_or_buff, **kwargs):
-        from . import io
+        from .. import io
 
         return io.to_hdf5(stream_or_buff, self, **kwargs)
 
@@ -235,6 +195,7 @@ class Portfolio:
         return pd.concat([weights_df, md_df, df])
 
     def prune(self, threshold=0.0, decimals=3):
+        """Corta el portfolio en un umbral de pesos."""
         weights = self.weights
 
         atol = 10 ** (-decimals)
@@ -246,6 +207,7 @@ class Portfolio:
         return Portfolio(pruned_df, pruned_weights)
 
     def scale_weights(self):
+        """Reajusta los pesos en un rango de [0, 1]"""
         scaled_weights = self._weights / self._weights.sum()
         return Portfolio(self._df.copy(), scaled_weights)
 
@@ -256,7 +218,7 @@ class Portfolio:
         headers = []
         fmt_weights = pd_fmt.format_array(self.weights, None)
         for c, w in zip(self._df.columns, fmt_weights):
-            header = f"{c} [\u2696{w}]"
+            header = f"{c}[\u2696{w}]"
             headers.append(header)
         return headers
 
