@@ -1,12 +1,16 @@
 import attr
 
+from ..utils import aabc
+
 # =============================================================================
 # STATISTIC ACCESSOR
 # =============================================================================
 
 
 @attr.s(repr=False, cmp=False)
-class PricesAccessor:
+class PricesAccessor(aabc.AccessorABC):
+
+    _DEFAULT_KIND = "describe"
 
     _pf = attr.ib()
 
@@ -28,14 +32,6 @@ class PricesAccessor:
         "std",
         "var",
     ]
-
-    def __call__(self, statistic="describe", **kwargs):
-        if statistic.startswith("_"):
-            raise ValueError(f"invalid statistic name '{statistic}'")
-        method = getattr(self, statistic, None)
-        if not callable(method):
-            raise ValueError(f"invalid statistic name '{statistic}'")
-        return method(**kwargs)
 
     def __getattr__(self, a):
         if a not in self._DF_WHITELIST:

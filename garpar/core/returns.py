@@ -2,13 +2,17 @@ import attr
 
 from pypfopt import expected_returns, objective_functions
 
+from..utils import aabc
+
 # =============================================================================
 #
 # =============================================================================
 
 
 @attr.s(frozen=True, repr=False, slots=True)
-class ReturnsAccessor:
+class ReturnsAccessor(aabc.AccessorABC):
+
+    _DEFAULT_KIND = "returns"
 
     _pf = attr.ib()
 

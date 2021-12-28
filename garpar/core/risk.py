@@ -2,13 +2,17 @@ import attr
 
 from pypfopt import expected_returns, risk_models
 
+from ..utils import aabc
+
 # =============================================================================
 #
 # =============================================================================
 
 
 @attr.s(frozen=True, repr=False, slots=True)
-class RiskAccessor:
+class RiskAccessor(aabc.AccessorABC):
+
+    _DEFAULT_KIND = "sample_cov"
 
     _pf = attr.ib()
 

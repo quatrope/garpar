@@ -11,9 +11,10 @@
 
 import attr
 
-# import matplotlib.pyplot as plt
 
 import seaborn as sns
+
+from ..utils import aabc
 
 
 # =============================================================================
@@ -22,20 +23,14 @@ import seaborn as sns
 
 
 @attr.s(frozen=True, cmp=False, slots=True)
-class PortfolioPlotter:
+class PortfolioPlotter(aabc.AccessorABC):
     """Make plots of Portfolio."""
+
+    _DEFAULT_KIND = "line"
 
     _pf = attr.ib()
 
     # INTERNAL ================================================================
-
-    def __call__(self, plot_kind="line", **kwargs):
-        if plot_kind.startswith("_"):
-            raise ValueError(f"invalid plot_kind name '{plot_kind}'")
-        method = getattr(self, plot_kind, None)
-        if not callable(method):
-            raise ValueError(f"invalid plot_kind name '{plot_kind}'")
-        return method(**kwargs)
 
     @property
     def _ddf(self):
