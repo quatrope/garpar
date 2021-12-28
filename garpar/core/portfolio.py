@@ -17,7 +17,7 @@ from pandas.io.formats import format as pd_fmt
 import pyquery as pq
 
 
-from . import plot, prices, returns, risk
+from . import plot, prices, returns, risk, objectives
 
 
 # =============================================================================
@@ -127,7 +127,6 @@ class Portfolio:
     def __ne__(self, other):
         return not self == other
 
-
     # ACCESSORS ================================================================
 
     @property
@@ -146,6 +145,9 @@ class Portfolio:
     def risk(self):
         return risk.RiskAccessor(self)
 
+    @property
+    def objectives(self):
+        return objectives.ObjectivesAccessor(self)
 
     # UTILS ===================================================================
     @property
