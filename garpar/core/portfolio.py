@@ -18,7 +18,7 @@ import pyquery as pq
 
 import pypfopt
 
-from . import objectives_acc, plot_acc, prices_acc, returns_acc, risk_acc
+from . import ereturns_acc, objectives_acc, plot_acc, prices_acc, risk_acc
 
 
 # =============================================================================
@@ -143,7 +143,7 @@ class Portfolio:
 
     @property
     def ereturns(self):
-        return returns_acc.ExpectedReturnsAccessor(self)
+        return ereturns_acc.ExpectedReturnsAccessor(self)
 
     @property
     def covariance(self):
