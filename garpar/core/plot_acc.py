@@ -34,7 +34,7 @@ class PortfolioPlotter(aabc.AccessorABC):
 
     def _ddf(self, returns):
         if returns:
-            return self._pf.returns.returns(), "Returns"
+            return self._pf.as_returns(), "Returns"
         return self._pf._df, "Price"
 
     def _wdf(self):

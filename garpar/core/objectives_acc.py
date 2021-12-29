@@ -10,22 +10,6 @@ from ..utils import aabc
 #
 # =============================================================================
 
-_EXPECTED_RETURNS_COERCE = {
-    "capm": lambda pf, kw: pf.returns.capm(**kw),
-    "mah": lambda pf, kw: pf.returns.mah(**kw),
-    "emah": lambda pf, kw: pf.returns.emah(**kw),
-}
-
-_COVARIANCE_MATRIX_COERCE = {
-    "sample": lambda pf, kw: pf.risk.sample_cov(**kw),
-    "exp": lambda pf, kw: pf.risk.exp_cov(**kw),
-    "semi": lambda pf, kw: pf.risk.semi_cov(**kw),
-    "ledoit_wolf": lambda pf, kw: pf.risk.ledoit_wolf_cov(**kw),
-    "oracle_approximating": lambda pf, kw: pf.risk.oracle_approximating_cov(
-        **kw
-    ),
-}
-
 
 @attr.s(frozen=True, repr=False, slots=True)
 class ObjectivesAccessor(aabc.AccessorABC):
@@ -36,22 +20,16 @@ class ObjectivesAccessor(aabc.AccessorABC):
 
     def _coerce_expected_returns(self, expected_returns, kw):
         if isinstance(expected_returns, str):
-            coercer = _EXPECTED_RETURNS_COERCE.get(expected_returns.lower())
-            if coercer is None:
-                raise ValueError(
-                    f"Invalid expected_returns '{expected_returns}'"
-                )
             kw = {} if kw is None else kw
-            expected_returns = coercer(self._pf, kw)
+            expected_returns = self._pf.ereturns(
+                expected_returns.lower(), **kw
+            )
         return np.asarray(expected_returns)
 
     def _coerce_covariance_matrix(self, cov_matrix, kw):
         if isinstance(cov_matrix, str):
-            coercer = _COVARIANCE_MATRIX_COERCE.get(cov_matrix.lower())
-            if coercer is None:
-                raise ValueError(f"Invalid cov_matrix '{cov_matrix}'")
             kw = {} if kw is None else kw
-            cov_matrix = coercer(self._pf, kw)
+            cov_matrix = self._pf.covariance(cov_matrix.lower(), **kw)
         return np.asarray(cov_matrix)
 
     def _coerce_weights(self, weights):

@@ -16,8 +16,9 @@ from pandas.io.formats import format as pd_fmt
 
 import pyquery as pq
 
+import pypfopt
 
-from . import plot, prices, returns, risk, objectives
+from . import objectives_acc, plot_acc, prices_acc, returns_acc, risk_acc
 
 
 # =============================================================================
@@ -113,7 +114,6 @@ class Portfolio:
             weights = 1.0 / cols if weights is None else weights
             weights = np.full(cols, weights, dtype=float)
 
-
         return cls(df=dfwmd, weights=weights)
 
     # INTERNALS
@@ -135,23 +135,27 @@ class Portfolio:
 
     @property
     def plot(self):
-        return plot.PortfolioPlotter(self)
+        return plot_acc.PortfolioPlotter(self)
 
     @property
     def prices(self):
-        return prices.PricesAccessor(self)
+        return prices_acc.PricesAccessor(self)
 
     @property
-    def returns(self):
-        return returns.ReturnsAccessor(self)
+    def ereturns(self):
+        return returns_acc.ExpectedReturnsAccessor(self)
+
+    @property
+    def covariance(self):
+        return risk_acc.CovarianceAccessor(self)
 
     @property
     def risk(self):
-        return risk.RiskAccessor(self)
+        return risk_acc.RiskAccessor(self)
 
     @property
     def objectives(self):
-        return objectives.ObjectivesAccessor(self)
+        return objectives_acc.ObjectivesAccessor(self)
 
     # UTILS ===================================================================
     @property
@@ -216,6 +220,11 @@ class Portfolio:
         """Reajusta los pesos en un rango de [0, 1]"""
         scaled_weights = self._weights / self._weights.sum()
         return Portfolio(self._df.copy(), scaled_weights)
+
+    def as_returns(self, **kwargs):
+        return pypfopt.expected_returns.returns_from_prices(
+            prices=self._pf._df, **kwargs
+        )
 
     # REPR ====================================================================
 

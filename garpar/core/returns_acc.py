@@ -10,16 +10,12 @@ from..utils import aabc
 
 
 @attr.s(frozen=True, repr=False, slots=True)
-class ReturnsAccessor(aabc.AccessorABC):
+class ExpectedReturnsAccessor(aabc.AccessorABC):
 
-    _DEFAULT_KIND = "returns"
+    _DEFAULT_KIND = "capm"
 
     _pf = attr.ib()
 
-    def returns(self, **kwargs):
-        return expected_returns.returns_from_prices(
-            prices=self._pf._df, **kwargs
-        )
 
     def capm(self, **kwargs):
         returns = expected_returns.capm_return(
