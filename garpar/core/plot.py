@@ -32,20 +32,22 @@ class PortfolioPlotter(aabc.AccessorABC):
 
     # INTERNAL ================================================================
 
-    @property
-    def _ddf(self):
-        return self._pf._df
+    def _ddf(self, returns):
+        if returns:
+            return self._pf.returns.returns(), "Returns"
+        return self._pf._df, "Price"
 
-    @property
     def _wdf(self):
         # proxy to access the dataframe with the weights
-        return self._pf.weights.to_frame()
+        return self._pf.weights.to_frame(), "Weights"
 
-    def line(self, **kwargs):
-        ax = sns.lineplot(data=self._ddf, **kwargs)
+    def line(self, returns=False, **kwargs):
+        data, title = self._ddf(returns=returns)
+        ax = sns.lineplot(data=data, **kwargs)
+        ax.set_title(title)
         return ax
 
-    def heatmap(self, **kwargs):
+    def heatmap(self, returns=False, **kwargs):
         """Plot the portfolio matrix as a color-encoded matrix.
 
         Parameters
@@ -59,9 +61,13 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.heatmap(self._ddf, **kwargs)
+        data, title = self._ddf(returns=returns)
+
+        ax = sns.heatmap(data=data, **kwargs)
+        ax.set_title(title)
         ax.set_ylabel("Days")
         ax.set_xlabel("Stocks")
+
         return ax
 
     def wheatmap(self, **kwargs):
@@ -78,7 +84,9 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.heatmap(self._wdf.T, **kwargs)
+        data, title = self._wdf()
+        ax = sns.heatmap(data=data.T, **kwargs)
+        ax.set_title(title)
         ax.set_xlabel("Stocks")
 
         if "ax" not in kwargs:
@@ -91,7 +99,7 @@ class PortfolioPlotter(aabc.AccessorABC):
 
         return ax
 
-    def hist(self, **kwargs):
+    def hist(self, returns=False, **kwargs):
         """Draw one histogram of the portfolio.
 
         A histogram is a representation of the distribution of data.
@@ -109,7 +117,9 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.histplot(self._ddf, **kwargs)
+        data, title = self._ddf(returns=returns)
+        ax = sns.histplot(data=data, **kwargs)
+        ax.set_title(title)
         return ax
 
     def whist(self, **kwargs):
@@ -130,10 +140,12 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.histplot(self._wdf.T, **kwargs)
+        data, title = self._wdf()
+        ax = sns.histplot(data=data.T, **kwargs)
+        ax.set_title(title)
         return ax
 
-    def box(self, **kwargs):
+    def box(self, returns=False, **kwargs):
         """Make a box plot of the portfolio.
 
         A box plot is a method for graphically depicting groups of numerical
@@ -153,7 +165,9 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.boxplot(data=self._ddf, **kwargs)
+        data, title = self._ddf(returns=returns)
+        ax = sns.boxplot(data=data, **kwargs)
+        ax.set_title(title)
         return ax
 
     def wbox(self, **kwargs):
@@ -176,10 +190,12 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.boxplot(data=self._wdf, **kwargs)
+        data, title = self._wdf()
+        ax = sns.boxplot(data=data ** kwargs)
+        ax.set_title(title)
         return ax
 
-    def kde(self, **kwargs):
+    def kde(self, returns=False, **kwargs):
         """Stock kernel density plot using Gaussian kernels.
 
         In statistics, `kernel density estimation`_ (KDE) is a non-parametric
@@ -201,7 +217,9 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.kdeplot(data=self._ddf, **kwargs)
+        data, title = self._ddf(returns=returns)
+        ax = sns.kdeplot(data=data, **kwargs)
+        ax.set_title(title)
         return ax
 
     def wkde(self, **kwargs):
@@ -226,9 +244,13 @@ class PortfolioPlotter(aabc.AccessorABC):
         matplotlib.axes.Axes or numpy.ndarray of them
 
         """
-        ax = sns.kdeplot(data=self._wdf, **kwargs)
+        data, title = self._wdf()
+        ax = sns.kdeplot(data=data ** kwargs)
+        ax.set_title(title)
         return ax
 
-    def ogive(self, **kwargs):
-        ax = sns.ecdfplot(data=self._ddf, **kwargs)
+    def ogive(self, returns=False, **kwargs):
+        data, title = self._ddf(returns=returns)
+        ax = sns.ecdfplot(data=data, **kwargs)
+        ax.set_title(title)
         return ax

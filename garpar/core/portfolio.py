@@ -99,16 +99,20 @@ class Portfolio:
                     f"Found {type(v)}"
                 )
 
+        self._df.columns.name = "Stocks"
+        self._df.index.name = "Days"
+
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
     def from_dfkws(cls, df, weights=None, **kwargs):
         dfwmd = df.copy()
         dfwmd.attrs[GARPAR_METADATA_KEY] = Metadata(kwargs)
 
-        if weights is None:
+        if weights is None or not hasattr(weights, "__iter__"):
             cols = len(dfwmd.columns)
             weights = 1.0 / cols if weights is None else weights
             weights = np.full(cols, weights, dtype=float)
+
 
         return cls(df=dfwmd, weights=weights)
 

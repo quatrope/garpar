@@ -1,5 +1,7 @@
 import attr
 
+import numpy as np
+
 from ..utils import aabc
 
 # =============================================================================
@@ -33,10 +35,15 @@ class PricesAccessor(aabc.AccessorABC):
         "var",
     ]
 
+    def log(self):
+        return self._pf._df.apply(np.log10)
+
     def __getattr__(self, a):
         if a not in self._DF_WHITELIST:
             raise AttributeError(a)
         return getattr(self._pf._df, a)
 
     def __dir__(self):
-        return [e for e in dir(self._pf._df) if e in self._DF_WHITELIST]
+        return super().__dir__() + [
+            e for e in dir(self._pf._df) if e in self._DF_WHITELIST
+        ]
