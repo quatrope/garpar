@@ -9,7 +9,7 @@ from ..utils import aabc
 # =============================================================================
 
 
-@attr.s(frozen=True, repr=False, slots=True)
+@attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class RiskAccessor(aabc.AccessorABC):
 
     _DEFAULT_KIND = "beta"

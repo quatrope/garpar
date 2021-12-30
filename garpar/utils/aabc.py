@@ -24,3 +24,6 @@ class AccessorABC:
             raise ValueError(f"invalid kind name '{kind}'")
 
         return method(**kwargs)
+
+    def __repr__(self):
+        return f"{type(self).__name__}(DEFAULT_KIND={self._DEFAULT_KIND})"

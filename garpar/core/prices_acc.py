@@ -9,7 +9,7 @@ from ..utils import aabc
 # =============================================================================
 
 
-@attr.s(repr=False, cmp=False)
+@attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class PricesAccessor(aabc.AccessorABC):
 
     _DEFAULT_KIND = "describe"

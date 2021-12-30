@@ -18,7 +18,14 @@ import pyquery as pq
 
 import pypfopt
 
-from . import ereturns_acc, objectives_acc, plot_acc, prices_acc, risk_acc
+from . import (
+    ereturns_acc,
+    cov_acc,
+    objectives_acc,
+    plot_acc,
+    prices_acc,
+    risk_acc,
+)
 
 
 # =============================================================================
@@ -72,6 +79,41 @@ class Portfolio:
 
     _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=np.asarray)
+
+    # accessors
+    plot = attr.field(
+        init=False,
+        default=attr.Factory(plot_acc.PortfolioPlotter, takes_self=True),
+    )
+
+    prices = attr.field(
+        init=False,
+        default=attr.Factory(prices_acc.PricesAccessor, takes_self=True),
+    )
+
+    ereturns = attr.field(
+        init=False,
+        default=attr.Factory(
+            ereturns_acc.ExpectedReturnsAccessor, takes_self=True
+        ),
+    )
+
+    covariance = attr.field(
+        init=False,
+        default=attr.Factory(cov_acc.CovarianceAccessor, takes_self=True),
+    )
+
+    risk = attr.field(
+        init=False,
+        default=attr.Factory(risk_acc.RiskAccessor, takes_self=True),
+    )
+
+    objectives = attr.field(
+        init=False,
+        default=attr.Factory(
+            objectives_acc.ObjectivesAccessor, takes_self=True
+        ),
+    )
 
     _VALID_METADATA = {
         "entropy": (float, np.floating),
@@ -130,32 +172,6 @@ class Portfolio:
 
     def __ne__(self, other):
         return not self == other
-
-    # ACCESSORS ================================================================
-
-    @property
-    def plot(self):
-        return plot_acc.PortfolioPlotter(self)
-
-    @property
-    def prices(self):
-        return prices_acc.PricesAccessor(self)
-
-    @property
-    def ereturns(self):
-        return ereturns_acc.ExpectedReturnsAccessor(self)
-
-    @property
-    def covariance(self):
-        return risk_acc.CovarianceAccessor(self)
-
-    @property
-    def risk(self):
-        return risk_acc.RiskAccessor(self)
-
-    @property
-    def objectives(self):
-        return objectives_acc.ObjectivesAccessor(self)
 
     # UTILS ===================================================================
     @property
@@ -223,7 +239,7 @@ class Portfolio:
 
     def as_returns(self, **kwargs):
         return pypfopt.expected_returns.returns_from_prices(
-            prices=self._pf._df, **kwargs
+            prices=self._df, **kwargs
         )
 
     # REPR ====================================================================
