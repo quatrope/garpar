@@ -43,7 +43,7 @@ class ObjectivesAccessor(aabc.AccessorABC):
     def ex_ante_tracking_error(
         self,
         *,
-        covariance="sample",
+        covariance="sample_cov",
         covariance_kw=None,
         benchmark_weights=None,
     ):
@@ -76,20 +76,23 @@ class ObjectivesAccessor(aabc.AccessorABC):
             benchmark_returns=benchmark_returns,
         )
 
-    def L2_reg(self, **kwargs):
-        return objective_functions.L2_reg(self._pf._weights, **kwargs)
-
     def pf_return(
-        self, *, expected_returns="capm", expected_returns_kw=None, **kwargs
+        self,
+        *,
+        expected_returns="capm",
+        expected_returns_kw=None,
+        negative=True,
     ):
         expected_returns = self._coerce_expected_returns(
             expected_returns, expected_returns_kw
         )
         return objective_functions.portfolio_return(
-            self._pf._weights, expected_returns=expected_returns, **kwargs
+            self._pf._weights, expected_returns=expected_returns, negative=True
         )
 
-    def pf_variance(self, covariance="sample", covariance_kw=None, **kwargs):
+    def pf_variance(
+        self, covariance="sample_cov", covariance_kw=None, **kwargs
+    ):
         cov_matrix = self._coerce_covariance_matrix(covariance, covariance_kw)
         return objective_functions.portfolio_variance(
             self._pf._weights, cov_matrix=cov_matrix, **kwargs
@@ -99,7 +102,7 @@ class ObjectivesAccessor(aabc.AccessorABC):
         self,
         *,
         expected_returns="capm",
-        covariance="sample",
+        covariance="sample_cov",
         risk_aversion=0.5,
         expected_returns_kw=None,
         covariance_kw=None,
@@ -122,7 +125,7 @@ class ObjectivesAccessor(aabc.AccessorABC):
         self,
         *,
         expected_returns="capm",
-        covariance="sample",
+        covariance="sample_cov",
         expected_returns_kw=None,
         covariance_kw=None,
         **kwargs,
@@ -136,11 +139,4 @@ class ObjectivesAccessor(aabc.AccessorABC):
             expected_returns=expected_returns,
             cov_matrix=cov_matrix,
             **kwargs,
-        )
-
-    def transaction_cost(self, *, w_prev=None, **kwargs):
-        w_prev = self._coerce_weights(w_prev)
-
-        return objective_functions.transaction_cost(
-            self._pf._weights, w_prev=w_prev, **kwargs
         )

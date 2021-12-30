@@ -8,6 +8,7 @@ from collections.abc import Mapping
 
 import attr
 from attr import validators as vldt
+from cvxpy import utilities
 
 import numpy as np
 
@@ -19,8 +20,8 @@ import pyquery as pq
 import pypfopt
 
 from . import (
+    covcorr_acc,
     ereturns_acc,
-    cov_acc,
     objectives_acc,
     plot_acc,
     prices_acc,
@@ -100,7 +101,12 @@ class Portfolio:
 
     covariance = attr.field(
         init=False,
-        default=attr.Factory(cov_acc.CovarianceAccessor, takes_self=True),
+        default=attr.Factory(covcorr_acc.CovarianceAccessor, takes_self=True),
+    )
+
+    correlation = attr.field(
+        init=False,
+        default=attr.Factory(covcorr_acc.CorrelationAccessor, takes_self=True),
     )
 
     risk = attr.field(
@@ -108,12 +114,14 @@ class Portfolio:
         default=attr.Factory(risk_acc.RiskAccessor, takes_self=True),
     )
 
-    objectives = attr.field(
+    utilities = attr.field(
         init=False,
         default=attr.Factory(
             objectives_acc.ObjectivesAccessor, takes_self=True
         ),
     )
+
+
 
     _VALID_METADATA = {
         "entropy": (float, np.floating),
@@ -220,12 +228,11 @@ class Portfolio:
 
         return pd.concat([weights_df, md_df, df])
 
-    def prune(self, threshold=0.0, decimals=3):
+    def prune(self, threshold=0.0001):
         """Corta el portfolio en un umbral de pesos."""
         weights = self.weights
 
-        atol = 10 ** (-decimals)
-        mask = ~np.isclose(weights, threshold, atol=atol, rtol=1)
+        mask = np.greater_equal(weights, threshold)
 
         pruned_df = self._df[weights[mask].index].copy()
         pruned_weights = weights[mask].to_numpy()
