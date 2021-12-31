@@ -99,6 +99,8 @@ def test_RissoNormal_make_market():
 
     csv_code = "\n".join([line.strip() for line in csv_code.splitlines()])
     expected = pd.read_csv(StringIO(csv_code))
+    expected.columns.name = "Stocks"
+    expected.index.name = "Days"
 
     maker = risso.RissoNormal(random_state=42, mu=0.0, sigma=1.0)
     result = maker.make_portfolio(

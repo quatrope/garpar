@@ -9,6 +9,7 @@
 # IMPORTS
 # =============================================================================
 
+from numpy import exp
 from garpar.optimize import BlackLitterman, Markowitz, OptimizerABC
 from garpar.optimize import mean_historical_return, sample_covariance
 from garpar.core import Portfolio
@@ -37,6 +38,7 @@ def test_mean_historical_return():
 
     result = mean_historical_return(pf)
     expected = pd.Series({"stock0": 46.121466, "stock1": 287.122362})
+    expected.index.name = "Stocks"
 
     pdt.assert_series_equal(result, expected)
 
@@ -61,6 +63,8 @@ def test_sample_covariance():
         },
         index=["stock0", "stock1"],
     )
+    expected.index.name = "Stocks"
+    expected.columns.name = "Stocks"
 
     pdt.assert_frame_equal(result, expected)
 
@@ -128,6 +132,8 @@ def test_Markowitz_serialize():
 
     # Expectations
     expected_mu = pd.Series({"stock0": 46.121466, "stock1": 287.122362})
+    expected_mu.index.name = "Stocks"
+
     expected_cov = pd.DataFrame(
         data={
             "stock0": [0.17805911, -0.13778805],
@@ -135,6 +141,8 @@ def test_Markowitz_serialize():
         },
         index=["stock0", "stock1"],
     )
+    expected_cov.index.name = "Stocks"
+    expected_cov.columns.name = "Stocks"
 
     # Assert
     assert isinstance(result, dict)
@@ -168,6 +176,7 @@ def test_Markowitz_deserialize():
     expected_weights = pd.Series(
         data={"stock0": 0.45966836, "stock1": 0.54033164}, name="Weights"
     )
+    expected_weights.index.name = "Stocks"
 
     # Assert everything is the same except for the weights
     assert result is not pf
@@ -201,6 +210,7 @@ def test_Markowitz_optimize():
     expected_weights = pd.Series(
         data={"stock0": 0.45966836, "stock1": 0.54033164}, name="Weights"
     )
+    expected_weights.index.name = "Stocks"
 
     # Assert everything is the same except for the weights
     assert result is not pf
@@ -257,6 +267,8 @@ def test_BlackLitterman_serialize():
         },
         index=["stock0", "stock1"],
     )
+    expected_cov.index.name = "Stocks"
+    expected_cov.columns.name = "Stocks"
 
     # Assert
     assert isinstance(result, dict)
@@ -294,6 +306,7 @@ def test_BlackLitterman_deserialize():
     expected_weights = pd.Series(
         data={"stock0": 0.45157882, "stock1": 0.54842117}, name="Weights"
     )
+    expected_weights.index.name = "Stocks"
 
     # Assert everything is the same except for the weights
     assert result is not pf
@@ -328,6 +341,7 @@ def test_BlackLitterman_optimize():
     expected_weights = pd.Series(
         data={"stock0": 0.45157882, "stock1": 0.54842117}, name="Weights"
     )
+    expected_weights.index.name = "Stocks"
 
     # Assert everything is the same except for the weights
     assert result is not pf
