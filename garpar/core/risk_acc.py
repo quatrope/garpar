@@ -15,7 +15,7 @@ from ..utils import aabc
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
 
-    _DEFAULT_KIND = "beta"
+    _DEFAULT_KIND = "pf_beta"
 
     _pf = attr.ib()
 
@@ -102,12 +102,10 @@ class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
         )
         return pf_return / pf_beta
 
-    def pf_variance(
-        self, covariance="sample_cov", covariance_kw=None, **kwargs
-    ):
+    def pf_var(self, covariance="sample_cov", covariance_kw=None):
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
         return objective_functions.portfolio_variance(
-            self._pf._weights, cov_matrix=cov_matrix, **kwargs
+            self._pf._weights, cov_matrix=cov_matrix
         )
 
     def sharpe(

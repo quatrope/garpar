@@ -26,6 +26,7 @@ from . import (
     prices_acc,
     risk_acc,
     utilities_acc,
+    div_acc,
 )
 
 
@@ -117,6 +118,11 @@ class Portfolio:
     utilities = attr.field(
         init=False,
         default=attr.Factory(utilities_acc.UtilitiesAccessor, takes_self=True),
+    )
+
+    div = attr.field(
+        init=False,
+        default=attr.Factory(div_acc.DiversificationAccessor, takes_self=True),
     )
 
     _VALID_METADATA = {
