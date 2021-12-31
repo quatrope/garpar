@@ -22,10 +22,10 @@ import pypfopt
 from . import (
     covcorr_acc,
     ereturns_acc,
-    objectives_acc,
     plot_acc,
     prices_acc,
     risk_acc,
+    utilities_acc,
 )
 
 
@@ -117,7 +117,7 @@ class Portfolio:
     utilities = attr.field(
         init=False,
         default=attr.Factory(
-            objectives_acc.ObjectivesAccessor, takes_self=True
+            utilities_acc.UtilitiesAccessor, takes_self=True
         ),
     )
 

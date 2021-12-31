@@ -1,6 +1,8 @@
 import attr
 
-from pypfopt import expected_returns, risk_models
+import numpy as np
+
+from pypfopt import risk_models
 
 from ..utils import aabc
 

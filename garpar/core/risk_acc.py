@@ -2,8 +2,9 @@ import attr
 
 import numpy as np
 
-from pypfopt import expected_returns
+from pypfopt import expected_returns, objective_functions
 
+from . import mixins
 from ..utils import aabc
 
 # =============================================================================
@@ -12,20 +13,11 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class RiskAccessor(aabc.AccessorABC):
+class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
 
     _DEFAULT_KIND = "beta"
 
     _pf = attr.ib()
-
-    def _coerce_weights(self, weights):
-        if weights is None:
-            cols = len(self._pf.stocks)
-            weights = np.full(cols, 1.0 / cols, dtype=float)
-        elif isinstance(weights, type(self._pf)):
-            # validar que sean los mismos activos
-            weights = weights._weights
-        return np.asarray(weights)
 
     def _returns_df(self, market_prices, log_returns):
         prices = self._pf._df
@@ -69,7 +61,7 @@ class RiskAccessor(aabc.AccessorABC):
 
     def pf_beta(self, *, benchmark_weights=None, log_returns=False):
 
-        benchmark_weights = self._coerce_weights(benchmark_weights)
+        benchmark_weights = self.coerce_weights(benchmark_weights)
 
         day_weighted_prices = np.sum(self._pf._df * self._pf._weights, axis=1)
         returns, mkt_col = self._returns_df(
@@ -109,3 +101,31 @@ class RiskAccessor(aabc.AccessorABC):
             benchmark_weights=benchmark_weights, log_returns=log_returns
         )
         return pf_return / pf_beta
+
+    def pf_variance(
+        self, covariance="sample_cov", covariance_kw=None, **kwargs
+    ):
+        cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
+        return objective_functions.portfolio_variance(
+            self._pf._weights, cov_matrix=cov_matrix, **kwargs
+        )
+
+    def sharpe(
+        self,
+        *,
+        expected_returns="capm",
+        covariance="sample_cov",
+        expected_returns_kw=None,
+        covariance_kw=None,
+        **kwargs,
+    ):
+        expected_returns = self.coerce_expected_returns(
+            expected_returns, expected_returns_kw
+        )
+        cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
+        return objective_functions.sharpe_ratio(
+            self._pf._weights,
+            expected_returns=expected_returns,
+            cov_matrix=cov_matrix,
+            **kwargs,
+        )
