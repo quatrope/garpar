@@ -116,12 +116,8 @@ class Portfolio:
 
     utilities = attr.field(
         init=False,
-        default=attr.Factory(
-            utilities_acc.UtilitiesAccessor, takes_self=True
-        ),
+        default=attr.Factory(utilities_acc.UtilitiesAccessor, takes_self=True),
     )
-
-
 
     _VALID_METADATA = {
         "entropy": (float, np.floating),

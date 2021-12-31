@@ -4,7 +4,7 @@ import numpy as np
 
 from pypfopt import objective_functions
 
-from .import mixins
+from . import mixins
 from ..utils import aabc
 
 # =============================================================================
