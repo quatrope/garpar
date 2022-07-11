@@ -2,7 +2,11 @@ import attr
 
 import numpy as np
 
+import pandas as pd
+
 from pypfopt import expected_returns, objective_functions
+
+import scipy.stats
 
 from . import mixins
 from ..utils import aabc
@@ -127,3 +131,16 @@ class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
             cov_matrix=cov_matrix,
             **kwargs,
         )
+
+    def value(self, *, lb=0, ub=-1):
+        window = self._pf._df.iloc[lb:ub]
+        mean_diff = window.iloc[0] - window.mean()
+
+        normal_mean_diff = mean_diff / mean_diff.std()
+
+        probs = scipy.stats.norm.cdf(normal_mean_diff)
+
+        return pd.Series(probs, index=self._pf.stocks)
+
+
+
