@@ -34,12 +34,10 @@ def argnearest(arr, v):
 # =============================================================================
 
 
-class RissoMixin:
-    def risso_candidate_entropy(self, windows_size):
-        if windows_size <= 0:
-            raise ValueError("'windows_size' must be > 0")
+class RissoABC(PortfolioMakerABC):
+    def candidate_entropy(self, window_size):
 
-        loss_probability = np.linspace(0.0, 1.0, num=windows_size + 1)
+        loss_probability = np.linspace(0.0, 1.0, num=window_size + 1)
 
         # Se corrigen probabilidades porque el cálculo de la entropía trabaja
         # con logaritmo y el logaritmo de cero no puede calcularse
@@ -54,17 +52,15 @@ class RissoMixin:
         modificated_entropy = -1 * (first_part + second_part)
         return modificated_entropy, loss_probability
 
-    def get_window_loss_probability(self, windows_size, entropy):
-        h_candidates, loss_probabilities = self.risso_candidate_entropy(
-            windows_size
-        )
+    def get_window_loss_probability(self, window_size, entropy):
+        h_candidates, loss_probabilities = self.candidate_entropy(window_size)
         idx = argnearest(h_candidates, entropy)
         loss_probability = loss_probabilities[idx]
 
         return loss_probability
 
 
-class RissoNormal(RissoMixin, PortfolioMakerABC):
+class RissoNormal(RissoABC):
 
     mu = hparam(default=0, converter=float)
     sigma = hparam(default=0.2, converter=float)
@@ -78,7 +74,7 @@ class RissoNormal(RissoMixin, PortfolioMakerABC):
         return 0.0 if new_price < 0 else new_price
 
 
-class RissoLevyStable(RissoMixin, PortfolioMakerABC):
+class RissoLevyStable(RissoABC):
 
     alpha = hparam(default=1.6411, converter=float)
     beta = hparam(default=-0.0126, converter=float)

@@ -21,8 +21,8 @@ import pytest
 
 def test_MarketMakerABC_not_implementhed_methods():
     class Foo(base.PortfolioMakerABC):
-        def get_window_loss_probability(self, windows_size, entropy):
-            super().get_window_loss_probability(windows_size, entropy)
+        def get_window_loss_probability(self, window_size, entropy):
+            super().get_window_loss_probability(window_size, entropy)
 
         def make_stock_price(self, price, loss, random):
             super().make_stock_price(price, loss, random)
@@ -41,7 +41,7 @@ def test_MarketMakerABC_repr():
 
         faa = base.hparam(default=12)
 
-        def get_window_loss_probability(self, windows_size, entropy):
+        def get_window_loss_probability(self, window_size, entropy):
             ...
 
         def make_stock_price(self, price, loss, random):
@@ -54,7 +54,7 @@ def test_MarketMakerABC_repr():
 
 def test_MarketMakerABC_bad_coherce_price():
     class Foo(base.PortfolioMakerABC):
-        def get_window_loss_probability(self, windows_size, entropy):
+        def get_window_loss_probability(self, window_size, entropy):
             ...
 
         def make_stock_price(self, price, loss, random):
@@ -64,6 +64,21 @@ def test_MarketMakerABC_bad_coherce_price():
 
     with pytest.raises(ValueError):
         maker.make_portfolio(price=[100])
+
+
+@pytest.mark.parametrize("window_size", [0, -1])
+def test_MarketMakerABC_bad_window_size(window_size):
+    class Foo(base.PortfolioMakerABC):
+        def get_window_loss_probability(self, window_size, entropy):
+            ...
+
+        def make_stock_price(self, price, loss, random):
+            ...
+
+    maker = Foo()
+
+    with pytest.raises(ValueError):
+        maker.make_portfolio(window_size=window_size)
 
 
 @pytest.mark.parametrize(
@@ -80,7 +95,7 @@ def test_MarketMakerABC_bad_coherce_price():
 )
 def test_MarketMakerABC_get_loss_sequence(days, sequence):
     class Foo(base.PortfolioMakerABC):
-        def get_window_loss_probability(self, windows_size, entropy):
+        def get_window_loss_probability(self, window_size, entropy):
             ...
 
         def make_stock_price(self, price, loss, random):
@@ -88,7 +103,7 @@ def test_MarketMakerABC_get_loss_sequence(days, sequence):
 
     maker = Foo(random_state=10)
 
-    result = maker.get_loss_sequence(
+    result = maker._make_loss_sequence(
         loss_probability=0.33,
         days=days,
         random=maker.random_state,

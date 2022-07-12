@@ -103,9 +103,7 @@ class DiversificationAccessor(aabc.AccessorABC, mixins.CoercerMixin):
         weights = self._pf.scale_weights().weights
         returns = self._pf.as_returns()
 
-        diffentropy_kw = (
-            {"window_length": 4} if diffentropy_kw is None else diffentropy_kw
-        )
+        diffentropy_kw = {} if diffentropy_kw is None else diffentropy_kw
         X_diff_entropy = scipy.stats.differential_entropy(returns)
 
         exp_wH = np.exp(np.sum(weights * X_diff_entropy))

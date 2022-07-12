@@ -193,7 +193,7 @@ class PortfolioPlotter(aabc.AccessorABC):
 
         """
         data, title = self._wdf()
-        ax = sns.boxplot(data=data ** kwargs)
+        ax = sns.boxplot(data=data**kwargs)
         ax.set_title(title)
         return ax
 
@@ -247,7 +247,7 @@ class PortfolioPlotter(aabc.AccessorABC):
 
         """
         data, title = self._wdf()
-        ax = sns.kdeplot(data=data ** kwargs)
+        ax = sns.kdeplot(data=data**kwargs)
         ax.set_title(title)
         return ax
 

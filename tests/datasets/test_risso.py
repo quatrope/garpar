@@ -31,7 +31,7 @@ def test_risso_argnearest():
 
 
 @pytest.mark.parametrize(
-    "windows_size, h",
+    "window_size, h",
     [
         (1, [0.0, 0.0]),
         (2, [0.0, 1.0, 0.0]),
@@ -42,17 +42,10 @@ def test_risso_argnearest():
         (7, [0.0, 0.59167, 0.86312, 0.98522, 0.98522, 0.86312, 0.59167, 0.0]),
     ],
 )
-def test_RissoNormal_candidate_entropy(windows_size, h):
+def test_RissoNormal_candidate_entropy(window_size, h):
     maker = risso.RissoNormal()
-    me, _ = maker.risso_candidate_entropy(windows_size)
+    me, _ = maker.candidate_entropy(window_size)
     assert np.allclose(me, h, atol=1e-05)
-
-
-@pytest.mark.parametrize("windows_size", [0, -1])
-def test_RissoNormal_candidate_entropy_le0(windows_size):
-    maker = risso.RissoNormal()
-    with pytest.raises(ValueError):
-        maker.risso_candidate_entropy(windows_size)
 
 
 def test_RissoNormal_make_stock_price():
@@ -64,7 +57,7 @@ def test_RissoNormal_make_stock_price():
 
 
 @pytest.mark.parametrize(
-    "windows_size, loss_prob",
+    "window_size, loss_prob",
     [
         (1, 0.0),
         (2, 0.0),
@@ -75,9 +68,9 @@ def test_RissoNormal_make_stock_price():
         (7, 0.14286),
     ],
 )
-def test_RissoNormal_window_loss_probability(windows_size, loss_prob):
+def test_RissoNormal_window_loss_probability(window_size, loss_prob):
     maker = risso.RissoNormal()
-    result = maker.get_window_loss_probability(windows_size, 0.5)
+    result = maker.get_window_loss_probability(window_size, 0.5)
     assert np.allclose(result, loss_prob, atol=1e-05)
 
 

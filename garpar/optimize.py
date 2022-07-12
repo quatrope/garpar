@@ -42,6 +42,11 @@ class OptimizerABC(ModelABC):
         raise NotImplementedError()
 
 
+# =============================================================================
+# OPTIMIZER
+# =============================================================================
+
+
 class Markowitz(OptimizerABC):
 
     weight_bounds = hparam(default=(0, 1))
