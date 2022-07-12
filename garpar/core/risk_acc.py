@@ -132,8 +132,12 @@ class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
             **kwargs,
         )
 
-    def value(self, *, lb=0, ub=-1):
-        window = self._pf._df.iloc[lb:ub]
+    def value(self, *, lb=None, ub=-1):
+
+        lb = p._df.index[0] if lb is None else int(lb)
+
+        window = self._pf._df.loc[lb:ub]
+
         mean_diff = window.iloc[0] - window.mean()
 
         normal_mean_diff = mean_diff / mean_diff.std()
@@ -141,6 +145,3 @@ class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
         probs = scipy.stats.norm.cdf(normal_mean_diff)
 
         return pd.Series(probs, index=self._pf.stocks)
-
-
-

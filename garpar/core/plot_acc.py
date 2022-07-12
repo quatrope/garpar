@@ -41,6 +41,8 @@ class PortfolioPlotter(aabc.AccessorABC):
         # proxy to access the dataframe with the weights
         return self._pf.weights.to_frame(), "Weights"
 
+    # PLOTS ===================================================================
+
     def line(self, returns=False, **kwargs):
         data, title = self._ddf(returns=returns)
         ax = sns.lineplot(data=data, **kwargs)
