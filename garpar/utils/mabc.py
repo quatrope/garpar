@@ -1,3 +1,4 @@
+from socket import INADDR_LOOPBACK
 import attr
 
 from abc import ABCMeta, abstractmethod  # noqa
@@ -9,7 +10,7 @@ MPROPERTY_METADATA_FLAG = "__mproperty__"
 MODEL_CONFIG = "__model_cls_config__"
 
 
-def hparam(default, **kwargs):
+def hparam(**kwargs):
     """Create a hyper parameter for market maker.
 
     By design decision, hyper-parameter is required to have a sensitive default
@@ -17,8 +18,6 @@ def hparam(default, **kwargs):
 
     Parameters
     ----------
-    default :
-        Sensitive default value of the hyper-parameter.
     **kwargs :
         Additional keyword arguments are passed and are documented in
         ``attr.ib()``.
@@ -33,7 +32,11 @@ def hparam(default, **kwargs):
     """
     metadata = kwargs.pop("metadata", {})
     metadata[HPARAM_METADATA_FLAG] = True
-    return attr.ib(default, metadata=metadata, kw_only=True, **kwargs)
+    return attr.ib(
+        metadata=metadata,
+        kw_only=True,
+        **kwargs,
+    )
 
 
 def mproperty(**kwargs):
@@ -85,7 +88,16 @@ class ModelABC(metaclass=ABCMeta):
 
         """
         model_config = getattr(cls, MODEL_CONFIG)
-        return attr.s(maybe_cls=cls, **model_config)
+        acls = attr.s(maybe_cls=cls, **model_config)
+
+        for fname, field in attr.fields_dict(acls).items():
+            if (
+                field.metadata.get(HPARAM_METADATA_FLAG)
+                and field.default is attr.NOTHING
+            ):
+                raise ValueError(f"hparam '{fname}' must have a default")
+
+        return acls
 
     def __repr__(self):
         """x.__repr__() <==> repr(x)."""

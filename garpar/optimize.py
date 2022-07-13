@@ -4,23 +4,10 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-from pypfopt import EfficientFrontier, expected_returns, risk_models
-from pypfopt.black_litterman import BlackLittermanModel
+import pypfopt
 
 from .core import Portfolio
 from .utils.mabc import ModelABC, abstractmethod, hparam
-
-# =============================================================================
-# PYPORTFOLIO WRAPPER FUNCTIONS
-# =============================================================================
-
-
-def mean_historical_return(portfolio):
-    return expected_returns.mean_historical_return(portfolio._df)
-
-
-def sample_covariance(portfolio):
-    return risk_models.sample_cov(portfolio._df)
 
 
 # =============================================================================
@@ -29,13 +16,7 @@ def sample_covariance(portfolio):
 
 
 class OptimizerABC(ModelABC):
-    @abstractmethod
-    def serialize(self, port):
-        raise NotImplementedError()
 
-    @abstractmethod
-    def deserialize(self, port, weights):
-        raise NotImplementedError()
 
     @abstractmethod
     def optimize(self, port):
@@ -52,9 +33,15 @@ class Markowitz(OptimizerABC):
     weight_bounds = hparam(default=(0, 1))
     market_neutral = hparam(default=False)
 
+    returns = hparam(default="mah")
+    returns_kw = hparam(factory=dict)
+
+    covariance = hparam(default="sample_cov")
+    covariance_kw = hparam(factory=dict)
+
     def serialize(self, port):
-        mu = mean_historical_return(port)
-        cov = sample_covariance(port)
+        mu = port.ereturns(self.returns, **self.returns_kw)
+        cov = port.covariance(self.covariance, **self.covariance_kw)
         return {
             "expected_returns": mu,
             "cov_matrix": cov,
@@ -68,7 +55,8 @@ class Markowitz(OptimizerABC):
     def optimize(self, port, target_return):
         kwargs = self.serialize(port)
 
-        ef = EfficientFrontier(**kwargs)
+        ef = pypfopt.EfficientFrontier(**kwargs)
+
         weights = ef.efficient_return(target_return, self.market_neutral)
 
         return self.deserialize(port, weights)
@@ -80,9 +68,11 @@ class BlackLitterman(OptimizerABC):
     absolute_views = hparam(default=None)
     P = hparam(default=None)
     Q = hparam(default=None)
+    covariance = hparam(default="sample_cov")
+    covariance_kw = hparam(factory=dict)
 
     def serialize(self, port):
-        cov = sample_covariance(port)
+        cov = port.covariance(self.covariance, **self.covariance_kw)
         return {
             "cov_matrix": cov,
             "pi": self.prior,
@@ -98,7 +88,7 @@ class BlackLitterman(OptimizerABC):
     def optimize(self, port, risk_aversion=None):
         kwargs = self.serialize(port)
 
-        blm = BlackLittermanModel(**kwargs)
+        blm = pypfopt.BlackLittermanModel(**kwargs)
         weights = blm.bl_weights(risk_aversion)
 
         return self.deserialize(port, weights)
