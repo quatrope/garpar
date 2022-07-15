@@ -132,16 +132,24 @@ class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
             **kwargs,
         )
 
-    def value(self, *, lb=None, ub=-1):
+    def value(self, *, alpha=0.05):
+        def value_at_risk(x):
+            a = np.array(x, ndmin=2)
+            if a.shape[0] == 1 and a.shape[1] > 1:
+                a = a.T
+            if a.shape[0] > 1 and a.shape[1] > 1:
+                raise ValueError("returns must have Tx1 size")
 
-        lb = p._df.index[0] if lb is None else int(lb)
+            sorted_a = np.sort(a, axis=0)
+            index = int(np.ceil(alpha * len(sorted_a)) - 1)
+            value = -sorted_a[index]
+            value = np.array(value).item()
 
-        window = self._pf._df.loc[lb:ub]
+            return value
 
-        mean_diff = window.iloc[0] - window.mean()
+        returns = self._pf.as_returns()
 
-        normal_mean_diff = mean_diff / mean_diff.std()
+        var = returns.apply(value_at_risk, axis="rows")
+        var.name = "VaR"
 
-        probs = scipy.stats.norm.cdf(normal_mean_diff)
-
-        return pd.Series(probs, index=self._pf.stocks)
+        return var
