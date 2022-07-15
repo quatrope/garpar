@@ -161,3 +161,7 @@ class PortfolioMakerABC(ModelABC):
             entropy=entropy,
             window_size=window_size,
         )
+
+
+def load_merval2021_2022(imputation=None):
+    pass
