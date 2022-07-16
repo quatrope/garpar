@@ -128,6 +128,9 @@ class Portfolio:
     _VALID_METADATA = {
         "entropy": (float, np.floating),
         "window_size": (int, np.integer),
+        "imputation": object,
+        "description": str,
+        "title": str,
     }
 
     def __attrs_post_init__(self):
@@ -182,6 +185,16 @@ class Portfolio:
 
     def __ne__(self, other):
         return not self == other
+
+    def __getitem__(self, key):
+        df = self._df.__getitem__(key)
+        if isinstance(df, pd.Series):
+            df = df.to_frame()
+
+        weights = self.weights
+        weights = weights[weights.index.isin(df.columns)].to_numpy()
+
+        return Portfolio.from_dfkws(df=df, weights=weights, **self.metadata)
 
     # UTILS ===================================================================
     @property

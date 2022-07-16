@@ -30,7 +30,7 @@ def argnearest(arr, v):
 
 
 # =============================================================================
-# NORMAL
+# BASE
 # =============================================================================
 
 
@@ -60,6 +60,9 @@ class RissoABC(PortfolioMakerABC):
         return loss_probability
 
 
+# =============================================================================
+# NORMAL
+# =============================================================================
 class RissoNormal(RissoABC):
 
     mu = hparam(default=0, converter=float)
@@ -72,6 +75,42 @@ class RissoNormal(RissoABC):
         day_return = sign * np.abs(random.normal(self.mu, self.sigma))
         new_price = price + day_return
         return 0.0 if new_price < 0 else new_price
+
+
+def make_risso_normal(
+    mu=0,
+    sigma=0.2,
+    window_size=5,
+    days=365,
+    entropy=0.5,
+    stock_number=10,
+    price=100,
+    weights=None,
+    random_state=None,
+    n_jobs=None,
+    verbose=0,
+):
+    maker = RissoNormal(
+        mu=mu,
+        sigma=sigma,
+        random_state=random_state,
+        n_jobs=n_jobs,
+        verbose=verbose,
+    )
+    port = maker.make_portfolio(
+        window_size=window_size,
+        days=days,
+        entropy=entropy,
+        stock_number=stock_number,
+        price=price,
+        weights=weights,
+    )
+    return port
+
+
+# =============================================================================
+# LEVY STABLE
+# =============================================================================
 
 
 class RissoLevyStable(RissoABC):
@@ -96,3 +135,38 @@ class RissoLevyStable(RissoABC):
         day_return = sign * np.abs(self.levy_stable_.rvs(random_state=random))
         new_price = price + day_return
         return 0.0 if new_price < 0 else new_price
+
+
+def make_risso_levy_stable(
+    alpha=1.6411,
+    beta=-0.0126,
+    mu=0.0005,
+    sigma=0.005,
+    window_size=5,
+    days=365,
+    entropy=0.5,
+    stock_number=10,
+    price=100,
+    weights=None,
+    random_state=None,
+    n_jobs=None,
+    verbose=0,
+):
+    maker = RissoLevyStable(
+        alpha=alpha,
+        beta=beta,
+        mu=mu,
+        sigma=sigma,
+        random_state=random_state,
+        n_jobs=n_jobs,
+        verbose=verbose,
+    )
+    port = maker.make_portfolio(
+        window_size=window_size,
+        days=days,
+        entropy=entropy,
+        stock_number=stock_number,
+        price=price,
+        weights=weights,
+    )
+    return port
