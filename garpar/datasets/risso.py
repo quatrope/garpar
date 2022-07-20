@@ -93,6 +93,7 @@ def make_risso_normal(
     maker = RissoNormal(
         mu=mu,
         sigma=sigma,
+        entropy=entropy,
         random_state=random_state,
         n_jobs=n_jobs,
         verbose=verbose,
@@ -100,7 +101,6 @@ def make_risso_normal(
     port = maker.make_portfolio(
         window_size=window_size,
         days=days,
-        entropy=entropy,
         stock_number=stock_number,
         price=price,
         weights=weights,
@@ -157,6 +157,7 @@ def make_risso_levy_stable(
         beta=beta,
         mu=mu,
         sigma=sigma,
+        entropy=entropy,
         random_state=random_state,
         n_jobs=n_jobs,
         verbose=verbose,
@@ -164,7 +165,6 @@ def make_risso_levy_stable(
     port = maker.make_portfolio(
         window_size=window_size,
         days=days,
-        entropy=entropy,
         stock_number=stock_number,
         price=price,
         weights=weights,

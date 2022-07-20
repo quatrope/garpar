@@ -202,6 +202,12 @@ class Portfolio:
         return pd.Series(self._weights, index=self._df.columns, name="Weights")
 
     @property
+    def delisted(self):
+        dlstd = (self._df == 0.0).any(axis="rows")
+        dlstd.name = "Delisted"
+        return dlstd
+
+    @property
     def stocks(self):
         return self._df.columns.copy()
 
@@ -243,7 +249,7 @@ class Portfolio:
 
         return pd.concat([weights_df, md_df, df])
 
-    def prune(self, threshold=0.0001):
+    def wprune(self, threshold=0.0001):
         """Corta el portfolio en un umbral de pesos."""
         weights = self.weights
 
@@ -251,6 +257,16 @@ class Portfolio:
 
         pruned_df = self._df[weights[mask].index].copy()
         pruned_weights = weights[mask].to_numpy()
+
+        return Portfolio(pruned_df, pruned_weights)
+
+    def dprune(self):
+        dlstd = self.delisted
+
+        not_delisted = dlstd.index[~dlstd]
+
+        pruned_df = self._df[not_delisted].copy()
+        pruned_weights = self.weights[not_delisted].to_numpy()
 
         return Portfolio(pruned_df, pruned_weights)
 
@@ -263,6 +279,9 @@ class Portfolio:
         return pypfopt.expected_returns.returns_from_prices(
             prices=self._df, **kwargs
         )
+
+    def as_prices(self):
+        return self._df.copy()
 
     # REPR ====================================================================
 

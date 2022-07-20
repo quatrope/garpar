@@ -29,6 +29,7 @@ class PortfolioMakerABC(ModelABC):
     )
     n_jobs = hparam(default=None)
     verbose = hparam(default=0)
+    entropy = hparam(default=0.5)
 
     # Abstract=================================================================
 
@@ -120,7 +121,6 @@ class PortfolioMakerABC(ModelABC):
         *,
         window_size=5,
         days=365,
-        entropy=0.5,
         stock_number=10,
         price=100,
         weights=None,
@@ -131,7 +131,7 @@ class PortfolioMakerABC(ModelABC):
         initial_prices = self._coerce_price(stock_number, price)
 
         loss_probability = self.get_window_loss_probability(
-            window_size, entropy
+            window_size, self.entropy
         )
 
         seeds = self._make_stocks_seeds(stock_number)
@@ -159,7 +159,7 @@ class PortfolioMakerABC(ModelABC):
         return pf.Portfolio.from_dfkws(
             stock_df,
             weights=weights,
-            entropy=entropy,
+            entropy=self.entropy,
             window_size=window_size,
         )
 
