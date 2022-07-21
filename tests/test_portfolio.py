@@ -45,8 +45,28 @@ def test_Portfolio_creation():
 
     assert manual_pf == mk_pf
     assert repr(mk_pf.metadata) == "metadata(entropy, windows_size)"
-    assert not set(["entropy", "windows_size"]).difference(dir(mk_pf.metadata))
-    assert len(manual_pf) == len(mk_pf) == 5
+
+
+def test_Portfolio_len():
+
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        entropy=0.5,
+        windows_size=5,
+    )
+
+    assert len(pf) == 5
+
+
+def test_Portfolio_dir():
+
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        entropy=0.5,
+        windows_size=5,
+    )
+
+    assert not set(["entropy", "windows_size"]).difference(dir(pf.metadata))
 
 
 def test_Portfolio_copy_eq_ne():
@@ -341,6 +361,5 @@ def test_Portfolio_repr_html():
     )
 
     result = pf._repr_html_()
-
 
     assert result == expected
