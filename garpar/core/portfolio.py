@@ -127,7 +127,7 @@ class Portfolio:
 
     _VALID_METADATA = {
         "entropy": (float, np.floating),
-        "window_size": (int, np.integer),
+        "windows_size": (int, np.integer),
         "imputation": object,
         "description": str,
         "title": str,
@@ -306,10 +306,12 @@ class Portfolio:
         max_cols = pd.get_option("display.max_columns")
         max_colwidth = pd.get_option("display.max_colwidth")
 
-        if pd.get_option("display.expand_frame_repr"):
-            width, _ = pd.io.formats.console.get_console_size()
-        else:
-            width = None
+        width, _ = (
+            pd.io.formats.console.get_console_size()
+            if pd.get_option("display.expand_frame_repr")
+            else (None, None)
+        )
+
         original_string = self._df.to_string(
             max_rows=max_rows,
             min_rows=min_rows,
