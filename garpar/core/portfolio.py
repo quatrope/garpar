@@ -104,11 +104,14 @@ class Portfolio:
         init=False,
         default=attr.Factory(covcorr_acc.CovarianceAccessor, takes_self=True),
     )
+    cov = covariance
 
     correlation = attr.field(
         init=False,
         default=attr.Factory(covcorr_acc.CorrelationAccessor, takes_self=True),
     )
+
+    corr = correlation
 
     risk = attr.field(
         init=False,
@@ -127,7 +130,7 @@ class Portfolio:
 
     _VALID_METADATA = {
         "entropy": (float, np.floating),
-        "windows_size": (int, np.integer),
+        "window_size": (int, np.integer),
         "imputation": object,
         "description": str,
         "title": str,

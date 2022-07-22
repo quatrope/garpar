@@ -43,19 +43,19 @@ class PortfolioMakerABC(ModelABC):
 
     # INTERNAL ================================================================
 
-    def _coerce_price(self, stock_number, prices):
+    def _coerce_price(self, stocks, prices):
         if isinstance(prices, (int, float)):
-            prices = np.full(stock_number, prices, dtype=float)
-        elif len(prices) != stock_number:
-            raise ValueError(f"The q of prices must be equal {stock_number}")
+            prices = np.full(stocks, prices, dtype=float)
+        elif len(prices) != stocks:
+            raise ValueError(f"The q of prices must be equal {stocks}")
         return np.asarray(prices, dtype=float)
 
-    def _make_stocks_seeds(self, stock_number):
+    def _make_stocks_seeds(self, stocks):
         iinfo = np.iinfo(int)
         seeds = self.random_state.integers(
             low=0,
             high=iinfo.max,
-            size=stock_number,
+            size=stocks,
             dtype=iinfo.dtype,
             endpoint=True,
         )
@@ -121,21 +121,21 @@ class PortfolioMakerABC(ModelABC):
         *,
         window_size=5,
         days=365,
-        stock_number=10,
+        stocks=10,
         price=100,
         weights=None,
     ):
         if window_size <= 0:
             raise ValueError("'window_size' must be > 0")
 
-        initial_prices = self._coerce_price(stock_number, price)
+        initial_prices = self._coerce_price(stocks, price)
 
         loss_probability = self.get_window_loss_probability(
             window_size, self.entropy
         )
 
-        seeds = self._make_stocks_seeds(stock_number)
-        idx_prices_seed = zip(range(stock_number), initial_prices, seeds)
+        seeds = self._make_stocks_seeds(stocks)
+        idx_prices_seed = zip(range(stocks), initial_prices, seeds)
 
         with joblib.Parallel(
             n_jobs=self.n_jobs,
