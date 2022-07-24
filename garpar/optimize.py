@@ -6,6 +6,8 @@
 
 import pypfopt
 
+import numpy as np
+
 from .core import Portfolio
 from .utils.mabc import ModelABC, abstractmethod, hparam
 
@@ -17,7 +19,7 @@ from .utils.mabc import ModelABC, abstractmethod, hparam
 
 class OptimizerABC(ModelABC):
     @abstractmethod
-    def optimize(self, port):
+    def optimize(self, pf):
         raise NotImplementedError()
 
 
@@ -31,6 +33,8 @@ class Markowitz(OptimizerABC):
     integer programming for portfolio optimization. Springer and EURO: The
     Association of European Operational Research Societies"""
 
+    target_return = hparam(default=None)
+
     weight_bounds = hparam(default=(0, 1))
     market_neutral = hparam(default=False)
 
@@ -40,30 +44,43 @@ class Markowitz(OptimizerABC):
     covariance = hparam(default="sample_cov")
     covariance_kw = hparam(factory=dict)
 
-    def serialize(self, port):
-        mu = port.ereturns(self.returns, **self.returns_kw)
-        cov = port.covariance(self.covariance, **self.covariance_kw)
+    def _to_kwargs(self, pf):
+        mu = pf.ereturns(self.returns, **self.returns_kw)
+        cov = pf.covariance(self.covariance, **self.covariance_kw)
         return {
             "expected_returns": mu,
             "cov_matrix": cov,
             "weight_bounds": self.weight_bounds,
         }
 
-    def deserialize(self, port, weights):
-        weights_list = [weights[stock] for stock in port._df.columns]
-        return Portfolio(port._df.copy(), weights_list)
+    def _coerce_target_return(self, port):
+        if self.target_return is None:
+            returns = port.as_prices().to_numpy()
+            return np.min(returns)
+        return self.target_return
 
-    def optimize(self, port, target_return):
-        kwargs = self.serialize(port)
+    def optimize(self, pf):
+        kwargs = self._to_kwargs(pf)
+        target_return = self._coerce_target_return(pf)
 
         ef = pypfopt.EfficientFrontier(**kwargs)
 
         weights = ef.efficient_return(target_return, self.market_neutral)
 
-        return self.deserialize(port, weights)
+        weights_list = [weights[stock] for stock in pf._df.columns]
+
+        metadata = dict(pf.metadata)
+        metadata.update(
+            optimizer=type(self).__name__,
+            optimizer_kwargs={"target_return": target_return},
+        )
+
+        return Portfolio.from_dfkws(pf._df.copy(), weights_list, **metadata)
 
 
 class BlackLitterman(OptimizerABC):
+
+    risk_aversion = hparam(default=None)
 
     prior = hparam(default="equal")
     absolute_views = hparam(default=None)
@@ -72,8 +89,8 @@ class BlackLitterman(OptimizerABC):
     covariance = hparam(default="sample_cov")
     covariance_kw = hparam(factory=dict)
 
-    def serialize(self, port):
-        cov = port.covariance(self.covariance, **self.covariance_kw)
+    def _to_kwargs(self, pf):
+        cov = pf.covariance(self.covariance, **self.covariance_kw)
         return {
             "cov_matrix": cov,
             "pi": self.prior,
@@ -82,14 +99,19 @@ class BlackLitterman(OptimizerABC):
             "Q": self.Q,
         }
 
-    def deserialize(self, port, weights):
-        weights_list = [weights[stock] for stock in port._df.columns]
-        return Portfolio(port._df.copy(), weights_list)
-
-    def optimize(self, port, risk_aversion=None):
-        kwargs = self.serialize(port)
+    def optimize(self, pf):
+        kwargs = self._to_kwargs(pf)
+        risk_aversion = self.risk_aversion
 
         blm = pypfopt.BlackLittermanModel(**kwargs)
         weights = blm.bl_weights(risk_aversion)
 
-        return self.deserialize(port, weights)
+        weights_list = [weights[stock] for stock in pf._df.columns]
+
+        metadata = dict(pf.metadata)
+        metadata.update(
+            optimizer=type(self).__name__,
+            optimizer_kwargs={"risk_aversion": risk_aversion},
+        )
+
+        return Portfolio.from_dfkws(pf._df.copy(), weights_list, **metadata)

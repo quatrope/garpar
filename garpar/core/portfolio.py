@@ -134,6 +134,8 @@ class Portfolio:
         "imputation": object,
         "description": str,
         "title": str,
+        "optimizer": str,
+        "optimizer_kwargs": dict,
     }
 
     def __attrs_post_init__(self):
