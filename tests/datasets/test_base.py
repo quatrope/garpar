@@ -39,7 +39,7 @@ def test_PorfolioMakerABC_get_window_loss_probability_not_implemethed():
 def test_PorfolioMakerABC_make_stock_price_not_implemethed():
     class PortfolioMaker(datasets.PortfolioMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
-            return .2
+            return 0.2
 
         def make_stock_price(self, price, loss, random):
             return super().make_stock_price(price, loss, random)
@@ -53,7 +53,7 @@ def test_PorfolioMakerABC_make_stock_price_not_implemethed():
 def test_PorfolioMakerABC_window_size_le_0():
     class PortfolioMaker(datasets.PortfolioMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
-            return .2
+            return 0.2
 
         def make_stock_price(self, price, loss, random):
             return price
@@ -67,7 +67,7 @@ def test_PorfolioMakerABC_window_size_le_0():
 def test_PorfolioMakerABC_window_days_lt_window_size():
     class PortfolioMaker(datasets.PortfolioMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
-            return .2
+            return 0.2
 
         def make_stock_price(self, price, loss, random):
             return price
@@ -81,7 +81,7 @@ def test_PorfolioMakerABC_window_days_lt_window_size():
 def test_PorfolioMakerABC_invalid_number_of_prices():
     class PortfolioMaker(datasets.PortfolioMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
-            return .2
+            return 0.2
 
         def make_stock_price(self, price, loss, random):
             return price

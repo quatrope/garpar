@@ -32,8 +32,9 @@ import garpar as gp
 # =============================================================================
 
 DISTRIBUTION = {
-    "normal": gp.datasets.make_risso_normal,
     "levy-stable": gp.datasets.make_risso_levy_stable,
+    "normal": gp.datasets.make_risso_normal,
+    "uniform": gp.datasets.make_risso_uniform,
 }
 
 # =============================================================================
@@ -48,6 +49,7 @@ def risso_portfolio():
         kwargs.setdefault("stocks", 10)
         maker = DISTRIBUTION[distribution]
         return maker(**kwargs)
+
     return make
 
 
@@ -56,4 +58,5 @@ def risso_portfolio_values(risso_portfolio):
     def make(*, distribution="normal", **kwargs):
         portfolio = risso_portfolio(distribution=distribution, **kwargs)
         return portfolio._df, portfolio._weights
+
     return make
