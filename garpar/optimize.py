@@ -29,9 +29,13 @@ class OptimizerABC(ModelABC):
 
 
 class Markowitz(OptimizerABC):
-    """Clasic Model Markowitz 1952 in Mansini, R., WLodzimierz, O., and Speranza, M. G. (2015). Linear and mixed
+    """Clasic Markowitz model.
+
+    This method implements the  Clasic Model Markowitz 1952 in Mansini, R., WLodzimierz, O., and Speranza, M. G. (2015). Linear and mixed
     integer programming for portfolio optimization. Springer and EURO: The
-    Association of European Operational Research Societies"""
+    Association of European Operational Research Societies
+
+    """
 
     target_return = hparam(default=None)
 

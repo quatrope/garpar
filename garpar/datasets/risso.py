@@ -63,6 +63,45 @@ class RissoABC(PortfolioMakerABC):
 # =============================================================================
 # NORMAL
 # =============================================================================
+class RissoUniform(RissoABC):
+
+    low = hparam(default=1, converter=float)
+    high = hparam(default=5, converter=float)
+
+    def make_stock_price(self, price, loss, random):
+        if price == 0.0:
+            return 0.0
+        sign = -1 if loss else 1
+        day_return = sign * np.abs(random.uniform(self.low, self.high))
+        new_price = price + day_return
+        return 0.0 if new_price < 0 else new_price
+
+
+def make_risso_uniform(
+    low=1,
+    high=5,
+    *,
+    entropy=0.5,
+    random_state=None,
+    n_jobs=None,
+    verbose=0,
+    **kwargs,
+):
+    maker = RissoUniform(
+        low=low,
+        high=high,
+        entropy=entropy,
+        random_state=random_state,
+        n_jobs=n_jobs,
+        verbose=verbose,
+    )
+    port = maker.make_portfolio(**kwargs)
+    return port
+
+
+# =============================================================================
+# NORMAL
+# =============================================================================
 class RissoNormal(RissoABC):
 
     mu = hparam(default=0, converter=float)
@@ -80,15 +119,12 @@ class RissoNormal(RissoABC):
 def make_risso_normal(
     mu=0,
     sigma=0.2,
-    window_size=5,
-    days=365,
+    *,
     entropy=0.5,
-    stocks=10,
-    price=100,
-    weights=None,
     random_state=None,
     n_jobs=None,
     verbose=0,
+    **kwargs,
 ):
     maker = RissoNormal(
         mu=mu,
@@ -98,13 +134,7 @@ def make_risso_normal(
         n_jobs=n_jobs,
         verbose=verbose,
     )
-    port = maker.make_portfolio(
-        window_size=window_size,
-        days=days,
-        stocks=stocks,
-        price=price,
-        weights=weights,
-    )
+    port = maker.make_portfolio(**kwargs)
     return port
 
 
@@ -142,15 +172,12 @@ def make_risso_levy_stable(
     beta=-0.0126,
     mu=0.0005,
     sigma=0.005,
-    window_size=5,
-    days=365,
+    *,
     entropy=0.5,
-    stocks=10,
-    price=100,
-    weights=None,
     random_state=None,
     n_jobs=None,
     verbose=0,
+    **kwargs,
 ):
     maker = RissoLevyStable(
         alpha=alpha,
@@ -162,11 +189,5 @@ def make_risso_levy_stable(
         n_jobs=n_jobs,
         verbose=verbose,
     )
-    port = maker.make_portfolio(
-        window_size=window_size,
-        days=days,
-        stocks=stocks,
-        price=price,
-        weights=weights,
-    )
+    port = maker.make_portfolio(**kwargs)
     return port

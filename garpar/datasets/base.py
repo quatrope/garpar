@@ -7,7 +7,6 @@
 # =============================================================================
 # IMPORTS
 # =============================================================================
-import abc
 
 import joblib
 
@@ -15,7 +14,6 @@ import numpy as np
 
 import pandas as pd
 
-from . import data
 from ..core import portfolio as pf
 from ..utils.mabc import ModelABC, hparam, abstractmethod
 
@@ -127,6 +125,8 @@ class PortfolioMakerABC(ModelABC):
     ):
         if window_size <= 0:
             raise ValueError("'window_size' must be > 0")
+        if days < window_size:
+            raise ValueError("'days' must be >= window_size")
 
         initial_prices = self._coerce_price(stocks, price)
 
@@ -162,30 +162,3 @@ class PortfolioMakerABC(ModelABC):
             entropy=self.entropy,
             window_size=window_size,
         )
-
-
-def load_merval2021_2022(imputation="ffill"):
-    """Argentine stock market prices (MERVAL) from 2020 to early 2022. \
-    Unlisted shares were eliminated.
-
-    """
-    df = pd.read_csv(data.DATA_PATH / "merval2020-2022.csv", index_col="Days")
-    df.index = pd.to_datetime(df.index)
-
-    if imputation in ("backfill", "bfill", "pad", "ffill"):
-        df.fillna(method=imputation, inplace=True)
-    else:
-        df.fillna(value=imputation, inplace=True)
-
-    port = pf.Portfolio.from_dfkws(
-        df,
-        weights=None,
-        title="Merval 2020-2022",
-        imputation=imputation,
-        description=(
-            "Argentine stock market prices (MERVAL) from 2020 to early 2022. "
-            "Unlisted shares were eliminated."
-        ),
-    )
-
-    return port
