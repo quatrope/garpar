@@ -4,7 +4,7 @@ import numpy as np
 
 from pypfopt import objective_functions
 
-from . import mixins
+from . import _mixins
 from ..utils import aabc
 
 # =============================================================================
@@ -13,7 +13,7 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class UtilitiesAccessor(aabc.AccessorABC, mixins.CoercerMixin):
+class UtilitiesAccessor(aabc.AccessorABC, _mixins.CoercerMixin):
 
     _DEFAULT_KIND = "pf_return"
 

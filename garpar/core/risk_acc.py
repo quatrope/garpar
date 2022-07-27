@@ -8,7 +8,7 @@ from pypfopt import expected_returns, objective_functions
 
 import scipy.stats
 
-from . import mixins
+from . import _mixins
 from ..utils import aabc
 
 # =============================================================================
@@ -17,7 +17,7 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class RiskAccessor(aabc.AccessorABC, mixins.CoercerMixin):
+class RiskAccessor(aabc.AccessorABC, _mixins.CoercerMixin):
 
     _DEFAULT_KIND = "pf_beta"
 

@@ -45,7 +45,7 @@ class PortfolioMakerABC(ModelABC):
         if isinstance(prices, (int, float)):
             prices = np.full(stocks, prices, dtype=float)
         elif len(prices) != stocks:
-            raise ValueError(f"The q of prices must be equal {stocks}")
+            raise ValueError(f"The number of prices must be equal {stocks}")
         return np.asarray(prices, dtype=float)
 
     def _make_stocks_seeds(self, stocks):

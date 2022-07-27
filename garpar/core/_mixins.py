@@ -1,5 +1,7 @@
 import numpy as np
 
+import pandas as pd
+
 
 class CoercerMixin:
     """Esta clase contiene utilidades funcionales a varios accersors"""
@@ -23,8 +25,19 @@ class CoercerMixin:
             cols = len(self._pf.stocks)
             weights = np.full(cols, 1.0 / cols, dtype=float)
         elif isinstance(weights, type(self._pf)):
-            # validar que sean los mismos activos
-            weights = weights._weights
+
+            bench_weights = weights.weights
+
+            stocks = self._pf.stocks
+            # creamos un lugar donde poner los precios en el mismo orden que
+            # en el pf original
+            weights = pd.Series(
+                np.zeros(len(stocks), dtype=float), index=stocks
+            )
+
+            for stock in stocks:
+                weights[stock] = bench_weights[stock]
+
         return np.asarray(weights) if asarray else weights
 
     def coerce_covariance_matrix(self, cov_matrix, kw, asarray=True):
