@@ -8,14 +8,11 @@ from collections.abc import Mapping
 
 import attr
 from attr import validators as vldt
-from cvxpy import utilities
 
 import numpy as np
 
 import pandas as pd
 from pandas.io.formats import format as pd_fmt
-
-import pyquery as pq
 
 import pypfopt
 
@@ -308,6 +305,7 @@ class Portfolio:
     def __repr__(self):
 
         header = self._get_sw_headers()
+        dimensions = self._get_dxs_dimensions()
 
         with (
             df_temporal_header(self._df, header) as df,
@@ -315,10 +313,8 @@ class Portfolio:
         ):
             original_string = repr(df)
 
-        dim = self._get_dxs_dimensions()
-
         # add dimension
-        string = f"{original_string}\nPortfolio [{dim}]"
+        string = f"{original_string}\nPortfolio [{dimensions}]"
 
         return string
 
@@ -327,7 +323,7 @@ class Portfolio:
 
         Mainly for IPython notebook.
         """
-        header = dict(zip(self._df.columns, self._get_sw_headers()))
+        header = self._get_sw_headers()
         dimensions = self._get_dxs_dimensions()
 
         # retrieve the original string
@@ -345,10 +341,4 @@ class Portfolio:
             "</div>"
         )
 
-        # now we need to change the table header
-        d = pq.PyQuery(html)
-        for th in d("div.portfolio table.dataframe > thead > tr > th"):
-            stock = th.text
-            th.text = header.get(stock, stock)
-
-        return str(d)
+        return html

@@ -308,9 +308,9 @@ def test_Portfolio_repr_html():
     )
 
     expected = (
-        '<div class="portfolio">\n'
+        "<div class='portfolio'>\n"
         "<div>\n"
-        '<style scoped="">\n'
+        "<style scoped>\n"
         "    .dataframe tbody tr th:only-of-type {\n"
         "        vertical-align: middle;\n"
         "    }\n"
@@ -331,7 +331,7 @@ def test_Portfolio_repr_html():
         "    </tr>\n"
         "    <tr>\n"
         "      <th>Days</th>\n"
-        "      <th/>\n"
+        "      <th></th>\n"
         "    </tr>\n"
         "  </thead>\n"
         "  <tbody>\n"
@@ -357,7 +357,7 @@ def test_Portfolio_repr_html():
         "    </tr>\n"
         "  </tbody>\n"
         "</table>\n"
-        '</div><em class="portfolio-dim">5 days x 1 stocks</em>\n'
+        "</div><em class='portfolio-dim'>5 days x 1 stocks</em>\n"
         "</div>"
     )
 
