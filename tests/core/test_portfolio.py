@@ -188,17 +188,18 @@ def test_Portfolio_repr():
     )
 
     expected = (
-        "Stocks stock[\u2696 1.0]\n"
-        "Days               \n"
-        "0                 1\n"
-        "1                 2\n"
-        "2                 3\n"
-        "3                 4\n"
-        "4                 5\n"
+        "Stocks  stock[\u2696 1.0]\n"
+        "Days                \n"
+        "0                  1\n"
+        "1                  2\n"
+        "2                  3\n"
+        "3                  4\n"
+        "4                  5\n"
         "Portfolio [5 days x 1 stocks]"
     )
 
     result = repr(pf)
+
     assert result == expected
 
 

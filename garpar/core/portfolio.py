@@ -28,7 +28,7 @@ from . import (
     utilities_acc,
     div_acc,
 )
-
+from ..utils.cmanagers import df_temporal_header
 
 # =============================================================================
 # CONSTANTS
@@ -306,26 +306,14 @@ class Portfolio:
         return dim
 
     def __repr__(self):
-        max_rows = pd.get_option("display.max_rows")
-        min_rows = pd.get_option("display.min_rows")
-        max_cols = pd.get_option("display.max_columns")
-        max_colwidth = pd.get_option("display.max_colwidth")
 
-        width, _ = (
-            pd.io.formats.console.get_console_size()
-            if pd.get_option("display.expand_frame_repr")
-            else (None, None)
-        )
+        header = self._get_sw_headers()
 
-        original_string = self._df.to_string(
-            max_rows=max_rows,
-            min_rows=min_rows,
-            max_cols=max_cols,
-            line_width=width,
-            max_colwidth=max_colwidth,
-            show_dimensions=False,
-            header=self._get_sw_headers(),
-        )
+        with (
+            df_temporal_header(self._df, header) as df,
+            pd.option_context("display.show_dimensions", False),
+        ):
+            original_string = repr(df)
 
         dim = self._get_dxs_dimensions()
 
@@ -343,8 +331,11 @@ class Portfolio:
         dimensions = self._get_dxs_dimensions()
 
         # retrieve the original string
-        with pd.option_context("display.show_dimensions", False):
-            original_html = self._df._repr_html_()
+        with (
+            df_temporal_header(self._df, header) as df,
+            pd.option_context("display.show_dimensions", False),
+        ):
+            original_html = df._repr_html_()
 
         # add dimension
         html = (
