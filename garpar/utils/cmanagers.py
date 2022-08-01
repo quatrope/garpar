@@ -16,11 +16,12 @@ import contextlib
 
 
 @contextlib.contextmanager
-def df_temporal_header(df, header):
+def df_temporal_header(df, header, name=None):
     original_header = df.columns
+    name = original_header.name if name is None else name
     try:
         df.columns = header
-        df.columns.name = original_header.name
+        df.columns.name = name
         yield df
     finally:
         df.columns = original_header
