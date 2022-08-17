@@ -8,7 +8,7 @@
 """Different utilities to create or load portfolios."""
 
 from .base import PortfolioMakerABC, hparam
-from .data import load_merval2021_2022
+from .data import load_MERVAL
 from .risso import (
     RissoLevyStable,
     RissoNormal,
@@ -27,5 +27,5 @@ __all__ = [
     "make_risso_normal",
     "make_risso_levy_stable",
     "make_risso_uniform",
-    "load_merval2021_2022",
+    "load_MERVAL",
 ]
