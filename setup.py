@@ -26,7 +26,6 @@ REQUIREMENTS = [
     "joblib",
     "PyPortfolioOpt",
     "scikit-learn",
-    "python-dateutil",
 ]
 
 

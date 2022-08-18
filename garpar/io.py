@@ -114,7 +114,7 @@ def to_hdf5(path_or_stream, portfolio, group="portfolio", **kwargs):
             f"{group}_weights", data=portfolio._weights, **kwargs
         )
 
-        grp.attrs.update(portfolio.metadata)
+        grp.attrs.update(portfolio.metadata.to_dict())
 
         h5.attrs.update(h5_metadata)
 

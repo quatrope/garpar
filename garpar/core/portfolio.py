@@ -39,35 +39,35 @@ GARPAR_METADATA_KEY = "__garpar_metadata__"
 # =============================================================================
 
 
-@attr.s(slots=True, frozen=True, repr=False)
-class Metadata(Mapping):
+def _oiinstance(types):
+    """Optional is instance."""
+    return vldt.optional(vldt.instance_of(types))
 
-    _data = attr.ib(validator=vldt.instance_of(Mapping))
 
-    def __len__(self):
-        return len(self._data)
+@attr.s(slots=True, frozen=True)
+class Metadata:
 
-    def __getitem__(self, k):
-        return self._data[k]
+    entropy = attr.ib(
+        validator=_oiinstance((float, np.floating)), default=None
+    )
+    window_size = attr.ib(
+        validator=_oiinstance((int, np.integer)), default=None
+    )
+    imputation = attr.ib(validator=_oiinstance(object), default=None)
+    description = attr.ib(validator=_oiinstance(str), default=None)
+    title = attr.ib(validator=_oiinstance(str), default=None)
+    optimizer = attr.ib(validator=_oiinstance(str), default=None)
+    optimizer_kwargs = attr.ib(validator=_oiinstance(dict), default=None)
 
-    def __iter__(self):
-        return iter(self._data)
+    def to_dict(self):
+        full_data = attr.asdict(self)
+        data = {k: v for k, v in full_data.items() if v is not None}
+        return data
 
-    def __dir__(self):
-        return super().__dir__() + list(self._data)
-
-    def __repr__(self):
-        content = ", ".join(self._data)
-        return f"metadata({content})"
-
-    def __getattr__(self, a):
-        try:
-            return self[a]
-        except KeyError:
-            raise AttributeError(a)
-
-    def copy(self):
-        return Metadata(data=self._data.copy())
+    def copy(self, **kwargs):
+        data = self.to_dict()
+        data.update(kwargs)
+        return Metadata(**data)
 
 
 # =============================================================================
@@ -80,60 +80,50 @@ class Portfolio:
     _weights = attr.ib(converter=np.asarray)
 
     # accessors
-    plot = attr.field(
+    plot = attr.ib(
         init=False,
         default=attr.Factory(plot_acc.PortfolioPlotter, takes_self=True),
     )
 
-    prices = attr.field(
+    prices = attr.ib(
         init=False,
         default=attr.Factory(prices_acc.PricesAccessor, takes_self=True),
     )
 
-    ereturns = attr.field(
+    ereturns = attr.ib(
         init=False,
         default=attr.Factory(
             ereturns_acc.ExpectedReturnsAccessor, takes_self=True
         ),
     )
 
-    covariance = attr.field(
+    covariance = attr.ib(
         init=False,
         default=attr.Factory(covcorr_acc.CovarianceAccessor, takes_self=True),
     )
     cov = covariance
 
-    correlation = attr.field(
+    correlation = attr.ib(
         init=False,
         default=attr.Factory(covcorr_acc.CorrelationAccessor, takes_self=True),
     )
 
     corr = correlation
 
-    risk = attr.field(
+    risk = attr.ib(
         init=False,
         default=attr.Factory(risk_acc.RiskAccessor, takes_self=True),
     )
 
-    utilities = attr.field(
+    utilities = attr.ib(
         init=False,
         default=attr.Factory(utilities_acc.UtilitiesAccessor, takes_self=True),
     )
 
-    div = attr.field(
+    div = attr.ib(
         init=False,
         default=attr.Factory(div_acc.DiversificationAccessor, takes_self=True),
     )
-
-    _VALID_METADATA = {
-        "entropy": (float, np.floating),
-        "window_size": (int, np.integer),
-        "imputation": object,
-        "description": str,
-        "title": str,
-        "optimizer": str,
-        "optimizer_kwargs": dict,
-    }
 
     def __attrs_post_init__(self):
         if len(self._weights) != len(self._df.columns):
@@ -147,15 +137,6 @@ class Portfolio:
                 f"{GARPAR_METADATA_KEY} metadata must be an instance of "
                 "'garpar.portfolio.Metadata'"
             )
-        for k, v in metadata.items():
-            if k not in self._VALID_METADATA:
-                raise ValueError(f"Invalid metadata '{k}'")
-            mtype = self._VALID_METADATA[k]
-            if not isinstance(v, mtype):
-                raise TypeError(
-                    f"Metadata '{k}' must be instance of {mtype}. "
-                    f"Found {type(v)}"
-                )
 
         self._df.columns.name = "Stocks"
         self._df.index.name = "Days"
@@ -164,7 +145,7 @@ class Portfolio:
     @classmethod
     def from_dfkws(cls, df, weights=None, **kwargs):
         dfwmd = df.copy()
-        dfwmd.attrs[GARPAR_METADATA_KEY] = Metadata(kwargs)
+        dfwmd.attrs[GARPAR_METADATA_KEY] = Metadata(**kwargs)
 
         if weights is None or not hasattr(weights, "__iter__"):
             cols = len(dfwmd.columns)
@@ -221,11 +202,11 @@ class Portfolio:
     def shape(self):
         return self._df.shape
 
-    def copy(self):
-        copy_df = self._df.copy(deep=True)
-        copy_weights = self._weights.copy()
+    def copy(self, df=None, weights=None, **metadata):
+        copy_df = (self._df if df is None else df).copy(deep=True)
+        copy_weights = (self._weights if weights is None else weights).copy()
 
-        metadata = copy_df.attrs[GARPAR_METADATA_KEY].copy()
+        metadata = copy_df.attrs[GARPAR_METADATA_KEY].copy(**metadata)
         copy_df.attrs[GARPAR_METADATA_KEY] = metadata
 
         return Portfolio(copy_df, weights=copy_weights)
@@ -243,7 +224,8 @@ class Portfolio:
         weights_df.index = ["Weights"]
 
         # creating metadata rows in another df with the same columns of df
-        metadata = df.attrs.pop(GARPAR_METADATA_KEY)
+        metadata = df.attrs.pop(GARPAR_METADATA_KEY).to_dict()
+
         mindex, mcols = sorted(metadata), {}
         for col in df.columns:
             mcols[col] = [metadata[mdi] for mdi in mindex]
