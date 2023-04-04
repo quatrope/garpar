@@ -75,4 +75,5 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     packages=find_packages(".", include=["garpar*"]),
+    include_package_data=True,
 )
