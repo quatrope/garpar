@@ -40,7 +40,8 @@ class RiskAccessor(aabc.AccessorABC, _mixins.CoercerMixin):
 
         # Use the equally-weighted dataset as a proxy for the market
         if market_returns is None:
-            # Append market return to right and compute sample covariance matrix
+            # Append market return to right and
+            # compute sample covariance matrix
             returns[mkt_col] = returns.mean(axis=1)
         else:
             market_returns.name = mkt_col

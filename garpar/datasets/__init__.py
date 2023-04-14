@@ -7,7 +7,7 @@
 
 """Different utilities to create or load portfolios."""
 
-from .base import PortfolioMakerABC, hparam
+from .base import PortfolioMakerABC, RandomEntropyPortfolioMakerABC
 from .data import load_MERVAL
 from .risso import (
     RissoLevyStable,
@@ -17,10 +17,12 @@ from .risso import (
     make_risso_normal,
     make_risso_levy_stable,
 )
+from .multi import MultiSector
 
 __all__ = [
     "PortfolioMakerABC",
-    "hparam",
+    "RandomEntropyPortfolioMakerABC",
+    "MultiSector",
     "RissoLevyStable",
     "RissoNormal",
     "RissoUniform",

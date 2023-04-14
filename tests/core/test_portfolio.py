@@ -12,7 +12,7 @@
 from io import BytesIO
 
 from garpar.io import read_hdf5
-from garpar.core.portfolio import GARPAR_METADATA_KEY, Metadata, Portfolio
+from garpar.core.portfolio import GARPAR_METADATA_KEY, Bunch, Portfolio
 
 import numpy as np
 
@@ -29,7 +29,7 @@ import pytest
 def test_Portfolio_creation():
 
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
-    df.attrs[GARPAR_METADATA_KEY] = Metadata(
+    df.attrs[GARPAR_METADATA_KEY] = Bunch(
         {
             "entropy": 0.5,
             "window_size": 5,

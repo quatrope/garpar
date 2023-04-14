@@ -1,7 +1,5 @@
 import attr
 
-import numpy as np
-
 from pypfopt import objective_functions
 
 from . import _mixins

@@ -12,8 +12,8 @@ import numpy as np
 
 import scipy.stats
 
-from .base import PortfolioMakerABC
-from ..utils.mabc import hparam, mproperty
+from .base import RandomEntropyPortfolioMakerABC
+from ..utils import mabc
 
 
 # =============================================================================
@@ -32,9 +32,8 @@ def argnearest(arr, v):
 # =============================================================================
 
 
-class RissoABC(PortfolioMakerABC):
+class RissoABC(RandomEntropyPortfolioMakerABC):
     def candidate_entropy(self, window_size):
-
         loss_probability = np.linspace(0.0, 1.0, num=window_size + 1)
 
         # Se corrigen probabilidades porque el cálculo de la entropía trabaja
@@ -62,9 +61,8 @@ class RissoABC(PortfolioMakerABC):
 # NORMAL
 # =============================================================================
 class RissoUniform(RissoABC):
-
-    low = hparam(default=1, converter=float)
-    high = hparam(default=5, converter=float)
+    low = mabc.hparam(default=1, converter=float)
+    high = mabc.hparam(default=5, converter=float)
 
     def make_stock_price(self, price, loss, random):
         if price == 0.0:
@@ -101,9 +99,8 @@ def make_risso_uniform(
 # NORMAL
 # =============================================================================
 class RissoNormal(RissoABC):
-
-    mu = hparam(default=0, converter=float)
-    sigma = hparam(default=0.2, converter=float)
+    mu = mabc.hparam(default=0, converter=float)
+    sigma = mabc.hparam(default=0.2, converter=float)
 
     def make_stock_price(self, price, loss, random):
         if price == 0.0:
@@ -142,13 +139,12 @@ def make_risso_normal(
 
 
 class RissoLevyStable(RissoABC):
+    alpha = mabc.hparam(default=1.6411, converter=float)
+    beta = mabc.hparam(default=-0.0126, converter=float)
+    mu = mabc.hparam(default=0.0005, converter=float)  # loc
+    sigma = mabc.hparam(default=0.005, converter=float)  # scale
 
-    alpha = hparam(default=1.6411, converter=float)
-    beta = hparam(default=-0.0126, converter=float)
-    mu = hparam(default=0.0005, converter=float)  # loc
-    sigma = hparam(default=0.005, converter=float)  # scale
-
-    levy_stable_ = mproperty(repr=False)
+    levy_stable_ = mabc.mproperty(repr=False)
 
     @levy_stable_.default
     def _levy_stable_default(self):

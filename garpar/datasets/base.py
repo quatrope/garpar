@@ -8,34 +8,74 @@
 # IMPORTS
 # =============================================================================
 
+import inspect
+
 import joblib
 
 import numpy as np
 
 import pandas as pd
 
-from ..core import portfolio as pf
-from ..utils.mabc import ModelABC, hparam, abstractmethod
+from ..core.portfolio import Portfolio
+from ..utils import mabc
 
 # =============================================================================
 # BASE
 # =============================================================================
-class PortfolioMakerABC(ModelABC):
 
-    random_state = hparam(
+
+class PortfolioMakerABC(mabc.ModelABC):
+    _MKPORT_SIGNATURE = {
+        "self",
+        "window_size",
+        "days",
+        "stocks",
+        "price",
+        "weights",
+    }
+
+    def __init_subclass__(cls):
+        mpsig = inspect.signature(cls.make_portfolio)
+        missing_args = cls._MKPORT_SIGNATURE.difference(mpsig.parameters)
+        if missing_args:
+            missing_args_str = ", ".join(missing_args)
+            msg = f"Missing arguments {missing_args_str!r} in make_portfolio"
+            raise TypeError(msg)
+        return super().__init_subclass__()
+
+    @mabc.abstractmethod
+    def make_portfolio(
+        self,
+        *,
+        window_size=5,
+        days=365,
+        stocks=10,
+        price=100,
+        weights=None,
+    ):
+        raise NotImplementedError()
+
+
+# =============================================================================
+# ANOTHER BASE
+# =============================================================================
+
+
+class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
+    random_state = mabc.hparam(
         default=None, converter=np.random.default_rng, repr=False
     )
-    n_jobs = hparam(default=None)
-    verbose = hparam(default=0)
-    entropy = hparam(default=0.5)
+    n_jobs = mabc.hparam(default=None)
+    verbose = mabc.hparam(default=0)
+    entropy = mabc.hparam(default=0.5)
 
     # Abstract=================================================================
 
-    @abstractmethod
+    @mabc.abstractmethod
     def get_window_loss_probability(self, window_size, entropy):
         raise NotImplementedError()
 
-    @abstractmethod
+    @mabc.abstractmethod
     def make_stock_price(self, price, loss, random):
         raise NotImplementedError()
 
@@ -89,7 +129,6 @@ class PortfolioMakerABC(ModelABC):
         initial_price,
         random,
     ):
-
         # determinamos que dia se pierde y que dia se gana
         loss_sequence = self._make_loss_sequence(
             days, loss_probability, random
@@ -156,7 +195,7 @@ class PortfolioMakerABC(ModelABC):
 
         stock_df = pd.concat(stocks, axis=1)
 
-        return pf.Portfolio.from_dfkws(
+        return Portfolio.from_dfkws(
             stock_df,
             weights=weights,
             entropy=self.entropy,

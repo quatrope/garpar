@@ -25,7 +25,7 @@ from . import (
     utilities_acc,
     div_acc,
 )
-from ..utils.cmanagers import df_temporal_header
+from ..utils import df_temporal_header, Bunch
 
 # =============================================================================
 # CONSTANTS
@@ -35,49 +35,17 @@ GARPAR_METADATA_KEY = "__garpar_metadata__"
 
 
 # =============================================================================
-# METADATA
-# =============================================================================
-
-
-def _oiinstance(types):
-    """Optional is instance."""
-    return vldt.optional(vldt.instance_of(types))
-
-
-@attr.s(slots=True, frozen=True)
-class Metadata:
-
-    entropy = attr.ib(
-        validator=_oiinstance((float, np.floating)), default=None
-    )
-    window_size = attr.ib(
-        validator=_oiinstance((int, np.integer)), default=None
-    )
-    imputation = attr.ib(validator=_oiinstance(object), default=None)
-    description = attr.ib(validator=_oiinstance(str), default=None)
-    title = attr.ib(validator=_oiinstance(str), default=None)
-    optimizer = attr.ib(validator=_oiinstance(str), default=None)
-    optimizer_kwargs = attr.ib(validator=_oiinstance(dict), default=None)
-
-    def to_dict(self):
-        full_data = attr.asdict(self)
-        data = {k: v for k, v in full_data.items() if v is not None}
-        return data
-
-    def copy(self, **kwargs):
-        data = self.to_dict()
-        data.update(kwargs)
-        return Metadata(**data)
-
-
-# =============================================================================
 # PORTFOLIO
 # =============================================================================
 @attr.s(repr=False, cmp=False)
 class Portfolio:
-
     _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=np.asarray)
+    _entropy = attr.ib(converter=np.asarray)
+    _window_size = attr.ib(
+        converter=lambda v: (pd.NA if pd.isna(v) else int(v))
+    )
+    _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
 
     # accessors
     plot = attr.ib(
@@ -126,16 +94,10 @@ class Portfolio:
     )
 
     def __attrs_post_init__(self):
-        if len(self._weights) != len(self._df.columns):
+        if len(self._weights) != len(self._entropy) != len(self._df.columns):
             raise ValueError(
-                f"The number of weights must be the same as number of stocks"
-            )
-
-        metadata = self._df.attrs[GARPAR_METADATA_KEY]
-        if not isinstance(metadata, Metadata):
-            raise TypeError(
-                f"{GARPAR_METADATA_KEY} metadata must be an instance of "
-                "'garpar.portfolio.Metadata'"
+                "The number of weights and entropy must "
+                "be the same as number of stocks"
             )
 
         self._df.columns.name = "Stocks"
@@ -143,16 +105,30 @@ class Portfolio:
 
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
-    def from_dfkws(cls, df, weights=None, **kwargs):
-        dfwmd = df.copy()
-        dfwmd.attrs[GARPAR_METADATA_KEY] = Metadata(**kwargs)
+    def from_dfkws(
+        cls, df, weights=None, entropy=None, window_size=None, **metadata
+    ):
+        prices = df.copy()
 
         if weights is None or not hasattr(weights, "__iter__"):
-            cols = len(dfwmd.columns)
-            weights = 1.0 / cols if weights is None else weights
+            cols = len(prices.columns)
+            weights = 1.0 if weights is None else weights
             weights = np.full(cols, weights, dtype=float)
 
-        return cls(df=dfwmd, weights=weights)
+        if entropy is None or not hasattr(entropy, "__iter__"):
+            cols = len(prices.columns)
+            entropy = pd.NA if entropy is None else entropy
+            entropy = np.full(cols, entropy, dtype=object)
+
+        pf = cls(
+            df=prices,
+            weights=weights,
+            entropy=entropy,
+            window_size=window_size,
+            metadata=metadata,
+        )
+
+        return pf
 
     # INTERNALS
     def __len__(self):
@@ -162,8 +138,10 @@ class Portfolio:
         return (
             isinstance(other, type(self))
             and self._df.equals(other._df)
-            and self._df.attrs[GARPAR_METADATA_KEY]
-            == other._df.attrs[GARPAR_METADATA_KEY]
+            and np.array_equal(self._weights, other._weights, equal_nan=True)
+            and np.array_equal(self._entropy, other._entropy, equal_nan=True)
+            and self._window_size == other._window_size
+            and self._metadata == other._metadata
         )
 
     def __ne__(self, other):
@@ -177,7 +155,21 @@ class Portfolio:
         weights = self.weights
         weights = weights[weights.index.isin(df.columns)].to_numpy()
 
-        return Portfolio.from_dfkws(df=df, weights=weights, **self.metadata)
+        entropy = self.entropy
+        entropy = entropy[entropy.index.isin(df.columns)].to_numpy()
+
+        window_size = self.window_size
+        metadata = dict(self.metadata)
+
+        sliced = Portfolio.from_dfkws(
+            df=df,
+            weights=weights,
+            entropy=entropy,
+            window_size=window_size,
+            **metadata,
+        )
+
+        return sliced
 
     # UTILS ===================================================================
     @property
@@ -185,31 +177,51 @@ class Portfolio:
         return pd.Series(self._weights, index=self._df.columns, name="Weights")
 
     @property
-    def delisted(self):
-        dlstd = (self._df == 0.0).any(axis="rows")
-        dlstd.name = "Delisted"
-        return dlstd
+    def entropy(self):
+        return pd.Series(self._entropy, index=self._df.columns, name="Entropy")
 
     @property
     def stocks(self):
-        return self._df.columns.copy()
+        return self._df.columns.to_numpy()
+
+    @property
+    def stocks_number(self):
+        return len(self._df.columns)
 
     @property
     def metadata(self):
-        return self._df.attrs[GARPAR_METADATA_KEY]
+        return self._metadata
+
+    @property
+    def window_size(self):
+        return self._window_size
 
     @property
     def shape(self):
         return self._df.shape
 
-    def copy(self, df=None, weights=None, **metadata):
-        copy_df = (self._df if df is None else df).copy(deep=True)
-        copy_weights = (self._weights if weights is None else weights).copy()
+    def copy(
+        self, df=None, weights=None, entropy=None, window_size=None, **metadata
+    ):
+        new_prices_df = (self._df if df is None else df).copy(deep=True)
+        new_weights = (self._weights if weights is None else weights).copy()
+        new_entropy = (self._entropy if entropy is None else entropy).copy()
+        new_window_size = (
+            self._window_size if window_size is None else window_size
+        )
 
-        metadata = copy_df.attrs[GARPAR_METADATA_KEY].copy(**metadata)
-        copy_df.attrs[GARPAR_METADATA_KEY] = metadata
+        new_metadata = self._metadata.to_dict()
+        new_metadata.update(metadata)
 
-        return Portfolio(copy_df, weights=copy_weights)
+        new_pf = Portfolio(
+            new_prices_df,
+            weights=new_weights,
+            entropy=new_entropy,
+            window_size=new_window_size,
+            metadata=new_metadata,
+        )
+
+        return new_pf
 
     def to_hdf5(self, stream_or_buff, **kwargs):
         from .. import io
@@ -217,47 +229,65 @@ class Portfolio:
         return io.to_hdf5(stream_or_buff, self, **kwargs)
 
     def to_dataframe(self):
-        df = self._df.copy(deep=True)
+        price_df = self._df.copy(deep=True)
 
-        # transform the weitgh "series" into a compatible dataframe
+        # transform the weighs "series" into a compatible dataframe
         weights_df = self.weights.to_frame().T
         weights_df.index = ["Weights"]
 
-        # creating metadata rows in another df with the same columns of df
-        metadata = df.attrs.pop(GARPAR_METADATA_KEY).to_dict()
+        # The same for entropy
+        entropy_df = self.entropy.to_frame().T
+        entropy_df.index = ["Entropy"]
 
-        mindex, mcols = sorted(metadata), {}
-        for col in df.columns:
-            mcols[col] = [metadata[mdi] for mdi in mindex]
-        md_df = pd.DataFrame(mcols, index=mindex)
+        # window size
+        window_size = np.full(self.stocks_number, self.window_size)
+        window_size_df = pd.Series(window_size).to_frame().T
+        window_size_df.index = ["WSize"]
 
-        return pd.concat([weights_df, md_df, df])
+        # adding the metadata to the dataframe
+        metadata = self._metadata.to_dict()
 
-    def wprune(self, threshold=0.0001):
-        """Corta el portfolio en un umbral de pesos."""
-        weights = self.weights
+        # creamos el df destino
+        df = pd.concat([weights_df, entropy_df, window_size_df, price_df])
+        df.attrs.update({GARPAR_METADATA_KEY: metadata})
 
-        mask = np.greater_equal(weights, threshold)
+        return df
 
-        pruned_df = self._df[weights[mask].index].copy()
-        pruned_weights = weights[mask].to_numpy()
+    @property
+    def delisted(self):
+        dlstd = (self._df == 0.0).any(axis="rows")
+        dlstd.name = "Delisted"
+        return dlstd
 
-        return Portfolio(pruned_df, pruned_weights)
+    # def weights_prune(self, threshold=1e-4):
+    #     """Corta el portfolio en un umbral de pesos."""
+    #     weights = self.weights
 
-    def dprune(self):
-        dlstd = self.delisted
+    #     mask = np.greater_equal(weights, threshold)
 
-        not_delisted = dlstd.index[~dlstd]
+    #     pruned_df = self._df[weights[mask].index].copy()
+    #     pruned_weights = weights[mask].to_numpy()
 
-        pruned_df = self._df[not_delisted].copy()
-        pruned_weights = self.weights[not_delisted].to_numpy()
+    #     return Portfolio(pruned_df, pruned_weights)
 
-        return Portfolio(pruned_df, pruned_weights)
+    # wprune = weights_prune
 
-    def scale_weights(self):
-        """Reajusta los pesos en un rango de [0, 1]"""
-        scaled_weights = self._weights / self._weights.sum()
-        return Portfolio(self._df.copy(), scaled_weights)
+    # def delisted_prune(self):
+    #     dlstd = self.delisted
+
+    #     not_delisted = dlstd.index[~dlstd]
+
+    #     pruned_df = self._df[not_delisted].copy()
+    #     pruned_weights = self.weights[not_delisted].to_numpy()
+
+    #     return Portfolio(pruned_df, pruned_weights)
+
+    # dprune = delisted_prune
+
+    # def proportional_weights(self):
+    #     """Reajusta los pesos en un rango de [0, 1]"""
+    #     scaled_weights = self._weights / self._weights.sum()
+    #     return self.copy(weights=scaled_weights)
 
     def as_returns(self, **kwargs):
         return pypfopt.expected_returns.returns_from_prices(
@@ -285,7 +315,6 @@ class Portfolio:
         return dim
 
     def __repr__(self):
-
         header = self._get_sw_headers()
         dimensions = self._get_dxs_dimensions()
 

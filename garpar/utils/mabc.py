@@ -1,4 +1,4 @@
-from socket import INADDR_LOOPBACK
+
 import attr
 
 from abc import ABCMeta, abstractmethod  # noqa
@@ -34,7 +34,7 @@ def hparam(**kwargs):
     metadata[HPARAM_METADATA_FLAG] = True
     return attr.ib(
         metadata=metadata,
-        kw_only=True,
+        kw_only="default" in kwargs,
         **kwargs,
     )
 
@@ -89,13 +89,6 @@ class ModelABC(metaclass=ABCMeta):
         """
         model_config = getattr(cls, MODEL_CONFIG)
         acls = attr.s(maybe_cls=cls, **model_config)
-
-        for fname, field in attr.fields_dict(acls).items():
-            if (
-                field.metadata.get(HPARAM_METADATA_FLAG)
-                and field.default is attr.NOTHING
-            ):
-                raise ValueError(f"hparam '{fname}' must have a default")
 
         return acls
 
