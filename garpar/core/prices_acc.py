@@ -8,7 +8,7 @@ import attr
 
 import numpy as np
 
-from ..utils import aabc
+from ..utils import accabc
 
 # =============================================================================
 # STATISTIC ACCESSOR
@@ -16,9 +16,9 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class PricesAccessor(aabc.AccessorABC):
+class PricesAccessor(accabc.AccessorABC):
 
-    _DEFAULT_KIND = "describe"
+    _default_kind = "describe"
 
     _pf = attr.ib()
 

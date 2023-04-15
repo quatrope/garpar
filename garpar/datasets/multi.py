@@ -5,7 +5,7 @@ import pandas as pd
 from .base import PortfolioMakerABC
 
 from ..core.portfolio import Portfolio
-from ..utils import mabc
+from ..utils import mabc, Bunch
 
 
 class MultiSector(PortfolioMakerABC):
@@ -17,7 +17,8 @@ class MultiSector(PortfolioMakerABC):
             raise ValueError(f"You must provide at least 2 makers")
         for maker_name, maker in value:
             if not isinstance(maker, PortfolioMakerABC):
-                msg = f"Maker '{maker_name}' is not instance of '{PortfolioMakerABC.__name__}'"
+                cls_name = type(self).__name__
+                msg = f"Maker '{maker_name}' is not instance of '{cls_name}'"
                 raise TypeError(msg)
 
     def _coerce_price(self, stocks, prices, makers_len):
@@ -38,31 +39,40 @@ class MultiSector(PortfolioMakerABC):
         prices = self._coerce_price(stocks, price, makers_len)
 
         stocks_dfs = []
+        entropy = []
         metadata = {}
         for (maker_name, maker), maker_prices in zip(self.makers, prices):
-            maker_stocks = len(maker_prices)
+            stocks_number = len(maker_prices)
             pf = maker.make_portfolio(
                 window_size=window_size,
                 days=days,
-                stocks=maker_stocks,
+                stocks=stocks_number,
                 price=maker_prices,
                 weights=None,
             )
 
-            pf_metadata = pf.metadata
             df = pf._df.add_prefix(f"{maker_name}_")
-            stocks = df.columns.to_numpy()
-
-            metadata[maker_name] = {
-                "stocks": stocks,
-                "og_metadata": pf_metadata,
-                "stocks_number": maker_stocks,
-            }
-
             stocks_dfs.append(df)
+
+            entropy.extend(pf.entropy)
+
+            metadata[maker_name] = Bunch(
+                maker_name,
+                {
+                    "stocks": df.columns.to_numpy(),
+                    "og_metadata": pf.metadata,
+                    "stocks_number": stocks_number,
+                },
+            )
 
         # join all the dfs in one
         stock_df = pd.concat(stocks_dfs, axis="columns")
 
         # create the portfolio
-        return Portfolio.from_dfkws(stock_df, weights=weights, **metadata)
+        return Portfolio.from_dfkws(
+            stock_df,
+            weights=weights,
+            window_size=window_size,
+            entropy=entropy,
+            **metadata,
+        )

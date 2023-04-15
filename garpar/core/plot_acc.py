@@ -13,7 +13,7 @@ import attr
 
 import seaborn as sns
 
-from ..utils import aabc
+from ..utils import accabc
 
 
 # =============================================================================
@@ -22,10 +22,10 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class PortfolioPlotter(aabc.AccessorABC):
+class PortfolioPlotter(accabc.AccessorABC):
     """Make plots of Portfolio."""
 
-    _DEFAULT_KIND = "line"
+    _default_kind = "line"
 
     _pf = attr.ib()
 

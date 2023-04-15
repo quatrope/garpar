@@ -15,10 +15,17 @@
 # =============================================================================
 
 
-from . import aabc, mabc
-from .bunch import Bunch
-from .cmanagers import df_temporal_header
-from .unames import unique_names
+from . import mabc, scalers, entropy_calculators
+
+# export skcutils as own utils
+from skcriteria.utils import Bunch as _SKCBunch, df_temporal_header, accabc
+
+
+class Bunch(_SKCBunch):
+    def to_dict(self):
+        import copy  # noqa
+
+        return copy.deepcopy(self._data)
 
 
 # =============================================================================
@@ -26,9 +33,11 @@ from .unames import unique_names
 # =============================================================================
 
 __all__ = [
-    "aabc",
+    "accabc",
     "df_temporal_header",
     "Bunch",
     "unique_names",
     "mabc",
+    "scalers",
+    "entropy_calculators",
 ]

@@ -2,7 +2,7 @@ import attr
 
 from pypfopt import expected_returns, objective_functions
 
-from ..utils import aabc
+from ..utils import accabc
 
 # =============================================================================
 #
@@ -10,9 +10,9 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class ExpectedReturnsAccessor(aabc.AccessorABC):
+class ExpectedReturnsAccessor(accabc.AccessorABC):
 
-    _DEFAULT_KIND = "capm"
+    _default_kind = "capm"
 
     _pf = attr.ib()
 

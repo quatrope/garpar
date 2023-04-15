@@ -4,7 +4,6 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-from collections.abc import Mapping
 
 import attr
 from attr import validators as vldt
@@ -25,7 +24,7 @@ from . import (
     utilities_acc,
     div_acc,
 )
-from ..utils import df_temporal_header, Bunch
+from ..utils import df_temporal_header, Bunch, scalers, entropy_calculators
 
 # =============================================================================
 # CONSTANTS
@@ -171,7 +170,7 @@ class Portfolio:
 
         return sliced
 
-    # UTILS ===================================================================
+    # PROPERTIES ==============================================================
     @property
     def weights(self):
         return pd.Series(self._weights, index=self._df.columns, name="Weights")
@@ -197,11 +196,24 @@ class Portfolio:
         return self._window_size
 
     @property
+    def delisted(self):
+        dlstd = (self._df == 0.0).any(axis="rows")
+        dlstd.name = "Delisted"
+        return dlstd
+
+    @property
     def shape(self):
         return self._df.shape
 
+    # UTILS ===================================================================
     def copy(
-        self, df=None, weights=None, entropy=None, window_size=None, **metadata
+        self,
+        df=None,
+        weights=None,
+        entropy=None,
+        window_size=None,
+        preserve_old_metadata=True,
+        **metadata,
     ):
         new_prices_df = (self._df if df is None else df).copy(deep=True)
         new_weights = (self._weights if weights is None else weights).copy()
@@ -210,7 +222,9 @@ class Portfolio:
             self._window_size if window_size is None else window_size
         )
 
-        new_metadata = self._metadata.to_dict()
+        new_metadata = (
+            self._metadata.to_dict() if preserve_old_metadata else {}
+        )
         new_metadata.update(metadata)
 
         new_pf = Portfolio(
@@ -253,42 +267,6 @@ class Portfolio:
 
         return df
 
-    @property
-    def delisted(self):
-        dlstd = (self._df == 0.0).any(axis="rows")
-        dlstd.name = "Delisted"
-        return dlstd
-
-    # def weights_prune(self, threshold=1e-4):
-    #     """Corta el portfolio en un umbral de pesos."""
-    #     weights = self.weights
-
-    #     mask = np.greater_equal(weights, threshold)
-
-    #     pruned_df = self._df[weights[mask].index].copy()
-    #     pruned_weights = weights[mask].to_numpy()
-
-    #     return Portfolio(pruned_df, pruned_weights)
-
-    # wprune = weights_prune
-
-    # def delisted_prune(self):
-    #     dlstd = self.delisted
-
-    #     not_delisted = dlstd.index[~dlstd]
-
-    #     pruned_df = self._df[not_delisted].copy()
-    #     pruned_weights = self.weights[not_delisted].to_numpy()
-
-    #     return Portfolio(pruned_df, pruned_weights)
-
-    # dprune = delisted_prune
-
-    # def proportional_weights(self):
-    #     """Reajusta los pesos en un rango de [0, 1]"""
-    #     scaled_weights = self._weights / self._weights.sum()
-    #     return self.copy(weights=scaled_weights)
-
     def as_returns(self, **kwargs):
         return pypfopt.expected_returns.returns_from_prices(
             prices=self._df, **kwargs
@@ -297,21 +275,131 @@ class Portfolio:
     def as_prices(self):
         return self._df.copy()
 
+    # PRUNNING ================================================================
+
+    def weights_prune(self, threshold=1e-4):
+        """Corta el portfolio en un umbral de pesos."""
+
+        # get all data to prune
+        prices = self.as_prices()
+        weights = self.weights
+        entropy = self.entropy
+        metadata = self.metadata.to_dict()
+        window_size = self.window_size
+
+        # which criteria we want to preserve
+        mask = (weights >= threshold).index
+
+        # prune!
+        pruned_prices = prices[weights[mask].index]
+        pruned_weights = weights[mask].to_numpy()
+        pruned_entropy = entropy[mask].to_numpy()
+
+        # pruned pf
+        pruned_pf = self.from_dfkws(
+            pruned_prices,
+            weights=pruned_weights,
+            entropy=pruned_entropy,
+            window_size=window_size,
+            **metadata,
+        )
+
+        return pruned_pf
+
+    wprune = weights_prune
+
+    def delisted_prune(self):
+        # get all data to prune
+        prices = self.as_prices()
+        weights = self.weights
+        entropy = self.entropy
+        metadata = self.metadata.to_dict()
+        window_size = self.window_size
+
+        # mask of not delisted
+        dlstd = self.delisted
+        mask = dlstd.index[~dlstd]
+
+        # prune!
+        pruned_prices = prices[mask].copy()
+        pruned_weights = weights[mask].to_numpy()
+        pruned_entropy = entropy[mask].to_numpy()
+
+        # pruned pf
+        pruned_pf = self.from_dfkws(
+            pruned_prices,
+            weights=pruned_weights,
+            entropy=pruned_entropy,
+            window_size=window_size,
+            **metadata,
+        )
+
+        return pruned_pf
+
+    dprune = delisted_prune
+
+    # SCALE WEIGHTS ===========================================================
+
+    _SCALERS = {
+        "proportion": scalers.proportion_scaler,
+        "minmax": scalers.minmax_scaler,
+        "max": scalers.max_scaler,
+        "std": scalers.standar_scaler,
+    }
+
+    def scale_weights(self, scaler="proportion"):
+        """Reajusta los pesos en un rango de [0, 1]"""
+        scaler = self._SCALERS.get(scaler, scaler)
+        if not callable(scaler):
+            saler_set = set(self._SCALERS)
+            raise ValueError(
+                f"'scaler' must be a one of '{saler_set}' or callable"
+            )
+
+        scaled_weights = scaler(self.weights.to_numpy())
+        return self.copy(weights=scaled_weights)
+
+    # CALCULATE ENTROPY =======================================================
+
+    _ENTROPY_CALCULATORS = {"shannon": entropy_calculators.shannon}
+
+    def refresh_entropy(self, entropy="shannon", entropy_kws=None):
+        entropy_calc = self._ENTROPY_CALCULATORS.get(entropy, entropy)
+        if not callable(entropy_calc):
+            entropy_calc_set = set(self._ENTROPY_CALCULATORS)
+            raise ValueError(
+                f"'entropy' must be a one of '{entropy_calc_set}' or callable"
+            )
+
+        entropy_kws = {} if entropy_kws is None else entropy_kws
+
+        new_entropy = entropy_calc(
+            self.as_prices(), window_size=self.window_size, **entropy_kws
+        )
+
+        return self.copy(entropy=new_entropy)
+
     # REPR ====================================================================
 
+    def _pd_fmt_serie(self, serie):
+        arr = serie.to_numpy(na_value=np.nan)
+        return pd_fmt.format_array(arr, None, na_rep="?")
+
     def _get_sw_headers(self):
-        """Columns names with weights."""
+        """Columns names with weights and entropy."""
         headers = []
-        fmt_weights = pd_fmt.format_array(self.weights, None)
-        for c, w in zip(self._df.columns, fmt_weights):
-            header = f"{c}[\u2696{w}]"
+        fmt_weights = self._pd_fmt_serie(self.weights)
+        fmt_entropy = self._pd_fmt_serie(self.entropy)
+        for c, w, h in zip(self._df.columns, fmt_weights, fmt_entropy):
+            header = f"{c}[W{w}, H{h}]"
             headers.append(header)
         return headers
 
     def _get_dxs_dimensions(self):
         """Dimension foote with dxs (Days x Stock)."""
-        days, cols = self.shape
-        dim = f"{days} days x {cols} stocks"
+        (days, stocks), wsize = self.shape, self.window_size
+        wsize = "?" if pd.isna(wsize) else wsize
+        dim = f"{days} days x {stocks} stocks - W.Size {wsize}"
         return dim
 
     def __repr__(self):

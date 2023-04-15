@@ -4,7 +4,7 @@ import numpy as np
 
 from pypfopt import risk_models
 
-from ..utils import aabc
+from ..utils import accabc
 
 # =============================================================================
 #
@@ -12,9 +12,9 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class CovarianceAccessor(aabc.AccessorABC):
+class CovarianceAccessor(accabc.AccessorABC):
 
-    _DEFAULT_KIND = "sample_cov"
+    _default_kind = "sample_cov"
 
     _pf = attr.ib()
 
@@ -47,9 +47,9 @@ class CovarianceAccessor(aabc.AccessorABC):
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class CorrelationAccessor(aabc.AccessorABC):
+class CorrelationAccessor(accabc.AccessorABC):
 
-    _DEFAULT_KIND = "sample_corr"
+    _default_kind = "sample_corr"
 
     _pf = attr.ib()
 

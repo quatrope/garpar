@@ -7,7 +7,7 @@ import scipy.stats
 from sklearn.decomposition import PCA
 
 from . import _mixins
-from ..utils import aabc
+from ..utils import accabc
 
 # =============================================================================
 #
@@ -15,9 +15,9 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class DiversificationAccessor(aabc.AccessorABC, _mixins.CoercerMixin):
+class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
-    _DEFAULT_KIND = "ratio"
+    _default_kind = "ratio"
 
     _pf = attr.ib()
 

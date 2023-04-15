@@ -3,7 +3,7 @@ import attr
 from pypfopt import objective_functions
 
 from . import _mixins
-from ..utils import aabc
+from ..utils import accabc
 
 # =============================================================================
 #
@@ -11,9 +11,9 @@ from ..utils import aabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class UtilitiesAccessor(aabc.AccessorABC, _mixins.CoercerMixin):
+class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
-    _DEFAULT_KIND = "pf_return"
+    _default_kind = "pf_return"
 
     _pf = attr.ib()
 
