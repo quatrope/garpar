@@ -228,7 +228,7 @@ def test_Portfolio_weights_prune():
     assert np.all(ppf.stocks == ["stock0", "stock1"])
 
 
-def test_Portfolio_dprune():
+def test_Portfolio_delisted_prune():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame(
             {
@@ -265,6 +265,60 @@ def test_Portfolio_scale_weights():
 
     assert np.all(swpf.weights == [0.1, 0.75, 0.15])
     assert np.isclose(swpf.weights.sum(), 1.0)
+
+
+def test_Portfolio_scale_weights_bad_scaler():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1, 2, 3, 4, 5],
+                "stock1": [10, 20, 30, 40, 50],
+                "stock2": [10, 20, 30, 40, 50],
+            },
+        ),
+        weights=[10, 75, 15],
+        entropy=0.5,
+        window_size=5,
+    )
+
+    with pytest.raises(ValueError):
+        pf.scale_weights(scaler=None)
+
+
+def test_Portfolio_refresh_entropy():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1, 2, 3, 4, 5],
+                "stock1": [10, 20, 30, 40, 50],
+                "stock2": [10, 20, 30, 40, 50],
+            },
+        ),
+        weights=[10, 75, 15],
+        entropy=0.5,
+        window_size=None,
+    )
+
+    swpf = pf.refresh_entropy()
+    assert np.allclose(swpf.entropy.values, [1.48975, 1.48975, 1.48975])
+
+
+def test_Portfolio_refresh_entropy_bad_entropy():
+    pf = Portfolio.from_dfkws(
+        df=pd.DataFrame(
+            {
+                "stock0": [1, 2, 3, 4, 5],
+                "stock1": [10, 20, 30, 40, 50],
+                "stock2": [10, 20, 30, 40, 50],
+            },
+        ),
+        weights=[10, 75, 15],
+        entropy=0.5,
+        window_size=None,
+    )
+
+    with pytest.raises(ValueError):
+        pf.refresh_entropy(entropy=None)
 
 
 def test_Portfolio_repr_html():
