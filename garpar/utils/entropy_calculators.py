@@ -14,6 +14,3 @@ def shannon(prices, window_size=None, **kwargs):
 def risso(prices, window_size=None, **kwargs):
     if window_size is None:
         raise ValueError(f"'window_size' is required for risso entropy")
-
-
-

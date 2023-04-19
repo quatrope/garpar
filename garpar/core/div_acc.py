@@ -16,7 +16,6 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
-
     _default_kind = "ratio"
 
     _pf = attr.ib()
@@ -99,7 +98,6 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         return pf_var + entropy
 
     def delta(self, *, diffentropy_kw=None):
-
         weights = self._pf.scale_weights().weights
         returns = self._pf.as_returns()
 

@@ -18,7 +18,6 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
-
     _default_kind = "pf_beta"
 
     _pf = attr.ib()
@@ -65,7 +64,6 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         return betas
 
     def pf_beta(self, *, benchmark_weights=None, log_returns=False):
-
         benchmark_weights = self.coerce_weights(benchmark_weights)
 
         day_weighted_prices = np.sum(self._pf._df * self._pf._weights, axis=1)

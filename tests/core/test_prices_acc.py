@@ -27,7 +27,6 @@ import pytest
 @pytest.mark.parametrize("metric", prices_acc.PricesAccessor._DF_WHITELIST)
 def test_PricesAccessor_df_whitelist(risso_portfolio, metric):
     pf = risso_portfolio(random_state=42, stocks=2)
-
     result_call = pf.prices(metric)
     result_getattr = getattr(pf.prices, metric)()
     result_df = getattr(pf._df, metric)()
@@ -53,10 +52,52 @@ def test_PricesAccessor_log(risso_portfolio):
 
     result_call = pf.prices("log")
     result_getattr = pf.prices.log()
+    result_df = pf._df.apply(np.log)
+
+    pd.testing.assert_frame_equal(result_call, result_getattr)
+    pd.testing.assert_frame_equal(result_call, result_df)
+
+
+def test_PricesAccessor_log10(risso_portfolio):
+    pf = risso_portfolio(random_state=42, stocks=2)
+
+    result_call = pf.prices("log10")
+    result_getattr = pf.prices.log10()
     result_df = pf._df.apply(np.log10)
 
     pd.testing.assert_frame_equal(result_call, result_getattr)
     pd.testing.assert_frame_equal(result_call, result_df)
+
+
+def test_PricesAccessor_log2(risso_portfolio):
+    pf = risso_portfolio(random_state=42, stocks=2)
+
+    result_call = pf.prices("log2")
+    result_getattr = pf.prices.log2()
+    result_df = pf._df.apply(np.log2)
+
+    pd.testing.assert_frame_equal(result_call, result_getattr)
+    pd.testing.assert_frame_equal(result_call, result_df)
+
+
+def test_PricesAccessor_log2(risso_portfolio):
+    pf = risso_portfolio(random_state=42, stocks=2)
+
+    result_call = pf.prices("log2")
+    result_getattr = pf.prices.log2()
+    result_df = pf._df.apply(np.log2)
+
+    pd.testing.assert_frame_equal(result_call, result_getattr)
+    pd.testing.assert_frame_equal(result_call, result_df)
+
+
+def test_PricesAccessor_mad(risso_portfolio):
+    pf = risso_portfolio(random_state=42, stocks=2)
+
+    result_call = pf.prices("mad")
+    result_getattr = pf.prices.mad()
+
+    pd.testing.assert_series_equal(result_call, result_getattr)
 
 
 def test_PricesAccessor_dir(risso_portfolio):

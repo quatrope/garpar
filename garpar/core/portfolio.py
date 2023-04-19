@@ -33,16 +33,20 @@ from ..utils import df_temporal_header, Bunch, scalers, entropy_calculators
 GARPAR_METADATA_KEY = "__garpar_metadata__"
 
 
+def _as_float_array(arr):
+    return np.asarray(arr, dtype=float)
+
+
 # =============================================================================
 # PORTFOLIO
 # =============================================================================
 @attr.s(repr=False, cmp=False)
 class Portfolio:
     _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
-    _weights = attr.ib(converter=np.asarray)
-    _entropy = attr.ib(converter=np.asarray)
+    _weights = attr.ib(converter=_as_float_array)
+    _entropy = attr.ib(converter=_as_float_array)
     _window_size = attr.ib(
-        converter=lambda v: (pd.NA if pd.isna(v) else int(v))
+        converter=lambda v: (None if pd.isna(v) else int(v))
     )
     _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
 
@@ -93,7 +97,12 @@ class Portfolio:
     )
 
     def __attrs_post_init__(self):
-        if len(self._weights) != len(self._entropy) != len(self._df.columns):
+        stocks_number = self.stocks_number
+
+        if (
+            len(self._weights) != stocks_number
+            or len(self._entropy) != stocks_number
+        ):
             raise ValueError(
                 "The number of weights and entropy must "
                 "be the same as number of stocks"
@@ -109,15 +118,15 @@ class Portfolio:
     ):
         prices = df.copy()
 
+        cols = len(prices.columns)
+
         if weights is None or not hasattr(weights, "__iter__"):
-            cols = len(prices.columns)
             weights = 1.0 if weights is None else weights
-            weights = np.full(cols, weights, dtype=float)
+            weights = np.full(cols, weights)
 
         if entropy is None or not hasattr(entropy, "__iter__"):
-            cols = len(prices.columns)
-            entropy = pd.NA if entropy is None else entropy
-            entropy = np.full(cols, entropy, dtype=object)
+            entropy = np.nan if entropy is None else entropy
+            entropy = np.full(cols, entropy)
 
         pf = cls(
             df=prices,
@@ -137,8 +146,8 @@ class Portfolio:
         return (
             isinstance(other, type(self))
             and self._df.equals(other._df)
-            and np.array_equal(self._weights, other._weights, equal_nan=True)
-            and np.array_equal(self._entropy, other._entropy, equal_nan=True)
+            and np.allclose(self._weights, other._weights, equal_nan=True)
+            and np.allclose(self._entropy, other._entropy, equal_nan=True)
             and self._window_size == other._window_size
             and self._metadata == other._metadata
         )
@@ -255,7 +264,7 @@ class Portfolio:
 
         # window size
         window_size = np.full(self.stocks_number, self.window_size)
-        window_size_df = pd.Series(window_size).to_frame().T
+        window_size_df = pd.Series(window_size, index=self.stocks).to_frame().T
         window_size_df.index = ["WSize"]
 
         # adding the metadata to the dataframe
@@ -284,11 +293,11 @@ class Portfolio:
         prices = self.as_prices()
         weights = self.weights
         entropy = self.entropy
-        metadata = self.metadata.to_dict()
         window_size = self.window_size
+        metadata = self.metadata.to_dict()
 
         # which criteria we want to preserve
-        mask = (weights >= threshold).index
+        mask = weights[weights >= threshold].index
 
         # prune!
         pruned_prices = prices[weights[mask].index]
@@ -382,6 +391,7 @@ class Portfolio:
     # REPR ====================================================================
 
     def _pd_fmt_serie(self, serie):
+        print(serie)
         arr = serie.to_numpy(na_value=np.nan)
         return pd_fmt.format_array(arr, None, na_rep="?")
 
@@ -406,11 +416,9 @@ class Portfolio:
         header = self._get_sw_headers()
         dimensions = self._get_dxs_dimensions()
 
-        with (
-            df_temporal_header(self._df, header) as df,
-            pd.option_context("display.show_dimensions", False),
-        ):
-            original_string = repr(df)
+        with df_temporal_header(self._df, header) as df:
+            with pd.option_context("display.show_dimensions", False):
+                original_string = repr(df)
 
         # add dimension
         string = f"{original_string}\nPortfolio [{dimensions}]"
@@ -426,11 +434,9 @@ class Portfolio:
         dimensions = self._get_dxs_dimensions()
 
         # retrieve the original string
-        with (
-            df_temporal_header(self._df, header) as df,
-            pd.option_context("display.show_dimensions", False),
-        ):
-            original_html = df._repr_html_()
+        with df_temporal_header(self._df, header) as df:
+            with pd.option_context("display.show_dimensions", False):
+                original_html = df._repr_html_()
 
         # add dimension
         html = (

@@ -1,4 +1,3 @@
-
 import attr
 
 from abc import ABCMeta, abstractmethod  # noqa
@@ -68,7 +67,6 @@ def mproperty(**kwargs):
 
 @attr.s(repr=False)
 class ModelABC(metaclass=ABCMeta):
-
     __model_cls_config__ = {"repr": False, "frozen": True}
 
     def __init_subclass__(cls):

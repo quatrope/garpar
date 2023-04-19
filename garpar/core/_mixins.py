@@ -25,7 +25,6 @@ class CoercerMixin:
             cols = len(self._pf.stocks)
             weights = np.full(cols, 1.0 / cols, dtype=float)
         elif isinstance(weights, type(self._pf)):
-
             bench_weights = weights.weights
 
             stocks = self._pf.stocks

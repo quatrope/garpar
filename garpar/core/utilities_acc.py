@@ -12,7 +12,6 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
-
     _default_kind = "pf_return"
 
     _pf = attr.ib()

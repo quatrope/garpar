@@ -17,7 +17,6 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class PricesAccessor(accabc.AccessorABC):
-
     _default_kind = "describe"
 
     _pf = attr.ib()
@@ -27,7 +26,6 @@ class PricesAccessor(accabc.AccessorABC):
         "cov",
         "describe",
         "kurtosis",
-        "mad",
         "max",
         "mean",
         "median",
@@ -41,15 +39,39 @@ class PricesAccessor(accabc.AccessorABC):
         "var",
     ]
 
-    def log(self):
-        return self._pf._df.apply(np.log10)
+    _GARPAR_WHITELIST = ["log", "log10", "log2", "mad"]
+
+    _WHITELIST = _DF_WHITELIST + _GARPAR_WHITELIST
 
     def __getattr__(self, a):
-        if a not in self._DF_WHITELIST:
+        if a not in self._WHITELIST:
             raise AttributeError(a)
-        return getattr(self._pf._df, a)
+        target = self if a in self._GARPAR_WHITELIST else self._pf._df
+
+        return getattr(target, a)
 
     def __dir__(self):
         return super().__dir__() + [
-            e for e in dir(self._pf._df) if e in self._DF_WHITELIST
+            e for e in dir(self._pf._df) if e in self._WHITELIST
         ]
+
+    def log(self):
+        return self._pf._df.apply(np.log)
+
+    def log10(self):
+        return self._pf._df.apply(np.log10)
+
+    def log2(self):
+        return self._pf._df.apply(np.log2)
+
+    def mad(self, skipna=True):
+        """Return the mean absolute deviation of the values over a given axis.
+
+        Parameters
+        ----------
+        skipna : bool, default True
+            Exclude NA/null values when computing the result.
+
+        """
+        df = self._pf._df
+        return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)

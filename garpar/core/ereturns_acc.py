@@ -11,7 +11,6 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class ExpectedReturnsAccessor(accabc.AccessorABC):
-
     _default_kind = "capm"
 
     _pf = attr.ib()

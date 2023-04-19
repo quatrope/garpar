@@ -27,28 +27,28 @@ import pytest
 
 
 def test_Portfolio_creation():
-
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
-    df.attrs[GARPAR_METADATA_KEY] = Bunch(
-        {
-            "entropy": 0.5,
-            "window_size": 5,
-        }
-    )
+    weights = [1]
+    entropy = [0.5]
+    window_size = None
+    metadata = {"foo": "faa"}
 
-    manual_pf = Portfolio(df=df.copy(), weights=[1.0])
+    manual_pf = Portfolio(
+        df=df.copy(),
+        weights=weights,
+        entropy=entropy,
+        window_size=window_size,
+        metadata=metadata,
+    )
     mk_pf = Portfolio.from_dfkws(
-        df=df,
-        entropy=0.5,
-        window_size=5,
+        df=df.copy(), weights=1, entropy=0.5, window_size=None, **metadata
     )
 
     assert manual_pf == mk_pf
-    assert repr(mk_pf.metadata) == "metadata(entropy, window_size)"
+    assert repr(mk_pf.metadata) == "<metadata {'foo'}>"
 
 
 def test_Portfolio_len():
-
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
@@ -56,17 +56,6 @@ def test_Portfolio_len():
     )
 
     assert len(pf) == 5
-
-
-def test_Portfolio_dir():
-
-    pf = Portfolio.from_dfkws(
-        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
-        entropy=0.5,
-        window_size=5,
-    )
-
-    assert not set(["entropy", "window_size"]).difference(dir(pf.metadata))
 
 
 def test_Portfolio_copy_eq_ne():
@@ -79,14 +68,6 @@ def test_Portfolio_copy_eq_ne():
 
     assert pf == copy
     assert pf is not copy
-    assert (
-        pf._df.attrs[GARPAR_METADATA_KEY]
-        == copy._df.attrs[GARPAR_METADATA_KEY]
-    )
-    assert (
-        pf._df.attrs[GARPAR_METADATA_KEY]
-        is not copy._df.attrs[GARPAR_METADATA_KEY]
-    )
 
     other = Portfolio.from_dfkws(
         df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
@@ -97,26 +78,11 @@ def test_Portfolio_copy_eq_ne():
     assert pf != other
 
 
-def test_Portfolio_bad_metadata():
-    df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
-    df.attrs[GARPAR_METADATA_KEY] = None
-
-    with pytest.raises(TypeError):
-        Portfolio(df, [1])
-
-    with pytest.raises(ValueError):
-        Portfolio.from_dfkws(df, [1], foo="ggg")
-
-    with pytest.raises(TypeError):
-        Portfolio.from_dfkws(df, [1], entropy="ggg")
-
-
 def test_Portfolio_bad_weights():
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
-    df.attrs[GARPAR_METADATA_KEY] = {}
 
     with pytest.raises(ValueError):
-        Portfolio(df, weights=[1, 2, 3])
+        Portfolio.from_dfkws(df, weights=[1, 2, 3])
 
 
 def test_Portfolio_slice():
@@ -188,14 +154,14 @@ def test_Portfolio_repr():
     )
 
     expected = (
-        "Stocks  stock[\u2696 1.0]\n"
-        "Days                \n"
-        "0                  1\n"
-        "1                  2\n"
-        "2                  3\n"
-        "3                  4\n"
-        "4                  5\n"
-        "Portfolio [5 days x 1 stocks]"
+        "Stocks  stock[W 1.0, H 0.5]\n"
+        "Days                       \n"
+        "0                         1\n"
+        "1                         2\n"
+        "2                         3\n"
+        "3                         4\n"
+        "4                         5\n"
+        "Portfolio [5 days x 1 stocks - W.Size 5]"
     )
 
     result = repr(pf)
@@ -210,18 +176,21 @@ def test_Portfolio_to_dataframe():
         ),
         entropy=0.5,
         window_size=5,
+        foo="zaraza",
     )
 
     expected = pd.DataFrame(
         {
-            "stock0": [0.5, 0.5, 5, 1, 2, 3, 4, 5],
-            "stock1": [0.5, 0.5, 5, 10, 20, 30, 40, 50],
+            "stock0": [1, 0.5, 5, 1, 2, 3, 4, 5],
+            "stock1": [1, 0.5, 5, 10, 20, 30, 40, 50],
         },
-        index=["Weights", "entropy", "window_size", 0, 1, 2, 3, 4],
+        index=["Weights", "Entropy", "WSize", 0, 1, 2, 3, 4],
     )
+    expected_attrs = {"__garpar_metadata__": {"foo": "zaraza"}}
 
     result = pf.to_dataframe()
     pd.testing.assert_frame_equal(result, expected)
+    assert result.attrs == expected_attrs
 
 
 def test_Portfolio_to_hdf5():
@@ -241,7 +210,7 @@ def test_Portfolio_to_hdf5():
     assert pf == result
 
 
-def test_Portfolio_wprune():
+def test_Portfolio_weights_prune():
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame(
             {
@@ -250,13 +219,12 @@ def test_Portfolio_wprune():
                 "stock2": [10, 20, 30, 40, 50],
             },
         ),
-        weights=[0.7, 0.29999, 0.00001],
+        weights=[0.7, 0.29999, 0.000001],
         entropy=0.5,
         window_size=5,
     )
 
     ppf = pf.wprune()
-
     assert np.all(ppf.stocks == ["stock0", "stock1"])
 
 
@@ -280,7 +248,6 @@ def test_Portfolio_dprune():
 
 
 def test_Portfolio_scale_weights():
-
     pf = Portfolio.from_dfkws(
         df=pd.DataFrame(
             {
@@ -327,7 +294,7 @@ def test_Portfolio_repr_html():
         "  <thead>\n"
         '    <tr style="text-align: right;">\n'
         "      <th>Stocks</th>\n"
-        "      <th>stock[⚖ 1.0]</th>\n"
+        "      <th>stock[W 1.0, H 0.5]</th>\n"
         "    </tr>\n"
         "    <tr>\n"
         "      <th>Days</th>\n"
@@ -357,7 +324,7 @@ def test_Portfolio_repr_html():
         "    </tr>\n"
         "  </tbody>\n"
         "</table>\n"
-        "</div><em class='portfolio-dim'>5 days x 1 stocks</em>\n"
+        "</div><em class='portfolio-dim'>5 days x 1 stocks - W.Size 5</em>\n"
         "</div>"
     )
 

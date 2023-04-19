@@ -23,7 +23,6 @@ import pytest
 
 @pytest.mark.parametrize("ereturn", ["capm", "mah", "emah"])
 def test_CoercerMixin_coerce_expected_returns(risso_portfolio, ereturn):
-
     pf = risso_portfolio(random_state=42, stocks=2)
 
     class Coercer(CoercerMixin):
@@ -38,7 +37,6 @@ def test_CoercerMixin_coerce_expected_returns(risso_portfolio, ereturn):
 
 
 def test_CoercerMixin_coerce_weights_None(risso_portfolio):
-
     pf = risso_portfolio(random_state=42, stocks=2)
 
     class Coercer(CoercerMixin):
@@ -55,7 +53,6 @@ def test_CoercerMixin_coerce_weights_None(risso_portfolio):
 
 
 def test_CoercerMixin_coerce_weights_another_pf(risso_portfolio):
-
     pf = risso_portfolio(random_state=42, stocks=2)
 
     class Coercer(CoercerMixin):
@@ -72,7 +69,6 @@ def test_CoercerMixin_coerce_weights_another_pf(risso_portfolio):
 
 
 def test_CoercerMixin_coerce_weights_bad_pf(risso_portfolio):
-
     pf = risso_portfolio(random_state=42, stocks=2)
 
     class Coercer(CoercerMixin):
@@ -99,7 +95,6 @@ def test_CoercerMixin_coerce_weights_bad_pf(risso_portfolio):
     ],
 )
 def test_CoercerMixin_coerce_covariance_matrix(risso_portfolio, cov_matrix):
-
     pf = risso_portfolio(random_state=42, stocks=2)
 
     class Coercer(CoercerMixin):

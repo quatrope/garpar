@@ -105,7 +105,6 @@ class CLI:
         results = OrderedDict()
 
         try:
-
             header_tpl = lines_rstrip(header_template.read_text())
 
             for src in sources:

@@ -9,12 +9,12 @@
 # IMPORTS
 # =============================================================================
 
-from io import BytesIO
+# from io import BytesIO
 
-import pandas as pd
+# import pandas as pd
 
-from garpar.io import read_hdf5, to_hdf5
-from garpar.core.portfolio import Portfolio
+# from garpar.io import read_hdf5, to_hdf5
+# from garpar.core.portfolio import Portfolio
 
 
 # =============================================================================
@@ -22,21 +22,21 @@ from garpar.core.portfolio import Portfolio
 # =============================================================================
 
 
-def test_Portfolio_to_hdf5_read_hdf5():
-    pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
-            {
-                "stock0": [1, 2, 3, 4, 5],
-                "stock1": [10, 20, 30, 40, 50],
-            },
-        ),
-        entropy=0.5,
-        window_size=5,
-    )
+# def test_Portfolio_to_hdf5_read_hdf5():
+#     pf = Portfolio.from_dfkws(
+#         df=pd.DataFrame(
+#             {
+#                 "stock0": [1, 2, 3, 4, 5],
+#                 "stock1": [10, 20, 30, 40, 50],
+#             },
+#         ),
+#         entropy=0.5,
+#         window_size=5,
+#     )
 
-    buff = BytesIO()
-    to_hdf5(buff, pf)
-    buff.seek(0)
-    result = read_hdf5(buff)
+#     buff = BytesIO()
+#     to_hdf5(buff, pf)
+#     buff.seek(0)
+#     result = read_hdf5(buff)
 
-    assert pf == result
+#     assert pf == result

@@ -35,7 +35,7 @@ from .core import Portfolio
 # CONSTANTS
 # =============================================================================
 
-_DEFAULT_METADATA = {
+_DEFAULT_HDF5_METADATA = {
     "garpar": VERSION,
     "author_email": "nluczywo@unc.edu.ar",
     "affiliation": "FCE-UNC",
@@ -69,7 +69,7 @@ def _df_to_sarray(df):
     types = [(cols[i], df[k].dtype.type) for (i, k) in enumerate(cols)]
     dtype = np.dtype(types)
     z = np.zeros(v.shape[0], dtype)
-    for (i, k) in enumerate(z.dtype.names):
+    for i, k in enumerate(z.dtype.names):
         z[k] = v[:, i]
     return z
 
@@ -98,7 +98,7 @@ def to_hdf5(path_or_stream, portfolio, group="portfolio", **kwargs):
     """
 
     # # prepare metadata
-    h5_metadata = _DEFAULT_METADATA.copy()
+    h5_metadata = _DEFAULT_HDF5_METADATA.copy()
     h5_metadata["utc_timestamp"] = dt.datetime.utcnow().isoformat()
 
     # prepare kwargs
@@ -121,7 +121,6 @@ def to_hdf5(path_or_stream, portfolio, group="portfolio", **kwargs):
 
 def read_hdf5(path_or_stream, group="portfolio"):
     with h5py.File(path_or_stream, "r") as h5:
-
         grp = h5[group]
 
         df_ds = grp[f"{group}_df"]

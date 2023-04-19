@@ -13,7 +13,6 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class CovarianceAccessor(accabc.AccessorABC):
-
     _default_kind = "sample_cov"
 
     _pf = attr.ib()
@@ -48,7 +47,6 @@ class CovarianceAccessor(accabc.AccessorABC):
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class CorrelationAccessor(accabc.AccessorABC):
-
     _default_kind = "sample_corr"
 
     _pf = attr.ib()
