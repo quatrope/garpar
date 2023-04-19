@@ -19,6 +19,7 @@ Based on: https://stackoverflow.com/a/30773118
 # =============================================================================
 
 import datetime as dt
+import json
 import platform
 import sys
 
@@ -29,7 +30,7 @@ import numpy as np
 import pandas as pd
 
 from . import __version__ as VERSION
-from .core import Portfolio
+from .core import Portfolio, GARPAR_METADATA_KEY
 
 # =============================================================================
 # CONSTANTS
@@ -38,12 +39,14 @@ from .core import Portfolio
 _DEFAULT_HDF5_METADATA = {
     "garpar": VERSION,
     "author_email": "nluczywo@unc.edu.ar",
-    "affiliation": "FCE-UNC",
-    "url": "https://github.com/quatrope/garpart",
+    "affiliation": "FCE-UNC, QuatroPe",
+    "url": "https://github.com/quatrope/garpar",
     "platform": platform.platform(),
     "system_encoding": sys.getfilesystemencoding(),
     "Python": sys.version,
 }
+
+_WINDOW_SIZE_KEY = "window_size"
 
 
 # =============================================================================
@@ -61,9 +64,7 @@ def _df_to_sarray(df):
     :return: a numpy structured array representation of df
 
 
-
     """
-
     v = df.values
     cols = df.columns
     types = [(cols[i], df[k].dtype.type) for (i, k) in enumerate(cols)]
@@ -79,7 +80,7 @@ def _df_to_sarray(df):
 # =============================================================================
 
 
-def to_hdf5(path_or_stream, portfolio, group="portfolio", **kwargs):
+def to_hdf5(path_or_stream, pf, group="portfolio", **kwargs):
     """HDF5 file writer.
 
     It is responsible for storing a portfolio in HDF5 format.
@@ -105,28 +106,49 @@ def to_hdf5(path_or_stream, portfolio, group="portfolio", **kwargs):
     kwargs.setdefault("compression", "gzip")
     kwargs.setdefault("compression_opts", 9)
 
-    with h5py.File(path_or_stream, "a") as h5:
-        grp = h5.create_group(group)
-        grp.create_dataset(
-            f"{group}_df", data=_df_to_sarray(portfolio._df), **kwargs
-        )
-        grp.create_dataset(
-            f"{group}_weights", data=portfolio._weights, **kwargs
-        )
+    with h5py.File(path_or_stream, "a") as fp:
+        # the data
+        prices = _df_to_sarray(pf.as_prices())
+        weights = pf.weights.to_numpy()
+        entropy = pf.entropy.to_numpy()
+        grp_attrs = {
+            _WINDOW_SIZE_KEY: pf.window_size,
+            GARPAR_METADATA_KEY: json.dumps(pf.metadata.to_dict()),
+        }
 
-        grp.attrs.update(portfolio.metadata.to_dict())
+        # store
+        grp = fp.create_group(group)
+        grp.create_dataset(f"{group}_prices", data=prices, **kwargs)
+        grp.create_dataset(f"{group}_weights", data=weights, **kwargs)
+        grp.create_dataset(f"{group}_entropy", data=entropy, **kwargs)
+        grp.attrs.update(grp_attrs)
 
-        h5.attrs.update(h5_metadata)
+        # h5 metadata
+        fp.attrs.update(h5_metadata)
 
 
 def read_hdf5(path_or_stream, group="portfolio"):
-    with h5py.File(path_or_stream, "r") as h5:
-        grp = h5[group]
+    with h5py.File(path_or_stream, "r") as fp:
+        grp = fp[group]
 
-        df_ds = grp[f"{group}_df"]
-        df = pd.DataFrame(df_ds[:])
+        prices_ds = grp[f"{group}_prices"]
+        prices = pd.DataFrame(prices_ds[:])
 
         weights_ds = grp[f"{group}_weights"]
         weights = weights_ds[:]
 
-        return Portfolio.from_dfkws(df, weights, **grp.attrs)
+        entropy_ds = grp[f"{group}_entropy"]
+        entropy = entropy_ds[:]
+
+        window_size = grp.attrs[_WINDOW_SIZE_KEY]
+        metadata = json.loads(grp.attrs[GARPAR_METADATA_KEY])
+
+    pf = Portfolio(
+        prices,
+        weights=weights,
+        entropy=entropy,
+        window_size=window_size,
+        metadata=metadata,
+    )
+
+    return pf

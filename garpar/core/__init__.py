@@ -1,1 +1,1 @@
-from .portfolio import Portfolio
+from .portfolio import Portfolio, GARPAR_METADATA_KEY
