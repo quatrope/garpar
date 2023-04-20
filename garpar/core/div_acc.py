@@ -97,21 +97,21 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         return pf_var + entropy
 
-    def delta(self, *, diffentropy_kw=None):
-        weights = self._pf.scale_weights().weights
-        returns = self._pf.as_returns()
+    # def delta(self, *, diffentropy_kw=None):
+    #     weights = self._pf.scale_weights().weights
+    #     returns = self._pf.as_returns()
 
-        diffentropy_kw = {} if diffentropy_kw is None else diffentropy_kw
-        X_diff_entropy = scipy.stats.differential_entropy(returns)
+    #     diffentropy_kw = {} if diffentropy_kw is None else diffentropy_kw
+    #     X_diff_entropy = scipy.stats.differential_entropy(returns)
 
-        exp_wH = np.exp(np.sum(weights * X_diff_entropy))
+    #     exp_wH = np.exp(np.sum(weights * X_diff_entropy))
 
-        wX_diff_entropy = scipy.stats.differential_entropy(
-            np.sum(weights * returns)
-        )
+    #     wX_diff_entropy = scipy.stats.differential_entropy(
+    #         np.sum(weights * returns)
+    #     )
 
-        exp_HwX = np.exp(wX_diff_entropy)
+    #     exp_HwX = np.exp(wX_diff_entropy)
 
-        ddi = (exp_wH - exp_HwX) / exp_wH
+    #     ddi = (exp_wH - exp_HwX) / exp_wH
 
-        return ddi
+    #     return ddi
