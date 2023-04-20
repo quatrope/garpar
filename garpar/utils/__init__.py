@@ -15,10 +15,13 @@
 # =============================================================================
 
 
-from . import mabc, scalers, entropy_calculators
+from . import entropy, mabc, scalers
 
 # export skcutils as own utils
 from skcriteria.utils import Bunch as _SKCBunch, df_temporal_header, accabc
+
+
+# custom bunch method
 
 
 class Bunch(_SKCBunch):
@@ -39,5 +42,5 @@ __all__ = [
     "unique_names",
     "mabc",
     "scalers",
-    "entropy_calculators",
+    "entropy",
 ]

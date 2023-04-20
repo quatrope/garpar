@@ -18,7 +18,7 @@ import pandas as pd
 # =============================================================================
 
 
-def test_DiversificationAccessor_sample_cov(risso_portfolio):
+def test_CovarianceAccessor_sample_cov(risso_portfolio):
     pf = risso_portfolio(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
@@ -37,7 +37,7 @@ def test_DiversificationAccessor_sample_cov(risso_portfolio):
     )
 
 
-def test_DiversificationAccessor_exp_cov(risso_portfolio):
+def test_CovarianceAccessor_exp_cov(risso_portfolio):
     pf = risso_portfolio(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
@@ -56,7 +56,7 @@ def test_DiversificationAccessor_exp_cov(risso_portfolio):
     )
 
 
-def test_DiversificationAccessor_semi_cov(risso_portfolio):
+def test_CovarianceAccessor_semi_cov(risso_portfolio):
     pf = risso_portfolio(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
@@ -75,7 +75,7 @@ def test_DiversificationAccessor_semi_cov(risso_portfolio):
     )
 
 
-def test_DiversificationAccessor_ledoit_wolf_cov(risso_portfolio):
+def test_CovarianceAccessor_ledoit_wolf_cov(risso_portfolio):
     pf = risso_portfolio(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
@@ -94,7 +94,7 @@ def test_DiversificationAccessor_ledoit_wolf_cov(risso_portfolio):
     )
 
 
-def test_DiversificationAccessor_oracle_approximating_cov(risso_portfolio):
+def test_CovarianceAccessor_oracle_approximating_cov(risso_portfolio):
     pf = risso_portfolio(random_state=42, stocks=2)
 
     expected = pd.DataFrame(

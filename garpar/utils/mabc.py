@@ -97,8 +97,10 @@ class ModelABC(metaclass=ABCMeta):
         selfd = attr.asdict(
             self,
             recurse=False,
-            filter=lambda attr, _: attr.repr,
+            filter=lambda attr, _: (
+                attr.metadata.get(HPARAM_METADATA_FLAG) and attr.repr
+            ),
         )
         hparams = sorted(selfd.items())
-        attrs_str = ", ".join([f"{k}={repr(v)}" for k, v in hparams])
+        attrs_str = ", ".join([f"{k}={v!r}" for k, v in hparams])
         return f"{clsname}({attrs_str})"

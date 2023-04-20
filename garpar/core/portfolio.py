@@ -24,13 +24,22 @@ from . import (
     utilities_acc,
     div_acc,
 )
-from ..utils import df_temporal_header, Bunch, scalers, entropy_calculators
+from ..utils import df_temporal_header, Bunch, entropy, scalers
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
 
 GARPAR_METADATA_KEY = "__garpar_metadata__"
+
+_SCALERS = {
+    "proportion": scalers.proportion_scaler,
+    "minmax": scalers.minmax_scaler,
+    "max": scalers.max_scaler,
+    "std": scalers.standar_scaler,
+}
+
+_ENTROPY_CALCULATORS = {"shannon": entropy.shannon}
 
 
 def _as_float_array(arr):
@@ -91,10 +100,12 @@ class Portfolio:
         default=attr.Factory(utilities_acc.UtilitiesAccessor, takes_self=True),
     )
 
-    div = attr.ib(
+    diversification = attr.ib(
         init=False,
         default=attr.Factory(div_acc.DiversificationAccessor, takes_self=True),
     )
+
+    div = diversification
 
     def __attrs_post_init__(self):
         stocks_number = self.stocks_number
@@ -349,18 +360,11 @@ class Portfolio:
 
     # SCALE WEIGHTS ===========================================================
 
-    _SCALERS = {
-        "proportion": scalers.proportion_scaler,
-        "minmax": scalers.minmax_scaler,
-        "max": scalers.max_scaler,
-        "std": scalers.standar_scaler,
-    }
-
-    def scale_weights(self, scaler="proportion"):
+    def scale_weights(self, *, scaler="proportion"):
         """Reajusta los pesos en un rango de [0, 1]"""
-        scaler = self._SCALERS.get(scaler, scaler)
+        scaler = _SCALERS.get(scaler, scaler)
         if not callable(scaler):
-            saler_set = set(self._SCALERS)
+            saler_set = set(_SCALERS)
             raise ValueError(
                 f"'scaler' must be a one of '{saler_set}' or callable"
             )
@@ -370,12 +374,10 @@ class Portfolio:
 
     # CALCULATE ENTROPY =======================================================
 
-    _ENTROPY_CALCULATORS = {"shannon": entropy_calculators.shannon}
-
-    def refresh_entropy(self, entropy="shannon", entropy_kws=None):
-        entropy_calc = self._ENTROPY_CALCULATORS.get(entropy, entropy)
+    def refresh_entropy(self, *, entropy="shannon", entropy_kws=None):
+        entropy_calc = _ENTROPY_CALCULATORS.get(entropy, entropy)
         if not callable(entropy_calc):
-            entropy_calc_set = set(self._ENTROPY_CALCULATORS)
+            entropy_calc_set = set(_ENTROPY_CALCULATORS)
             raise ValueError(
                 f"'entropy' must be a one of '{entropy_calc_set}' or callable"
             )
@@ -391,7 +393,6 @@ class Portfolio:
     # REPR ====================================================================
 
     def _pd_fmt_serie(self, serie):
-        print(serie)
         arr = serie.to_numpy(na_value=np.nan)
         return pd_fmt.format_array(arr, None, na_rep="?")
 

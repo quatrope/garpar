@@ -225,7 +225,7 @@ def test_Portfolio_weights_prune():
     )
 
     ppf = pf.wprune()
-    assert np.all(ppf.stocks == ["stock0", "stock1"])
+    np.testing.assert_array_equal(ppf.stocks, ["stock0", "stock1"])
 
 
 def test_Portfolio_delisted_prune():
@@ -244,7 +244,7 @@ def test_Portfolio_delisted_prune():
 
     ppf = pf.dprune()
 
-    assert np.all(ppf.stocks == ["stock0", "stock2"])
+    np.testing.assert_array_equal(ppf.stocks, ["stock0", "stock2"])
 
 
 def test_Portfolio_scale_weights():
@@ -263,8 +263,8 @@ def test_Portfolio_scale_weights():
 
     swpf = pf.scale_weights()
 
-    assert np.all(swpf.weights == [0.1, 0.75, 0.15])
-    assert np.isclose(swpf.weights.sum(), 1.0)
+    np.testing.assert_array_equal(swpf.weights, [0.1, 0.75, 0.15])
+    np.testing.assert_array_equal(swpf.weights.sum(), 1.0)
 
 
 def test_Portfolio_scale_weights_bad_scaler():
@@ -300,7 +300,9 @@ def test_Portfolio_refresh_entropy():
     )
 
     swpf = pf.refresh_entropy()
-    assert np.allclose(swpf.entropy.values, [1.48975, 1.48975, 1.48975])
+    np.testing.assert_allclose(
+        swpf.entropy.values, [1.48975, 1.48975, 1.48975], atol=1e-6
+    )
 
 
 def test_Portfolio_refresh_entropy_bad_entropy():
