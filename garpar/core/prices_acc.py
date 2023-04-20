@@ -29,7 +29,6 @@ class PricesAccessor(accabc.AccessorABC):
         "max",
         "mean",
         "median",
-        "info",
         "min",
         "pct_change",
         "quantile",
