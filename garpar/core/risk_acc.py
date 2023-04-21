@@ -23,7 +23,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
     _pf = attr.ib()
 
     def _returns_df(self, market_prices, log_returns):
-        prices = self._pf._df
+        prices = self._pf._prices_df
         market_returns = None
 
         returns = expected_returns.returns_from_prices(prices, log_returns)
@@ -32,6 +32,8 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
                 market_prices, log_returns
             )
 
+        # we ensure that the market column we are going to insert is unique
+        # and does not step on a stock
         mkt_col, idx = "_mkt_", 0
         while mkt_col in returns.columns:
             mkt_col = f"_mkt_{idx}_"
@@ -63,16 +65,18 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         return betas
 
-    def pf_beta(self, *, benchmark_weights=None, log_returns=False):
+    def portfolio_beta(self, *, benchmark_weights=None, log_returns=False):
         benchmark_weights = self.coerce_weights(benchmark_weights)
 
-        day_weighted_prices = np.sum(self._pf._df * self._pf._weights, axis=1)
+        day_weighted_prices = np.sum(
+            self._pf._prices_df * self._pf._weights, axis=1
+        )
         returns, mkt_col = self._returns_df(
             market_prices=day_weighted_prices, log_returns=log_returns
         )
 
         benchmark_day_weighted_prices = np.sum(
-            self._pf._df * benchmark_weights, axis=1
+            self._pf._prices_df * benchmark_weights, axis=1
         )
         benchmark_returns, benchmark_mkt_col = self._returns_df(
             market_prices=benchmark_day_weighted_prices,
@@ -85,6 +89,8 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         ]
 
         return return_cov / benchmark_cov
+
+    pf_beta = portfolio_beta
 
     def treynor_ratio(
         self,
@@ -105,13 +111,15 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         )
         return pf_return / pf_beta
 
-    def pf_var(self, covariance="sample_cov", covariance_kw=None):
+    def portfolio_variance(self, covariance="sample_cov", covariance_kw=None):
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
         return objective_functions.portfolio_variance(
             self._pf._weights, cov_matrix=cov_matrix
         )
 
-    def sharpe(
+    pf_var = portfolio_variance
+
+    def sharpe_ratio(
         self,
         *,
         expected_returns="capm",
@@ -131,24 +139,26 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
             **kwargs,
         )
 
-    def value(self, *, alpha=0.05):
-        def value_at_risk(x):
-            a = np.array(x, ndmin=2)
-            if a.shape[0] == 1 and a.shape[1] > 1:
-                a = a.T
-            if a.shape[0] > 1 and a.shape[1] > 1:
-                raise ValueError("returns must have Tx1 size")
+    # VaR =====================================================================
+    def _stock_returns_VaR(self, stock_returns, alpha):
+        stock_returns_arr = np.array(stock_returns, ndmin=2)
+        if stock_returns_arr.shape[0] == 1 and stock_returns_arr.shape[1] > 1:
+            stock_returns_arr = stock_returns_arr.T
+        elif stock_returns_arr.shape[0] > 1 and stock_returns_arr.shape[1] > 1:
+            raise ValueError("returns must have Tx1 size")
 
-            sorted_a = np.sort(a, axis=0)
-            index = int(np.ceil(alpha * len(sorted_a)) - 1)
-            value = -sorted_a[index]
-            value = np.array(value).item()
+        sorted_stock_returns_arr = np.sort(stock_returns_arr, axis=0)
+        index = int(np.ceil(alpha * len(sorted_stock_returns_arr)) - 1)
+        value = np.asarray(-sorted_stock_returns_arr[index]).item()
 
-            return value
+        return value
 
+    def value_at_risk(self, *, alpha=0.05):
         returns = self._pf.as_returns()
 
-        var = returns.apply(value_at_risk, axis="rows")
+        var = returns.apply(self._stock_returns_VaR, axis="rows", alpha=alpha)
         var.name = "VaR"
 
         return var
+
+    var = value_at_risk

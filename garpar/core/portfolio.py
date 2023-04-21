@@ -51,7 +51,7 @@ def _as_float_array(arr):
 # =============================================================================
 @attr.s(repr=False, cmp=False)
 class Portfolio:
-    _df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
+    _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=_as_float_array)
     _entropy = attr.ib(converter=_as_float_array)
     _window_size = attr.ib(
@@ -119,28 +119,41 @@ class Portfolio:
                 "be the same as number of stocks"
             )
 
-        self._df.columns.name = "Stocks"
-        self._df.index.name = "Days"
+        self._prices_df.columns.name = "Stocks"
+        self._prices_df.index.name = "Days"
 
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
     def from_dfkws(
-        cls, df, weights=None, entropy=None, window_size=None, **metadata
+        cls,
+        prices,
+        weights=None,
+        entropy=None,
+        window_size=None,
+        stocks=None,
+        **metadata,
     ):
-        prices = df.copy()
+        prices = (
+            prices.copy()
+            if isinstance(prices, pd.DataFrame)
+            else pd.DataFrame(prices)
+        )
 
-        cols = len(prices.columns)
+        stocks_number = len(prices.columns)
 
         if weights is None or not hasattr(weights, "__iter__"):
             weights = 1.0 if weights is None else weights
-            weights = np.full(cols, weights)
+            weights = np.full(stocks_number, weights)
 
         if entropy is None or not hasattr(entropy, "__iter__"):
             entropy = np.nan if entropy is None else entropy
-            entropy = np.full(cols, entropy)
+            entropy = np.full(stocks_number, entropy)
+
+        if stocks is not None:
+            prices.columns = stocks
 
         pf = cls(
-            df=prices,
+            prices_df=prices,
             weights=weights,
             entropy=entropy,
             window_size=window_size,
@@ -151,12 +164,12 @@ class Portfolio:
 
     # INTERNALS
     def __len__(self):
-        return len(self._df)
+        return len(self._prices_df)
 
     def __eq__(self, other):
         return (
             isinstance(other, type(self))
-            and self._df.equals(other._df)
+            and self._prices_df.equals(other._prices_df)
             and np.allclose(self._weights, other._weights, equal_nan=True)
             and np.allclose(self._entropy, other._entropy, equal_nan=True)
             and self._window_size == other._window_size
@@ -167,25 +180,26 @@ class Portfolio:
         return not self == other
 
     def __getitem__(self, key):
-        df = self._df.__getitem__(key)
-        if isinstance(df, pd.Series):
-            df = df.to_frame()
+        prices = self._prices_df.__getitem__(key)
+        if isinstance(prices, pd.Series):
+            prices = prices.to_frame()
 
         weights = self.weights
-        weights = weights[weights.index.isin(df.columns)].to_numpy()
+        weights = weights[weights.index.isin(prices.columns)].to_numpy()
 
         entropy = self.entropy
-        entropy = entropy[entropy.index.isin(df.columns)].to_numpy()
+        entropy = entropy[entropy.index.isin(prices.columns)].to_numpy()
 
         window_size = self.window_size
         metadata = dict(self.metadata)
 
-        sliced = Portfolio.from_dfkws(
-            df=df,
+        cls = type(self)
+        sliced = cls(
+            prices_df=prices,
             weights=weights,
             entropy=entropy,
             window_size=window_size,
-            **metadata,
+            metadata=metadata,
         )
 
         return sliced
@@ -193,19 +207,23 @@ class Portfolio:
     # PROPERTIES ==============================================================
     @property
     def weights(self):
-        return pd.Series(self._weights, index=self._df.columns, name="Weights")
+        return pd.Series(
+            self._weights, index=self._prices_df.columns, name="Weights"
+        )
 
     @property
     def entropy(self):
-        return pd.Series(self._entropy, index=self._df.columns, name="Entropy")
+        return pd.Series(
+            self._entropy, index=self._prices_df.columns, name="Entropy"
+        )
 
     @property
     def stocks(self):
-        return self._df.columns.to_numpy()
+        return self._prices_df.columns.to_numpy()
 
     @property
     def stocks_number(self):
-        return len(self._df.columns)
+        return len(self._prices_df.columns)
 
     @property
     def metadata(self):
@@ -217,25 +235,28 @@ class Portfolio:
 
     @property
     def delisted(self):
-        dlstd = (self._df == 0.0).any(axis="rows")
+        dlstd = (self._prices_df == 0.0).any(axis="rows")
         dlstd.name = "Delisted"
         return dlstd
 
     @property
     def shape(self):
-        return self._df.shape
+        return self._prices_df.shape
 
     # UTILS ===================================================================
     def copy(
         self,
-        df=None,
+        prices=None,
         weights=None,
         entropy=None,
         window_size=None,
+        stocks=None,
         preserve_old_metadata=True,
         **metadata,
     ):
-        new_prices_df = (self._df if df is None else df).copy(deep=True)
+        new_prices_df = (self._prices_df if prices is None else prices).copy(
+            deep=True
+        )
         new_weights = (self._weights if weights is None else weights).copy()
         new_entropy = (self._entropy if entropy is None else entropy).copy()
         new_window_size = (
@@ -247,12 +268,13 @@ class Portfolio:
         )
         new_metadata.update(metadata)
 
-        new_pf = Portfolio(
+        new_pf = self.from_dfkws(
             new_prices_df,
             weights=new_weights,
             entropy=new_entropy,
             window_size=new_window_size,
-            metadata=new_metadata,
+            stocks=stocks,
+            **new_metadata,
         )
 
         return new_pf
@@ -263,7 +285,7 @@ class Portfolio:
         return io.to_hdf5(stream_or_buff, self, **kwargs)
 
     def to_dataframe(self):
-        price_df = self._df.copy(deep=True)
+        price_df = self._prices_df.copy(deep=True)
 
         # transform the weighs "series" into a compatible dataframe
         weights_df = self.weights.to_frame().T
@@ -289,11 +311,11 @@ class Portfolio:
 
     def as_returns(self, **kwargs):
         return pypfopt.expected_returns.returns_from_prices(
-            prices=self._df, **kwargs
+            prices=self._prices_df, **kwargs
         )
 
     def as_prices(self):
-        return self._df.copy()
+        return self._prices_df.copy()
 
     # PRUNNING ================================================================
 
@@ -316,12 +338,14 @@ class Portfolio:
         pruned_entropy = entropy[mask].to_numpy()
 
         # pruned pf
-        pruned_pf = self.from_dfkws(
-            pruned_prices,
+        cls = type(self)
+
+        pruned_pf = cls(
+            prices_df=pruned_prices,
             weights=pruned_weights,
             entropy=pruned_entropy,
             window_size=window_size,
-            **metadata,
+            metadata=metadata,
         )
 
         return pruned_pf
@@ -346,12 +370,14 @@ class Portfolio:
         pruned_entropy = entropy[mask].to_numpy()
 
         # pruned pf
-        pruned_pf = self.from_dfkws(
-            pruned_prices,
+        cls = type(self)
+
+        pruned_pf = cls(
+            prices_df=pruned_prices,
             weights=pruned_weights,
             entropy=pruned_entropy,
             window_size=window_size,
-            **metadata,
+            metadata=metadata,
         )
 
         return pruned_pf
@@ -401,7 +427,7 @@ class Portfolio:
         headers = []
         fmt_weights = self._pd_fmt_serie(self.weights)
         fmt_entropy = self._pd_fmt_serie(self.entropy)
-        for c, w, h in zip(self._df.columns, fmt_weights, fmt_entropy):
+        for c, w, h in zip(self._prices_df.columns, fmt_weights, fmt_entropy):
             header = f"{c}[W{w}, H{h}]"
             headers.append(header)
         return headers
@@ -417,7 +443,7 @@ class Portfolio:
         header = self._get_sw_headers()
         dimensions = self._get_dxs_dimensions()
 
-        with df_temporal_header(self._df, header) as df:
+        with df_temporal_header(self._prices_df, header) as df:
             with pd.option_context("display.show_dimensions", False):
                 original_string = repr(df)
 
@@ -435,7 +461,7 @@ class Portfolio:
         dimensions = self._get_dxs_dimensions()
 
         # retrieve the original string
-        with df_temporal_header(self._df, header) as df:
+        with df_temporal_header(self._prices_df, header) as df:
             with pd.option_context("display.show_dimensions", False):
                 original_html = df._repr_html_()
 

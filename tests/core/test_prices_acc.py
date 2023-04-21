@@ -29,7 +29,7 @@ def test_PricesAccessor_df_whitelist(risso_portfolio, metric):
     pf = risso_portfolio(random_state=42, stocks=2)
     result_call = pf.prices(metric)
     result_getattr = getattr(pf.prices, metric)()
-    result_df = getattr(pf._df, metric)()
+    result_df = getattr(pf._prices_df, metric)()
 
     if isinstance(result_call, pd.DataFrame):
         pd.testing.assert_frame_equal(result_call, result_getattr)
@@ -52,7 +52,7 @@ def test_PricesAccessor_log(risso_portfolio):
 
     result_call = pf.prices("log")
     result_getattr = pf.prices.log()
-    result_df = pf._df.apply(np.log)
+    result_df = pf._prices_df.apply(np.log)
 
     pd.testing.assert_frame_equal(result_call, result_getattr)
     pd.testing.assert_frame_equal(result_call, result_df)
@@ -63,7 +63,7 @@ def test_PricesAccessor_log10(risso_portfolio):
 
     result_call = pf.prices("log10")
     result_getattr = pf.prices.log10()
-    result_df = pf._df.apply(np.log10)
+    result_df = pf._prices_df.apply(np.log10)
 
     pd.testing.assert_frame_equal(result_call, result_getattr)
     pd.testing.assert_frame_equal(result_call, result_df)
@@ -74,7 +74,7 @@ def test_PricesAccessor_log2(risso_portfolio):
 
     result_call = pf.prices("log2")
     result_getattr = pf.prices.log2()
-    result_df = pf._df.apply(np.log2)
+    result_df = pf._prices_df.apply(np.log2)
 
     pd.testing.assert_frame_equal(result_call, result_getattr)
     pd.testing.assert_frame_equal(result_call, result_df)
@@ -85,7 +85,7 @@ def test_PricesAccessor_log2(risso_portfolio):
 
     result_call = pf.prices("log2")
     result_getattr = pf.prices.log2()
-    result_df = pf._df.apply(np.log2)
+    result_df = pf._prices_df.apply(np.log2)
 
     pd.testing.assert_frame_equal(result_call, result_getattr)
     pd.testing.assert_frame_equal(result_call, result_df)

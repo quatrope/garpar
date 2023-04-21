@@ -34,7 +34,7 @@ class PortfolioPlotter(accabc.AccessorABC):
     def _ddf(self, returns):
         if returns:
             return self._pf.as_returns(), "Returns"
-        return self._pf._df, "Price"
+        return self._pf._prices_df, "Price"
 
     def _wdf(self):
         # proxy to access the dataframe with the weights

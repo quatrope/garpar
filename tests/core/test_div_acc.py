@@ -55,6 +55,7 @@ def test_DiversificationAccessor_zheng_entropy(risso_portfolio):
     expected = 2.302585
     np.testing.assert_allclose(pf.div.zheng_entropy(), expected)
 
+
 def test_DiversificationAccessor_cross_entropy(risso_portfolio):
     pf = risso_portfolio(random_state=42)
     expected = 0

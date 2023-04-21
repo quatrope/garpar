@@ -45,23 +45,23 @@ class PricesAccessor(accabc.AccessorABC):
     def __getattr__(self, a):
         if a not in self._WHITELIST:
             raise AttributeError(a)
-        target = self if a in self._GARPAR_WHITELIST else self._pf._df
+        target = self if a in self._GARPAR_WHITELIST else self._pf._prices_df
 
         return getattr(target, a)
 
     def __dir__(self):
         return super().__dir__() + [
-            e for e in dir(self._pf._df) if e in self._WHITELIST
+            e for e in dir(self._pf._prices_df) if e in self._WHITELIST
         ]
 
     def log(self):
-        return self._pf._df.apply(np.log)
+        return self._pf._prices_df.apply(np.log)
 
     def log10(self):
-        return self._pf._df.apply(np.log10)
+        return self._pf._prices_df.apply(np.log10)
 
     def log2(self):
-        return self._pf._df.apply(np.log2)
+        return self._pf._prices_df.apply(np.log2)
 
     def mad(self, skipna=True):
         """Return the mean absolute deviation of the values over a given axis.
@@ -72,5 +72,5 @@ class PricesAccessor(accabc.AccessorABC):
             Exclude NA/null values when computing the result.
 
         """
-        df = self._pf._df
+        df = self._pf._prices_df
         return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)

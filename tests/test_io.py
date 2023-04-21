@@ -23,7 +23,7 @@ from garpar import io, Portfolio
 
 def test_Portfolio_to_hdf5_read_hdf5():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 40, 50],

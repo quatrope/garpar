@@ -51,7 +51,7 @@ class MultiSector(PortfolioMakerABC):
                 weights=None,
             )
 
-            df = pf._df.add_prefix(f"{maker_name}_")
+            df = self._prices_df.add_prefix(f"{maker_name}_")
             stocks_dfs.append(df)
 
             entropy.extend(pf.entropy)

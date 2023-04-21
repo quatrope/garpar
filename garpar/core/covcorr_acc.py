@@ -19,28 +19,28 @@ class CovarianceAccessor(accabc.AccessorABC):
 
     def sample_cov(self, **kwargs):
         return risk_models.sample_cov(
-            prices=self._pf._df, returns_data=False, **kwargs
+            prices=self._pf._prices_df, returns_data=False, **kwargs
         )
 
     def exp_cov(self, **kwargs):
         return risk_models.exp_cov(
-            prices=self._pf._df, returns_data=False, **kwargs
+            prices=self._pf._prices_df, returns_data=False, **kwargs
         )
 
     def semi_cov(self, **kwargs):
         return risk_models.semicovariance(
-            prices=self._pf._df, returns_data=False, **kwargs
+            prices=self._pf._prices_df, returns_data=False, **kwargs
         )
 
     def ledoit_wolf_cov(self, shrinkage_target="constant_variance", **kwargs):
         covshrink = risk_models.CovarianceShrinkage(
-            prices=self._pf._df, returns_data=False, **kwargs
+            prices=self._pf._prices_df, returns_data=False, **kwargs
         )
         return covshrink.ledoit_wolf(shrinkage_target=shrinkage_target)
 
     def oracle_approximating_cov(self, **kwargs):
         covshrink = risk_models.CovarianceShrinkage(
-            prices=self._pf._df, returns_data=False, **kwargs
+            prices=self._pf._prices_df, returns_data=False, **kwargs
         )
         return covshrink.oracle_approximating()
 

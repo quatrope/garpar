@@ -72,7 +72,7 @@ class Markowitz(OptimizerABC):
 
         weights = ef.efficient_return(target_return, self.market_neutral)
 
-        weights_list = [weights[stock] for stock in pf._df.columns]
+        weights_list = [weights[stock] for stock in self._prices_df.columns]
 
         metadata = dict(pf.metadata)
         metadata.update(
@@ -80,7 +80,9 @@ class Markowitz(OptimizerABC):
             optimizer_kwargs={"target_return": target_return},
         )
 
-        return Portfolio.from_dfkws(pf._df.copy(), weights_list, **metadata)
+        return Portfolio.from_dfkws(
+            self._prices_df.copy(), weights_list, **metadata
+        )
 
 
 class BlackLitterman(OptimizerABC):
@@ -110,7 +112,7 @@ class BlackLitterman(OptimizerABC):
         blm = pypfopt.BlackLittermanModel(**kwargs)
         weights = blm.bl_weights(risk_aversion)
 
-        weights_list = [weights[stock] for stock in pf._df.columns]
+        weights_list = [weights[stock] for stock in self._prices_df.columns]
 
         metadata = dict(pf.metadata)
         metadata.update(
@@ -118,4 +120,6 @@ class BlackLitterman(OptimizerABC):
             optimizer_kwargs={"risk_aversion": risk_aversion},
         )
 
-        return Portfolio.from_dfkws(pf._df.copy(), weights_list, **metadata)
+        return Portfolio.from_dfkws(
+            self._prices_df.copy(), weights_list, **metadata
+        )

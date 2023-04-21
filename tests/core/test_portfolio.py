@@ -34,14 +34,14 @@ def test_Portfolio_creation():
     metadata = {"foo": "faa"}
 
     manual_pf = Portfolio(
-        df=df.copy(),
+        prices_df=df.copy(),
         weights=weights,
         entropy=entropy,
         window_size=window_size,
         metadata=metadata,
     )
     mk_pf = Portfolio.from_dfkws(
-        df=df.copy(), weights=1, entropy=0.5, window_size=None, **metadata
+        prices=df.copy(), weights=1, entropy=0.5, window_size=None, **metadata
     )
 
     assert manual_pf == mk_pf
@@ -50,7 +50,7 @@ def test_Portfolio_creation():
 
 def test_Portfolio_len():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
     )
@@ -60,7 +60,7 @@ def test_Portfolio_len():
 
 def test_Portfolio_copy_eq_ne():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
     )
@@ -70,7 +70,7 @@ def test_Portfolio_copy_eq_ne():
     assert pf is not copy
 
     other = Portfolio.from_dfkws(
-        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.25,
         window_size=5,
     )
@@ -87,7 +87,7 @@ def test_Portfolio_bad_weights():
 
 def test_Portfolio_slice():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
         entropy=0.5,
@@ -95,7 +95,7 @@ def test_Portfolio_slice():
     )
 
     expected = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {"stock1": [10, 20, 30, 40, 50]},
         ),
         entropy=0.5,
@@ -108,7 +108,7 @@ def test_Portfolio_slice():
 
 def test_Portfolio_as_returns():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5]},
         ),
         entropy=0.5,
@@ -128,7 +128,7 @@ def test_Portfolio_as_returns():
 
 def test_Portfolio_as_prices():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5]},
         ),
         entropy=0.5,
@@ -148,7 +148,7 @@ def test_Portfolio_as_prices():
 
 def test_Portfolio_repr():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
     )
@@ -171,7 +171,7 @@ def test_Portfolio_repr():
 
 def test_Portfolio_to_dataframe():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
         entropy=0.5,
@@ -195,7 +195,7 @@ def test_Portfolio_to_dataframe():
 
 def test_Portfolio_to_hdf5():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
         entropy=0.5,
@@ -212,7 +212,7 @@ def test_Portfolio_to_hdf5():
 
 def test_Portfolio_weights_prune():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 40, 50],
@@ -230,7 +230,7 @@ def test_Portfolio_weights_prune():
 
 def test_Portfolio_delisted_prune():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 0, 0],
@@ -249,7 +249,7 @@ def test_Portfolio_delisted_prune():
 
 def test_Portfolio_scale_weights():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 40, 50],
@@ -269,7 +269,7 @@ def test_Portfolio_scale_weights():
 
 def test_Portfolio_scale_weights_bad_scaler():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 40, 50],
@@ -287,7 +287,7 @@ def test_Portfolio_scale_weights_bad_scaler():
 
 def test_Portfolio_refresh_entropy():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 40, 50],
@@ -307,7 +307,7 @@ def test_Portfolio_refresh_entropy():
 
 def test_Portfolio_refresh_entropy_bad_entropy():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame(
+        prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
                 "stock1": [10, 20, 30, 40, 50],
@@ -325,7 +325,7 @@ def test_Portfolio_refresh_entropy_bad_entropy():
 
 def test_Portfolio_repr_html():
     pf = Portfolio.from_dfkws(
-        df=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
+        prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
     )

@@ -67,7 +67,7 @@
 # Assert everything is the same except for the weights
 #     assert result is not pf
 #     assert isinstance(result, Portfolio)
-#     pd.testing.assert_frame_equal(pf._df, result._df)
+#     pd.testing.assert_frame_equal(pf._prices_df, result._df)
 #     assert result.metadata.optimizer_kwargs["target_return"] == 1
 
 #     assert isinstance(result.weights, pd.Series)
@@ -100,7 +100,7 @@
 # Assert everything is the same except for the weights
 #     assert result is not pf
 #     assert isinstance(result, Portfolio)
-#     pd.testing.assert_frame_equal(pf._df, result._df)
+#     pd.testing.assert_frame_equal(pf._prices_df, result._df)
 #     assert result.metadata.optimizer_kwargs["target_return"] == 1.1
 
 #     assert isinstance(result.weights, pd.Series)
@@ -141,7 +141,7 @@
 # Assert everything is the same except for the weights
 #     assert result is not pf
 #     assert isinstance(result, Portfolio)
-#     pd.testing.assert_frame_equal(pf._df, result._df)
+#     pd.testing.assert_frame_equal(pf._prices_df, result._df)
 
 #     assert isinstance(result.weights, pd.Series)
 #     pd.testing.assert_series_equal(result.weights, expected_weights)
