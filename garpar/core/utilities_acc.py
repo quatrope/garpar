@@ -52,7 +52,7 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
             benchmark_returns=benchmark_returns,
         )
 
-    def pf_return(
+    def portfolio_return(
         self,
         *,
         expected_returns="capm",
@@ -67,6 +67,8 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
             expected_returns=expected_returns,
             negative=negative,
         )
+
+    pf_return = portfolio_return
 
     def quadratic_utility(
         self,
@@ -90,3 +92,5 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
             risk_aversion=risk_aversion,
             **kwargs,
         )
+
+    qutility = quadratic_utility
