@@ -17,7 +17,7 @@ from .risso import (
     make_risso_normal,
     make_risso_levy_stable,
 )
-from .multi import MultiSector
+from .multi import MultiSector, make_multisector
 
 __all__ = [
     "PortfolioMakerABC",
@@ -26,6 +26,7 @@ __all__ = [
     "RissoLevyStable",
     "RissoNormal",
     "RissoUniform",
+    "make_multisector",
     "make_risso_normal",
     "make_risso_levy_stable",
     "make_risso_uniform",

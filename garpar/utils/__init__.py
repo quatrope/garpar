@@ -18,7 +18,12 @@
 from . import entropy, mabc, scalers
 
 # export skcutils as own utils
-from skcriteria.utils import Bunch as _SKCBunch, df_temporal_header, accabc
+from skcriteria.utils import (
+    Bunch as _SKCBunch,
+    df_temporal_header,
+    accabc,
+    unique_names,
+)
 
 
 # custom bunch method

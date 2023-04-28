@@ -5,7 +5,7 @@ import pandas as pd
 from .base import PortfolioMakerABC
 
 from ..core.portfolio import Portfolio
-from ..utils import mabc, Bunch
+from ..utils import mabc, Bunch, unique_names
 
 
 class MultiSector(PortfolioMakerABC):
@@ -51,7 +51,7 @@ class MultiSector(PortfolioMakerABC):
                 weights=None,
             )
 
-            df = self._prices_df.add_prefix(f"{maker_name}_")
+            df = pf._prices_df.add_prefix(f"{maker_name}_")
             stocks_dfs.append(df)
 
             entropy.extend(pf.entropy)
@@ -76,3 +76,13 @@ class MultiSector(PortfolioMakerABC):
             entropy=entropy,
             **metadata,
         )
+
+
+def make_multisector(*makers, **kwargs):
+    names = [type(maker).__name__.lower() for maker in makers]
+    named_makers = unique_names(names=names, elements=makers)
+
+    pf_maker = MultiSector(named_makers)
+    port = pf_maker.make_portfolio(**kwargs)
+
+    return port
