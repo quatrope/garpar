@@ -17,7 +17,7 @@ class MultiSector(PortfolioMakerABC):
             raise ValueError(f"You must provide at least 2 makers")
         for maker_name, maker in value:
             if not isinstance(maker, PortfolioMakerABC):
-                cls_name = type(self).__name__
+                cls_name = PortfolioMakerABC.__name__
                 msg = f"Maker '{maker_name}' is not instance of '{cls_name}'"
                 raise TypeError(msg)
 

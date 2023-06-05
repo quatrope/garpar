@@ -8,6 +8,8 @@
 # IMPORTS
 # =============================================================================
 
+from dataclasses import dataclass, field
+
 import numpy as np
 
 import scipy.stats
@@ -138,6 +140,45 @@ def make_risso_normal(
 # =============================================================================
 
 
+@dataclass
+class _LStableCache:
+    negatives: list = field(default_factory=list, init=False, repr=False)
+    positives: list = field(default_factory=list, init=False, repr=False)
+    refresh_size: int = field(default=100, init=False)
+    refresh: int = field(default=0, init=False)
+
+    def __repr__(self):
+        cname = type(self).__name__
+        negs = len(self.negatives)
+        pos = len(self.positives)
+        total = negs + pos
+        rsize = self.refresh_size
+        refresh = self.refresh
+        return (
+            f"<{cname} (-, +, total)=({negs}, {pos}, {total}), "
+            f"refresh_size={rsize}, refresh={refresh}>"
+        )
+
+    def get_value(self, sign, refresher, random):
+        # we get the reference of the cache to use depending on the sign
+        cache = self.negatives if sign < 0 else self.positives
+
+        self.refresh = self.refresh + bool(cache)
+        while not cache:
+            values = refresher(size=self.refresh_size, random_state=random)
+
+            # lo dividimos en positivos y negaticos
+            self.negatives.extend(values[values < 0])
+            self.positives.extend(values[values >= 0])
+
+            # y la siguiente vez que se le pida valores, pedimos un poco maas
+            self.refresh_size = self.refresh_size + int(
+                np.log(10 + self.refresh_size)
+            )
+
+        return cache.pop(0)
+
+
 class RissoLevyStable(RissoABC):
     alpha = mabc.hparam(default=1.6411, converter=float)
     beta = mabc.hparam(default=-0.0126, converter=float)
@@ -145,6 +186,8 @@ class RissoLevyStable(RissoABC):
     sigma = mabc.hparam(default=0.005, converter=float)  # scale
 
     levy_stable_ = mabc.mproperty(repr=False)
+
+    _days_returns_cache = mabc.mproperty(repr=False, factory=_LStableCache)
 
     @levy_stable_.default
     def _levy_stable_default(self):
@@ -156,8 +199,9 @@ class RissoLevyStable(RissoABC):
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
-        day_return = sign * np.abs(self.levy_stable_.rvs(random_state=random))
-        new_price = price + day_return
+        new_price = price + self._days_returns_cache.get_value(
+            sign, self.levy_stable_.rvs, random
+        )
         return 0.0 if new_price < 0 else new_price
 
 
