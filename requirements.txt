@@ -1,0 +1,2 @@
+setuptools==69.5.1
+kiwisolver==1.4.5

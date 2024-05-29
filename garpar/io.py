@@ -97,7 +97,6 @@ def to_hdf5(path_or_stream, pf, group="portfolio", **kwargs):
         Extra arguments to the function ``h5py.File.create_dataset``.
 
     """
-
     # # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
     h5_metadata["utc_timestamp"] = dt.datetime.utcnow().isoformat()
@@ -128,6 +127,7 @@ def to_hdf5(path_or_stream, pf, group="portfolio", **kwargs):
 
 
 def read_hdf5(path_or_stream, group="portfolio"):
+    """HDF5 file reader."""
     with h5py.File(path_or_stream, "r") as fp:
         grp = fp[group]
 

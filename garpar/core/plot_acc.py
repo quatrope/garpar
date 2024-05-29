@@ -39,6 +39,9 @@ class PortfolioPlotter(accabc.AccessorABC):
     def _wdf(self):
         # proxy to access the dataframe with the weights
         return self._pf.weights.to_frame(), "Weights"
+    
+    def _edf(self):
+        return self._pf.entropy.to_frame(), "Entropy"
 
     # PLOTS ===================================================================
 

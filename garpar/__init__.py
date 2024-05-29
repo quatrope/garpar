@@ -8,6 +8,8 @@
 # IMPORTS
 # =============================================================================
 
+"""Package modules provided."""
+
 __version__ = "0.1"
 
 from . import datasets, io, optimize

@@ -1,3 +1,5 @@
+"""MABC module."""
+
 import attr
 
 from abc import ABCMeta, abstractmethod  # noqa

@@ -62,12 +62,12 @@ class PortfolioMakerABC(mabc.ModelABC):
 
 
 class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
+    entropy = mabc.hparam(default=0.5)
     random_state = mabc.hparam(
         default=None, converter=np.random.default_rng, repr=False
     )
     n_jobs = mabc.hparam(default=None)
     verbose = mabc.hparam(default=0)
-    entropy = mabc.hparam(default=0.5)
 
     # Abstract=================================================================
 
@@ -101,7 +101,7 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         return seeds
 
     def _make_loss_sequence(self, days, loss_probability, random):
-        win_probability = 1 - loss_probability
+        win_probability = 1.0 - loss_probability
 
         # primero seleccionamos con las probabilidades adecuadas si en cada
         # dia se pierde o se gana

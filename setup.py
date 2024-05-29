@@ -17,16 +17,30 @@ from setuptools import find_packages, setup
 # =============================================================================
 
 REQUIREMENTS = [
-    "numpy",
-    "pandas",
-    "scipy",
-    "seaborn",
-    "matplotlib",
+    "attrs",
+    "custom_inherit",
+    "cvxpy",
+    "cycler",
+    "deprecated",
+    "distutils",
     "h5py",
     "joblib",
+    "kiwisolver",
+    "matplotlib",
+    "numpy < 2",
+    "pandas",
+    "pulp",
+    "pyparsing",
     "PyPortfolioOpt",
+    "python-dateutil",
+    "pytz",
     "scikit-criteria",
-    "attrs",
+    "scikit-learn",
+    "scipy",
+    "seaborn",
+    "wirerope",
+    "wrapt",
+    "zipp",
 ]
 
 

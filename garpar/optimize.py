@@ -4,6 +4,8 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Portfolio optimizers."""
+
 import pypfopt
 
 import numpy as np
@@ -18,11 +20,14 @@ from .utils import Bunch, mabc
 
 
 class OptimizerABC(mabc.ModelABC):
+    """Abstract optimizer."""
+
     @mabc.abstractmethod
     def _calculate_weights(self, pf):
         raise NotImplementedError()
 
     def optimize(self, pf):
+        """Skeleton for optimize."""
         weights, metadata = self._calculate_weights(pf)
         return pf.copy(weights=weights, optimizer=metadata)
 
@@ -89,6 +94,8 @@ class Markowitz(OptimizerABC):
 
 
 class BlackLitterman(OptimizerABC):
+    """Classic Black Litterman model."""
+
     risk_aversion = mabc.hparam(default=None)
     prior = mabc.hparam(default="equal")
     absolute_views = mabc.hparam(default=None)

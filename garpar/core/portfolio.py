@@ -399,7 +399,7 @@ class Portfolio:
         return self.copy(weights=scaled_weights)
 
     # CALCULATE ENTROPY =======================================================
-
+    # TODO
     def refresh_entropy(self, *, entropy="shannon", entropy_kws=None):
         entropy_calc = _ENTROPY_CALCULATORS.get(entropy, entropy)
         if not callable(entropy_calc):
