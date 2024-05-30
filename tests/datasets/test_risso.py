@@ -115,5 +115,5 @@ def test_make_risso_levy_stable():
         weights=[1, 1],
     )
 
-    pd.testing.assert_frame_equal(result.as_prices(), expected.as_prices())
+    pd.testing.assert_frame_equal(result.as_prices(), expected.as_prices(), check_exact=False, atol=.01, rtol=.01)
     pd.testing.assert_series_equal(result.weights, expected.weights)

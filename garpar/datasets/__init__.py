@@ -9,15 +9,15 @@
 
 from .base import PortfolioMakerABC, RandomEntropyPortfolioMakerABC
 from .data import load_MERVAL
+from .multisector import MultiSector, make_multisector
 from .risso import (
     RissoLevyStable,
     RissoNormal,
     RissoUniform,
-    make_risso_uniform,
-    make_risso_normal,
     make_risso_levy_stable,
+    make_risso_normal,
+    make_risso_uniform,
 )
-from .multisector import MultiSector, make_multisector
 
 __all__ = [
     "PortfolioMakerABC",

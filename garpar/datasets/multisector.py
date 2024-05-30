@@ -1,11 +1,16 @@
+# This file is part of the
+#   Garpar Project (https://github.com/quatrope/garpar).
+# Copyright (c) 2021, 2022, Nadia Luczywo, Juan Cabral and QuatroPe
+# License: MIT
+#   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
+
 import numpy as np
+
 import pandas as pd
 
-
 from .base import PortfolioMakerABC
-
 from ..core.portfolio import Portfolio
-from ..utils import mabc, Bunch, unique_names
+from ..utils import Bunch, mabc, unique_names
 
 
 class MultiSector(PortfolioMakerABC):
@@ -14,7 +19,7 @@ class MultiSector(PortfolioMakerABC):
     @makers.validator
     def _makers_validator(self, attribute, value):
         if len(value) < 2:
-            raise ValueError(f"You must provide at least 2 makers")
+            raise ValueError("You must provide at least 2 makers")
         for maker_name, maker in value:
             if not isinstance(maker, PortfolioMakerABC):
                 cls_name = PortfolioMakerABC.__name__

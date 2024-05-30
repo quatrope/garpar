@@ -17,14 +17,14 @@ import pypfopt
 
 from . import (
     covcorr_acc,
+    div_acc,
     ereturns_acc,
     plot_acc,
     prices_acc,
     risk_acc,
     utilities_acc,
-    div_acc,
 )
-from ..utils import df_temporal_header, Bunch, entropy, scalers
+from ..utils import Bunch, df_temporal_header, entropy, scalers
 
 # =============================================================================
 # CONSTANTS

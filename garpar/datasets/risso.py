@@ -180,8 +180,8 @@ class _LStableCache:
 
 
 class RissoLevyStable(RissoABC):
-    alpha = mabc.hparam(default=1.6411, converter=float)
-    beta = mabc.hparam(default=-0.0126, converter=float)
+    alpha = mabc.hparam(default=1.6411, converter=float)  # shape
+    beta = mabc.hparam(default=-0.0126, converter=float)  # scale
     mu = mabc.hparam(default=0.0005, converter=float)  # loc
     sigma = mabc.hparam(default=0.005, converter=float)  # scale
 
