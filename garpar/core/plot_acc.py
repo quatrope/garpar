@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, Nadia Luczywo, Juan Cabral and QuatroPe
+# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo, Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
@@ -195,7 +195,7 @@ class PortfolioPlotter(accabc.AccessorABC):
 
         """
         data, title = self._wdf()
-        ax = sns.boxplot(data=data**kwargs)
+        ax = sns.boxplot(data=data, **kwargs)
         ax.set_title(title)
         return ax
 
@@ -249,7 +249,7 @@ class PortfolioPlotter(accabc.AccessorABC):
 
         """
         data, title = self._wdf()
-        ax = sns.kdeplot(data=data**kwargs)
+        ax = sns.kdeplot(data=data, **kwargs)
         ax.set_title(title)
         return ax
 

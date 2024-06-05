@@ -1,12 +1,14 @@
 include LICENSE
 include README.md
 include pyproject.toml
+include ejemplo.py
 
 recursive-include garpar *.csv
 
 exclude tox.ini
 exclude .header-template
 exclude requirements.txt
+exclude requirements_dev.txt
 
 recursive-exclude tests *
 recursive-exclude draft *
