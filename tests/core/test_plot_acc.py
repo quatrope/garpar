@@ -4,83 +4,151 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-# TODO TESTEAR
 import pytest
 from garpar.datasets.risso import make_risso_uniform
+from garpar.core.portfolio import Portfolio
 from garpar.core.plot_acc import PortfolioPlotter
+from matplotlib.testing.decorators import check_figures_equal
+import seaborn as sns
+import numpy as np
 
-@pytest.fixture(scope="module")
-def plot_fn():
-    def _plot(type):
-        pf = make_risso_uniform(random_state=42)
-        plotter = PortfolioPlotter(pf)
-        plotter.__call__(type)
-
-    return _plot
-
-
-def test_portfolio_plotter_line(plot_fn):
-    plot_fn("line")
-
-def test_portfolio_plotter_heatmap(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+@check_figures_equal()
+def test_portfolio_plotter_line(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
 
     plotter = PortfolioPlotter(pf)
 
-    plotter.heatmap()
+    ax_test = fig_test.subplots()
+    plotter.line(ax=ax_test)
 
-def test_portfolio_plotter_wheatmap(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._ddf(returns=False)
+    ax_ref = sns.lineplot(data=data)
+    ax_ref.set_title(title)
 
-    plotter = PortfolioPlotter(pf)
-
-    plotter.wheatmap()
-
-def test_portfolio_plotter_hist(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
-
-    plotter = PortfolioPlotter(pf)
-
-    plotter.hist()
-
-def test_portfolio_whist(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+@check_figures_equal()
+def test_portfolio_plotter_heatmap(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
 
     plotter = PortfolioPlotter(pf)
 
-    plotter.whist()
+    ax_test = fig_test.subplots()
+    plotter.heatmap(ax=ax_test)
 
-def test_portfolio_box(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._ddf(returns=False)
+    ax_ref = sns.heatmap(data=data)
+    ax_ref.set_title(title)
 
-    plotter = PortfolioPlotter(pf)
-
-    plotter.box()
-
-def test_portfolio_wbox(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
-
-    plotter = PortfolioPlotter(pf)
-
-    plotter.wbox()
-
-def test_portfolio_kde(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+@check_figures_equal()
+def test_portfolio_plotter_wheatmap(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
 
     plotter = PortfolioPlotter(pf)
 
-    plotter.kde()
+    ax_test = fig_test.subplots()
+    plotter.wheatmap(ax=ax_test)
 
-def test_portfolio_wkde(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._wdf()
+    ax_ref = sns.heatmap(data=data.T)
+    ax_ref.set_title(title)
+    ax_ref.set_xlabel("Stocks")
+
+@check_figures_equal()
+def test_portfolio_plotter_hist(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
 
     plotter = PortfolioPlotter(pf)
 
-    plotter.wkde()
+    ax_test = fig_test.subplots()
+    plotter.hist(ax=ax_test)
 
-def test_portfolio_ogive(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._ddf(returns=False)
+    ax_ref = sns.histplot(data=data)
+    ax_ref.set_title(title)
+
+@check_figures_equal()
+def test_portfolio_whist(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
 
     plotter = PortfolioPlotter(pf)
 
-    plotter.ogive()
+    ax_test = fig_test.subplots()
+    plotter.whist(ax=ax_test)
+
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._wdf()
+    ax_ref = sns.histplot(data=data.T)
+    ax_ref.set_title(title)
+
+@check_figures_equal()
+def test_portfolio_box(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
+
+    plotter = PortfolioPlotter(pf)
+
+    ax_test = fig_test.subplots()
+    plotter.box(ax=ax_test)
+
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._ddf(returns=False)
+    ax_ref = sns.boxplot(data=data)
+    ax_ref.set_title(title)
+
+@check_figures_equal()
+def test_portfolio_wbox(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
+
+    plotter = PortfolioPlotter(pf)
+
+    ax_test = fig_test.subplots()
+    plotter.wbox(ax=ax_test)
+
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._wdf()
+    ax_ref = sns.boxplot(data=data)
+    ax_ref.set_title(title)
+
+@check_figures_equal()
+def test_portfolio_kde(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
+
+    plotter = PortfolioPlotter(pf)
+
+    ax_test = fig_test.subplots()
+    plotter.kde(ax=ax_test)
+
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._ddf(returns=False)
+    ax_ref = sns.kdeplot(data=data)
+    ax_ref.set_title(title)
+
+@check_figures_equal()
+def test_portfolio_wkde(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
+
+    plotter = PortfolioPlotter(pf)
+
+    ax_test = fig_test.subplots()
+    plotter.wkde(ax=ax_test, warn_singular=False) # FIXME preguntar si es correcto
+
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._wdf()
+    ax_ref = sns.kdeplot(data=data, warn_singular=False) # FIXME preguntar si es correcto
+    ax_ref.set_title(title)
+
+@check_figures_equal()
+def test_portfolio_ogive(fig_test, fig_ref):
+    pf = make_risso_uniform(random_state=3)
+
+    plotter = PortfolioPlotter(pf)
+
+    ax_test = fig_test.subplots()
+    plotter.ogive(ax=ax_test)
+
+    ax_ref = fig_ref.subplots()
+    data, title = plotter._ddf(returns=False)
+    ax_ref = sns.ecdfplot(data=data)
+    ax_ref.set_title(title)
