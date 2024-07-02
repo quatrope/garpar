@@ -245,7 +245,8 @@ class Portfolio:
 
     # UTILS ===================================================================
     def copy(
-        self,
+        self, 
+        *,
         prices=None,
         weights=None,
         entropy=None,
@@ -254,9 +255,7 @@ class Portfolio:
         preserve_old_metadata=True,
         **metadata,
     ):
-        new_prices_df = (self._prices_df if prices is None else prices).copy(
-            deep=True
-        )
+        new_prices_df = (self._prices_df if prices is None else prices).copy()
         new_weights = (self._weights if weights is None else weights).copy()
         new_entropy = (self._entropy if entropy is None else entropy).copy()
         new_window_size = (

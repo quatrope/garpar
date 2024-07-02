@@ -31,7 +31,7 @@ import garpar as gp
 # CONSTANTS
 # =============================================================================
 
-DISTRIBUTION = {
+DISTRIBUTIONS = {
     "levy-stable": gp.datasets.make_risso_levy_stable,
     "normal": gp.datasets.make_risso_normal,
     "uniform": gp.datasets.make_risso_uniform,
@@ -44,11 +44,18 @@ DISTRIBUTION = {
 
 @pytest.fixture(scope="session")
 def risso_portfolio():
-    def make(*, distribution="normal", **kwargs):
+    def make(*, distribution="normal", random_state=None, **kwargs):
+        maker = DISTRIBUTIONS[distribution]
+        random_state=np.random.default_rng(random_state)
         kwargs.setdefault("days", 5)
         kwargs.setdefault("stocks", 10)
-        maker = DISTRIBUTION[distribution]
-        return maker(**kwargs)
+
+        pf = maker(random_state=random_state, **kwargs)
+
+        weights = random_state.random(size=len(pf.weights))
+        pf = pf.copy(weights=weights)
+
+        return pf
 
     return make
 
@@ -60,3 +67,10 @@ def risso_portfolio_values(risso_portfolio):
         return portfolio._df, portfolio._weights
 
     return make
+
+# =============================================================================
+# CONFIGURATIONS
+# =============================================================================
+
+def pytest_configure():
+    pytest.DISTRIBUTIONS = DISTRIBUTIONS

@@ -58,6 +58,10 @@ class Markowitz(OptimizerABC):
     covariance = mabc.hparam(default="sample_cov")
     covariance_kw = mabc.hparam(factory=dict)
 
+    optimize_options = ["min_volatility", "max_sharpe", "max_quadratic_utility", "efficient_risk", "efficient_return"]
+
+    # TODO: Add capital market line
+
     def _get_optimizer(self, pf):
         expected_returns = pf.ereturns(self.returns, **self.returns_kw)
         cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
@@ -69,9 +73,9 @@ class Markowitz(OptimizerABC):
         )
         return optimizer
 
-    def _coerce_target_return(self, port):
+    def _coerce_target_return(self, pf):
         if self.target_return is None:
-            returns = port.as_returns().to_numpy()
+            returns = pf.as_returns().to_numpy()
             return np.min(np.abs(returns))
         return self.target_return
 
@@ -91,6 +95,20 @@ class Markowitz(OptimizerABC):
         }
 
         return weights, optimizer_metadata
+    
+    def _optimize(self, pf, *, op="max_sharpe"):
+        if op not in self.optimize_options:
+            print("Not a valid option")
+            return self._calculate_weights(pf)
+        optimizer = self._get_optimizer(pf)
+        weights = getattr(optimizer, op)()
+
+        optimizer_metadata = {
+            "name": type(self).__name__,
+        }
+
+        return weights, optimizer_metadata
+
 
 
 class BlackLitterman(OptimizerABC):
