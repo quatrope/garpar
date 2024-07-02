@@ -60,8 +60,6 @@ class Markowitz(OptimizerABC):
 
     optimize_options = ["min_volatility", "max_sharpe", "max_quadratic_utility", "efficient_risk", "efficient_return"]
 
-    # TODO: Add capital market line
-
     def _get_optimizer(self, pf):
         expected_returns = pf.ereturns(self.returns, **self.returns_kw)
         cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
@@ -98,8 +96,8 @@ class Markowitz(OptimizerABC):
     
     def _optimize(self, pf, *, op="max_sharpe"):
         if op not in self.optimize_options:
-            print("Not a valid option")
-            return self._calculate_weights(pf)
+            print("Not a valid option, using max_sharpe instead")
+            op="max_sharpe"
         optimizer = self._get_optimizer(pf)
         weights = getattr(optimizer, op)()
 
@@ -108,8 +106,6 @@ class Markowitz(OptimizerABC):
         }
 
         return weights, optimizer_metadata
-
-
 
 class BlackLitterman(OptimizerABC):
     """Classic Black Litterman model."""
