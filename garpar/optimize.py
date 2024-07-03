@@ -94,11 +94,39 @@ class Markowitz(OptimizerABC):
 
         return weights, optimizer_metadata
     
-    def _optimize(self, pf, *, op="max_sharpe"):
+    def _optimize(self, pf, *, op="max_sharpe", **kwargs):
+        optimizer = self._get_optimizer(pf)
+
+        global_min_volatility = np.sqrt(1 / np.sum(np.linalg.pinv(optimizer.cov_matrix)))
+
+        kwargs.setdefault("target_return", optimizer.deepcopy()._max_return() - .0001)
+        kwargs.setdefault("target_risk", global_min_volatility)
+
         if op not in self.optimize_options:
             print("Not a valid option, using max_sharpe instead")
             op="max_sharpe"
-        optimizer = self._get_optimizer(pf)
+
+        if op == "efficient_risk": # TODO: Traerlo del propio optimizador
+            optimizer = self._get_optimizer(pf)
+            weights = optimizer.efficient_risk(kwargs["target_risk"])
+            optimizer_metadata = {
+                "name": type(self).__name__,
+                "target_risk": kwargs["target_risk"],
+            }
+
+            return weights, optimizer_metadata
+
+        if op == "efficient_return": # TODO: Traerlo del propio optimizador
+            optimizer = self._get_optimizer(pf)
+            weights = optimizer.efficient_return(kwargs["target_return"])
+            optimizer_metadata = {
+                "name": type(self).__name__,
+                "target_return": kwargs["target_return"],
+            }
+
+            return weights, optimizer_metadata
+
+        
         weights = getattr(optimizer, op)()
 
         optimizer_metadata = {
