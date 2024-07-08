@@ -18,9 +18,18 @@ from .utils import Bunch, mabc
 # ABSTRACT OPTIMIZER
 # =============================================================================
 
+_Unknow = object()
+
 
 class OptimizerABC(mabc.ModelABC):
     """Abstract optimizer."""
+
+    family = _Unknow
+
+    def __init_subclass__(cls):
+        if cls.family is _Unknow or not isinstance(cls.family, str):
+            cls_name = cls.__name__
+            raise TypeError(f"'{cls_name}.family' must be redefined as string")
 
     @mabc.abstractmethod
     def _calculate_weights(self, pf):
@@ -31,13 +40,21 @@ class OptimizerABC(mabc.ModelABC):
         weights, metadata = self._calculate_weights(pf)
         return pf.copy(weights=weights, optimizer=metadata)
 
+    @classmethod
+    def get_optimizer_family(self):
+        return self.family
+
 
 # =============================================================================
 # OPTIMIZER
 # =============================================================================
 
 
-class Markowitz(OptimizerABC):
+class MeanVarianceFamilyMixin:
+    family = "mean-variance"
+
+
+class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     """Clasic Markowitz model.
 
     This method implements the  Clasic Model Markowitz 1952 in Mansini, R.,
@@ -58,7 +75,13 @@ class Markowitz(OptimizerABC):
     covariance = mabc.hparam(default="sample_cov")
     covariance_kw = mabc.hparam(factory=dict)
 
-    optimize_options = ["min_volatility", "max_sharpe", "max_quadratic_utility", "efficient_risk", "efficient_return"]
+    optimize_options = [
+        "min_volatility",
+        "max_sharpe",
+        "max_quadratic_utility",
+        "efficient_risk",
+        "efficient_return",
+    ]
 
     def _get_optimizer(self, pf):
         expected_returns = pf.ereturns(self.returns, **self.returns_kw)
@@ -93,20 +116,24 @@ class Markowitz(OptimizerABC):
         }
 
         return weights, optimizer_metadata
-    
+
     def _optimize(self, pf, *, op="max_sharpe", **kwargs):
         optimizer = self._get_optimizer(pf)
 
-        global_min_volatility = np.sqrt(1 / np.sum(np.linalg.pinv(optimizer.cov_matrix)))
+        global_min_volatility = np.sqrt(
+            1 / np.sum(np.linalg.pinv(optimizer.cov_matrix))
+        )
 
-        kwargs.setdefault("target_return", optimizer.deepcopy()._max_return() - .0001)
+        kwargs.setdefault(
+            "target_return", optimizer.deepcopy()._max_return() - 0.0001
+        )
         kwargs.setdefault("target_risk", global_min_volatility)
 
         if op not in self.optimize_options:
             print("Not a valid option, using max_sharpe instead")
-            op="max_sharpe"
+            op = "max_sharpe"
 
-        if op == "efficient_risk": # TODO: Traerlo del propio optimizador
+        if op == "efficient_risk":  # TODO: Traerlo del propio optimizador
             optimizer = self._get_optimizer(pf)
             weights = optimizer.efficient_risk(kwargs["target_risk"])
             optimizer_metadata = {
@@ -116,7 +143,7 @@ class Markowitz(OptimizerABC):
 
             return weights, optimizer_metadata
 
-        if op == "efficient_return": # TODO: Traerlo del propio optimizador
+        if op == "efficient_return":  # TODO: Traerlo del propio optimizador
             optimizer = self._get_optimizer(pf)
             weights = optimizer.efficient_return(kwargs["target_return"])
             optimizer_metadata = {
@@ -126,7 +153,6 @@ class Markowitz(OptimizerABC):
 
             return weights, optimizer_metadata
 
-        
         weights = getattr(optimizer, op)()
 
         optimizer_metadata = {
@@ -135,8 +161,11 @@ class Markowitz(OptimizerABC):
 
         return weights, optimizer_metadata
 
+
 class BlackLitterman(OptimizerABC):
     """Classic Black Litterman model."""
+
+    family = "black-litterman"
 
     risk_aversion = mabc.hparam(default=None)
     prior = mabc.hparam(default="equal")
