@@ -31,11 +31,104 @@ class OptimizerABC(mabc.ModelABC):
         weights, metadata = self._calculate_weights(pf)
         return pf.copy(weights=weights, optimizer=metadata)
 
-
 # =============================================================================
 # OPTIMIZER
 # =============================================================================
 
+class MVOptimizer(OptimizerABC):
+    """Mean Variance Optimizer."""
+
+    weight_bounds = mabc.hparam(default=(0, 1))
+
+    target_return = mabc.hparam(default=None)
+    target_risk = mabc.hparam(default=None)
+
+    method = mabc.hparam(default="max_sharpe")
+
+    weight_bounds = mabc.hparam(default=(0, 1))
+    market_neutral = mabc.hparam(default=False)
+
+    returns = mabc.hparam(default="mah")
+    returns_kw = mabc.hparam(factory=dict)
+
+    covariance = mabc.hparam(default="sample_cov")
+    covariance_kw = mabc.hparam(factory=dict)
+
+    def _coerce_target_return(self, pf):
+        if self.target_return is None:
+            returns = pf.as_returns().to_numpy().flatten()
+            returns = returns[returns != 0]
+            returns = returns[~np.isnan(returns)]
+            return np.min(np.abs(returns))
+        return self.target_return
+
+    def _coerce_target_volatility(self, pf):
+        if self.target_risk is None:
+            volatilities = np.std(pf.as_prices()) # Se revisó y se usa efectivamente la deviacion estandar. Ya que despues usa el cuadrado de este valor. Se entiende este parametro como volatilidad?
+            return np.min(volatilities)
+        return self.target_risk
+
+    def _get_optimizer(self, pf):
+        expected_returns = pf.ereturns(self.returns, **self.returns_kw)
+        cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
+        weight_bounds = self.weight_bounds
+        optimizer = pypfopt.EfficientFrontier(
+            expected_returns=expected_returns,
+            cov_matrix=cov_matrix,
+            weight_bounds=weight_bounds,
+        )
+        return optimizer
+
+    def __calculate_weights_by_risk(self, pf):
+        optimizer = self._get_optimizer(pf)
+        target_volatility = self._coerce_target_volatility(pf)
+        market_neutral = self.market_neutral
+
+        weights_dict = optimizer.efficient_risk(target_volatility, market_neutral=market_neutral)
+        weights = [weights_dict[stock] for stock in pf.stocks]
+
+        optimizer_metadata = {
+            "name": "efficient_risk",
+            "target_volatility": target_volatility,
+        }
+
+        return weights, optimizer_metadata
+
+    def __calculate_weights_by_return(self, pf):
+        optimizer = self._get_optimizer(pf)
+        target_return = self._coerce_target_return(pf)
+        market_neutral = self.market_neutral
+
+        weights_dict = optimizer.efficient_return(target_return, market_neutral=market_neutral)
+        weights = [weights_dict[stock] for stock in pf.stocks]
+
+        optimizer_metadata = {
+            "name": "efficient_return",
+            "target_return": target_return,
+        }
+
+        return weights, optimizer_metadata
+
+    def __calculate_weights_general(self, pf):
+        optimizer = self._get_optimizer(pf)
+        market_neutral = self.market_neutral
+
+        weights_dict = getattr(optimizer, self.method)()
+        weights = [weights_dict[stock] for stock in pf.stocks]
+
+        optimizer_metadata = {
+            "name": self.method,
+        }
+
+        return weights, optimizer_metadata
+
+    def _calculate_weights(self, pf):
+        if self.method == "efficient_risk":
+            return self.__calculate_weights_by_risk(pf)
+        elif self.method == "efficient_return":
+            return self.__calculate_weights_by_return(pf)
+        else:
+            return self.__calculate_weights_general(pf)
 
 class Markowitz(OptimizerABC):
     """Clasic Markowitz model.
@@ -58,8 +151,6 @@ class Markowitz(OptimizerABC):
     covariance = mabc.hparam(default="sample_cov")
     covariance_kw = mabc.hparam(factory=dict)
 
-    optimize_options = ["min_volatility", "max_sharpe", "max_quadratic_utility", "efficient_risk", "efficient_return"]
-
     def _get_optimizer(self, pf):
         expected_returns = pf.ereturns(self.returns, **self.returns_kw)
         cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
@@ -73,7 +164,9 @@ class Markowitz(OptimizerABC):
 
     def _coerce_target_return(self, pf):
         if self.target_return is None:
-            returns = pf.as_returns().to_numpy()
+            returns = pf.as_returns().to_numpy().flatten()
+            returns = returns[returns != 0]
+            returns = returns[~np.isnan(returns)]
             return np.min(np.abs(returns))
         return self.target_return
 
@@ -90,47 +183,6 @@ class Markowitz(OptimizerABC):
         optimizer_metadata = {
             "name": type(self).__name__,
             "target_return": target_return,
-        }
-
-        return weights, optimizer_metadata
-    
-    def _optimize(self, pf, *, op="max_sharpe", **kwargs):
-        optimizer = self._get_optimizer(pf)
-
-        global_min_volatility = np.sqrt(1 / np.sum(np.linalg.pinv(optimizer.cov_matrix)))
-
-        kwargs.setdefault("target_return", optimizer.deepcopy()._max_return() - .0001)
-        kwargs.setdefault("target_risk", global_min_volatility)
-
-        if op not in self.optimize_options:
-            print("Not a valid option, using max_sharpe instead")
-            op="max_sharpe"
-
-        if op == "efficient_risk": # TODO: Traerlo del propio optimizador
-            optimizer = self._get_optimizer(pf)
-            weights = optimizer.efficient_risk(kwargs["target_risk"])
-            optimizer_metadata = {
-                "name": type(self).__name__,
-                "target_risk": kwargs["target_risk"],
-            }
-
-            return weights, optimizer_metadata
-
-        if op == "efficient_return": # TODO: Traerlo del propio optimizador
-            optimizer = self._get_optimizer(pf)
-            weights = optimizer.efficient_return(kwargs["target_return"])
-            optimizer_metadata = {
-                "name": type(self).__name__,
-                "target_return": kwargs["target_return"],
-            }
-
-            return weights, optimizer_metadata
-
-        
-        weights = getattr(optimizer, op)()
-
-        optimizer_metadata = {
-            "name": type(self).__name__,
         }
 
         return weights, optimizer_metadata
