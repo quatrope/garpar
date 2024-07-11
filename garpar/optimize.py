@@ -82,7 +82,12 @@ class OptimizerABC(mabc.ModelABC):
 # OPTIMIZER
 # =============================================================================
 
-class MVOptimizer(OptimizerABC):
+class MeanVarianceFamilyMixin:
+    """Mixin class for mean-variance family optimizers."""
+
+    family = "mean-variance"
+
+class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     """Mean Variance Optimizer."""
 
     weight_bounds = mabc.hparam(default=(0, 1))
@@ -177,13 +182,7 @@ class MVOptimizer(OptimizerABC):
         else:
             return self.__calculate_weights_general(pf)
 
-class MeanVarianceFamilyMixin:
-    """Mixin class for mean-variance family optimizers."""
-
-    family = "mean-variance"
-
-
-class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
+class Markowitz(MVOptimizer):
     """Classic Markowitz model.
 
     This method implements the Classic Model Markowitz 1952 in Mansini, R.,
@@ -211,11 +210,15 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         Available optimization strategies.
     """
 
-    target_return = mabc.hparam(default=None)
+    target_return = mabc.hparam(default=None) # No es buena idea hacer esto. Preguntarle a Juan
+    
     weight_bounds = mabc.hparam(default=(0, 1))
+    
     market_neutral = mabc.hparam(default=False)
+    
     returns = mabc.hparam(default="mah")
     returns_kw = mabc.hparam(factory=dict)
+
     covariance = mabc.hparam(default="sample_cov")
     covariance_kw = mabc.hparam(factory=dict)
 
