@@ -30,7 +30,38 @@ from skcriteria.utils import (
 
 
 class Bunch(_SKCBunch):
+    """
+    Container object exposing keys as attributes.
+
+    The Bunch class extends the _SKCBunch class, allowing for deep copying of its
+    data attribute to a dictionary format.
+
+    Methods
+    -------
+    to_dict():
+        Returns a deep copy of the _data attribute as a dictionary.
+    """
+
     def to_dict(self):
+        """
+        Convert the Bunch object to a dictionary.
+
+        This method performs a deep copy of the _data attribute, ensuring that 
+        the original data remains unchanged.
+
+        Returns
+        -------
+        dict
+            A deep copy of the _data attribute.
+
+        Examples
+        --------
+        >>> bunch = Bunch()
+        >>> bunch._data = {'key1': 'value1', 'key2': 'value2'}
+        >>> dict_data = bunch.to_dict()
+        >>> print(dict_data)
+        {'key1': 'value1', 'key2': 'value2'}
+        """
         import copy  # noqa
 
         return copy.deepcopy(self._data)
