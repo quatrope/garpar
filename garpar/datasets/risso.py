@@ -4,6 +4,8 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Risso Portfolio Maker."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -24,6 +26,35 @@ from ..utils import mabc
 
 
 def argnearest(arr, v):
+    """Find the index of the element in the array `arr` that is nearest to the value `v`.
+
+    Parameters
+    ----------
+    arr : array_like
+        Input array.
+    v : scalar
+        Value to which the elements of `arr` will be compared.
+
+    Returns
+    -------
+    idx : int
+        Index of the element in `arr` that is closest to `v`.
+
+    Notes
+    -----
+    If there are multiple elements at the same distance from `v`, the index of the first
+    occurrence is returned.
+
+    Examples
+    --------
+    >>> arr = np.array([1, 3, 5, 7, 9])
+    >>> argnearest(arr, 4)
+    1
+    >>> argnearest(arr, 6)
+    2
+    >>> argnearest(arr, 8)
+    4
+    """
     diff = np.abs(np.subtract(arr, v))
     idx = np.argmin(diff)
     return idx
@@ -35,7 +66,47 @@ def argnearest(arr, v):
 
 
 class RissoABC(RandomEntropyPortfolioMakerABC):
+    """Implementation of a portfolio maker based on entropy calculation by Risso.
+
+    This class extends RandomEntropyPortfolioMakerABC and implements methods
+    for calculating candidate entropies and selecting loss probabilities based
+    on a given window size and target entropy.
+
+    Attributes
+    ----------
+    entropy : float
+        Target entropy value for portfolio optimization.
+    random_state : numpy.random.Generator
+        Random number generator instance for reproducibility.
+    n_jobs : int, optional
+        Number of parallel jobs to run. Default is None.
+    verbose : int, optional
+        Verbosity level. Default is 0.
+
+    Methods
+    -------
+    candidate_entropy(window_size)
+        Calculate candidate entropies and corresponding loss probabilities.
+
+    get_window_loss_probability(window_size, entropy)
+        Get the loss probability that corresponds to the nearest candidate
+        entropy value to the target entropy.
+    """
+
     def candidate_entropy(self, window_size):
+        """Calculate candidate entropies and corresponding loss probabilities.
+
+        Parameters
+        ----------
+        window_size : int
+            Size of the sliding window for entropy calculation.
+
+        Returns
+        -------
+        tuple
+            Tuple containing the calculated modified entropy values and
+            corresponding loss probabilities.
+        """
         loss_probability = np.linspace(0.0, 1.0, num=window_size + 1)
 
         # Se corrigen probabilidades porque el cálculo de la entropía trabaja
@@ -52,6 +123,21 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         return modificated_entropy, loss_probability
 
     def get_window_loss_probability(self, window_size, entropy):
+        """Get the loss probability that corresponds to the nearest candidate entropy value to the target entropy.
+
+        Parameters
+        ----------
+        window_size : int
+            Size of the sliding window for entropy calculation.
+        entropy : float
+            Target entropy value for portfolio optimization.
+
+        Returns
+        -------
+        float
+            Loss probability that corresponds to the nearest candidate entropy
+            value to the target entropy.
+        """
         h_candidates, loss_probabilities = self.candidate_entropy(window_size)
         idx = argnearest(h_candidates, entropy)
         loss_probability = loss_probabilities[idx]
@@ -63,10 +149,49 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
 # NORMAL
 # =============================================================================
 class RissoUniform(RissoABC):
+    """Implementation of a portfolio maker using a uniform distribution for price changes.
+
+    This class extends RissoABC and overrides the method make_stock_price to simulate
+    stock price changes based on a uniform distribution within specified bounds.
+
+    Attributes
+    ----------
+    low : float, optional
+        Lower bound of the uniform distribution for daily returns. Default is 1.0.
+    high : float, optional
+        Upper bound of the uniform distribution for daily returns. Default is 5.0.
+
+    Methods
+    -------
+    make_stock_price(price, loss, random)
+        Calculate the new stock price based on the current price, loss flag, and a random
+        number generator following a uniform distribution.
+
+    Notes
+    -----
+    Inherits from RissoABC and utilizes its methods for entropy-based portfolio optimization.
+    """
+
     low = mabc.hparam(default=1, converter=float)
     high = mabc.hparam(default=5, converter=float)
 
     def make_stock_price(self, price, loss, random):
+        """Calculate the new stock price based on the current price, loss flag, and a random number generator following a uniform distribution.
+
+        Parameters
+        ----------
+        price : float
+            Current price of the stock.
+        loss : bool
+            Flag indicating if it's a loss day (True) or a gain day (False).
+        random : numpy.random.Generator
+            Random number generator instance.
+
+        Returns
+        -------
+        float
+            New price of the stock after simulating the daily return.
+        """
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
@@ -85,6 +210,35 @@ def make_risso_uniform(
     verbose=0,
     **kwargs,
 ):
+    """Create a portfolio using RissoUniform portfolio maker.
+
+    Parameters
+    ----------
+    low : float, optional
+        Lower bound of the uniform distribution for daily returns. Default is 1.0.
+    high : float, optional
+        Upper bound of the uniform distribution for daily returns. Default is 5.0.
+    entropy : float, optional
+        Entropy parameter controlling the randomness in portfolio creation. Default is 0.5.
+    random_state : {None, int, numpy.random.Generator}, optional
+        Seed or Generator for the random number generator. Default is None.
+    n_jobs : int, optional
+        Number of parallel jobs to run. Default is None.
+    verbose : int, optional
+        Verbosity level. Default is 0.
+    **kwargs
+        Additional keyword arguments passed to the make_portfolio method of RissoUniform.
+
+    Returns
+    -------
+    Portfolio
+        Generated portfolio instance.
+
+    Notes
+    -----
+    This function initializes a RissoUniform portfolio maker with specified parameters,
+    generates a portfolio using those parameters, and returns the resulting portfolio object.
+    """
     maker = RissoUniform(
         low=low,
         high=high,
@@ -101,10 +255,56 @@ def make_risso_uniform(
 # NORMAL
 # =============================================================================
 class RissoNormal(RissoABC):
+    """Portfolio maker implementing a stochastic model with normal distribution for daily returns.
+
+    Parameters
+    ----------
+    mu : float, optional
+        Mean of the normal distribution for daily returns. Default is 0.0.
+    sigma : float, optional
+        Standard deviation of the normal distribution for daily returns. Default is 0.2.
+    entropy : float, optional
+        Entropy parameter controlling the randomness in portfolio creation. Default is 0.5.
+    random_state : {None, int, numpy.random.Generator}, optional
+        Seed or Generator for the random number generator. Default is None.
+    n_jobs : int, optional
+        Number of parallel jobs to run. Default is None.
+    verbose : int, optional
+        Verbosity level. Default is 0.
+
+    Notes
+    -----
+    This class extends RissoABC and implements a portfolio maker using a normal distribution
+    model for daily returns. The make_stock_price method generates stock prices based on
+    the normal distribution parameters (mu, sigma).
+    """
+
     mu = mabc.hparam(default=0, converter=float)
     sigma = mabc.hparam(default=0.2, converter=float)
 
     def make_stock_price(self, price, loss, random):
+        """Generate a new stock price based on current price, daily return direction, and normal distribution parameters.
+
+        Parameters
+        ----------
+        price : float
+            Current price of the stock.
+        loss : bool
+            Flag indicating if it's a loss day (True) or gain day (False).
+        random : numpy.random.Generator
+            Random number generator instance.
+
+        Returns
+        -------
+        float
+            New price of the stock after daily price change.
+
+        Notes
+        -----
+        This method calculates a new stock price based on the current price,
+        the direction of daily return (loss or gain), and the parameters of
+        the normal distribution (mu, sigma).
+        """
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
@@ -123,6 +323,35 @@ def make_risso_normal(
     verbose=0,
     **kwargs,
 ):
+    """Create a portfolio using RissoNormal portfolio maker.
+
+    Parameters
+    ----------
+    mu : float, optional
+        Mean of the normal distribution for daily returns. Default is 0.0.
+    sigma : float, optional
+        Standard deviation of the normal distribution for daily returns. Default is 0.2.
+    entropy : float, optional
+        Entropy parameter controlling the randomness in portfolio creation. Default is 0.5.
+    random_state : {None, int, numpy.random.Generator}, optional
+        Seed or Generator for the random number generator. Default is None.
+    n_jobs : int, optional
+        Number of parallel jobs to run. Default is None.
+    verbose : int, optional
+        Verbosity level. Default is 0.
+    **kwargs
+        Additional keyword arguments passed to the make_portfolio method of RissoNormal.
+
+    Returns
+    -------
+    Portfolio
+        Generated portfolio instance.
+
+    Notes
+    -----
+    This function initializes a RissoNormal portfolio maker with specified parameters,
+    generates a portfolio using those parameters, and returns the resulting portfolio object.
+    """
     maker = RissoNormal(
         mu=mu,
         sigma=sigma,
@@ -180,6 +409,34 @@ class _LStableCache:
 
 
 class RissoLevyStable(RissoABC):
+    """Portfolio maker implementing a stochastic model with Levy stable distribution for daily returns.
+
+    Parameters
+    ----------
+    alpha : float, optional
+        Shape parameter of the Levy stable distribution. Default is 1.6411.
+    beta : float, optional
+        Scale parameter of the Levy stable distribution. Default is -0.0126.
+    mu : float, optional
+        Location parameter (mean) of the Levy stable distribution. Default is 0.0005.
+    sigma : float, optional
+        Scale parameter (spread) of the Levy stable distribution. Default is 0.005.
+    entropy : float, optional
+        Entropy parameter controlling the randomness in portfolio creation. Default is 0.5.
+    random_state : {None, int, numpy.random.Generator}, optional
+        Seed or Generator for the random number generator. Default is None.
+    n_jobs : int, optional
+        Number of parallel jobs to run. Default is None.
+    verbose : int, optional
+        Verbosity level. Default is 0.
+
+    Notes
+    -----
+    This class extends RissoABC and implements a portfolio maker using Levy stable
+    distribution model for daily returns. The make_stock_price method generates stock
+    prices based on the Levy stable distribution parameters (alpha, beta, mu, sigma).
+    """
+
     alpha = mabc.hparam(default=1.6411, converter=float)  # shape
     beta = mabc.hparam(default=-0.0126, converter=float)  # scale
     mu = mabc.hparam(default=0.0005, converter=float)  # loc
@@ -191,11 +448,40 @@ class RissoLevyStable(RissoABC):
 
     @levy_stable_.default
     def _levy_stable_default(self):
+        """Initialize the Levy stable distribution object.
+
+        Returns
+        -------
+        scipy.stats._continuous_distns.levy_stable_gen
+            Levy stable distribution object initialized with the specified parameters.
+        """
         return scipy.stats.levy_stable(
             alpha=self.alpha, beta=self.beta, loc=self.mu, scale=self.sigma
         )
 
     def make_stock_price(self, price, loss, random):
+        """Generate a new stock price based on current price, daily return direction, and Levy stable distribution parameters.
+
+        Parameters
+        ----------
+        price : float
+            Current price of the stock.
+        loss : bool
+            Flag indicating if it's a loss day (True) or gain day (False).
+        random : numpy.random.Generator
+            Random number generator instance.
+
+        Returns
+        -------
+        float
+            New price of the stock after daily price change.
+
+        Notes
+        -----
+        This method calculates a new stock price based on the current price,
+        the direction of daily return (loss or gain), and the parameters of
+        the Levy stable distribution (alpha, beta, mu, sigma).
+        """
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
@@ -217,6 +503,37 @@ def make_risso_levy_stable(
     verbose=0,
     **kwargs,
 ):
+    """Create a portfolio using the RissoLevyStable portfolio maker.
+
+    Parameters
+    ----------
+    alpha : float, optional
+        Shape parameter of the Levy stable distribution. Default is 1.6411.
+    beta : float, optional
+        Scale parameter of the Levy stable distribution. Default is -0.0126.
+    mu : float, optional
+        Location parameter (mean) of the Levy stable distribution. Default is 0.0005.
+    sigma : float, optional
+        Scale parameter (spread) of the Levy stable distribution. Default is 0.005.
+    entropy : float, optional
+        Entropy parameter controlling the randomness in portfolio creation. Default is 0.5.
+    random_state : {None, int, numpy.random.Generator}, optional
+        Seed or Generator for the random number generator. Default is None.
+    n_jobs : int, optional
+        Number of parallel jobs to run. Default is None.
+    verbose : int, optional
+        Verbosity level. Default is 0.
+
+    Returns
+    -------
+    Portfolio
+        Portfolio object representing the created portfolio.
+
+    Notes
+    -----
+    This function initializes a RissoLevyStable portfolio maker with the provided
+    parameters and creates a portfolio using the make_portfolio method.
+    """
     maker = RissoLevyStable(
         alpha=alpha,
         beta=beta,

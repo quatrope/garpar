@@ -4,6 +4,8 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Base Portfolio Maker."""
+
 # =============================================================================
 # IMPORTS
 # =============================================================================
@@ -25,6 +27,23 @@ from ..utils import mabc
 
 
 class PortfolioMakerABC(mabc.ModelABC):
+    """
+    Abstract base class for defining a portfolio maker.
+
+    Attributes
+    ----------
+    _MKPORT_SIGNATURE : set of str
+        Expected signature for the make_portfolio method.
+
+    Methods
+    -------
+    __init_subclass__()
+        Checks the signature of make_portfolio method against _MKPORT_SIGNATURE.
+
+    make_portfolio(*, window_size=5, days=365, stocks=10, price=100, weights=None)
+        Abstract method to create a portfolio.
+    """
+
     _MKPORT_SIGNATURE = {
         "self",
         "window_size",
@@ -35,6 +54,13 @@ class PortfolioMakerABC(mabc.ModelABC):
     }
 
     def __init_subclass__(cls):
+        """Ensure that the make_portfolio method in subclasses conforms to _MKPORT_SIGNATURE.
+        
+        Raises
+        ------
+        TypeError
+            If make_portfolio method signature does not match _MKPORT_SIGNATURE.
+        """
         mpsig = inspect.signature(cls.make_portfolio)
         missing_args = cls._MKPORT_SIGNATURE.difference(mpsig.parameters)
         if missing_args:
@@ -53,6 +79,26 @@ class PortfolioMakerABC(mabc.ModelABC):
         price=100,
         weights=None,
     ):
+        """Abstract method to create a portfolio.
+
+        Parameters
+        ----------
+        window_size : int, optional
+            Window size for portfolio creation (default is 5).
+        days : int, optional
+            Number of days for portfolio evaluation (default is 365).
+        stocks : int, optional
+            Number of stocks in the portfolio (default is 10).
+        price : float, optional
+            Initial price for stocks (default is 100).
+        weights : array-like or None, optional
+            Initial weights of stocks (default is None).
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in a subclass.
+        """
         raise NotImplementedError()
 
 
@@ -62,6 +108,43 @@ class PortfolioMakerABC(mabc.ModelABC):
 
 
 class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
+    """Abstract base class for creating random entropy-based portfolios.
+
+    Attributes
+    ----------
+    entropy : float, default=0.5
+        Entropy parameter for portfolio creation.
+    random_state : numpy.random.Generator, default=None
+        Random number generator. If None, uses numpy's default generator.
+    n_jobs : int or None, default=None
+        Number of jobs to run in parallel. If None, 1 job is run.
+    verbose : int, default=0
+        Verbosity level.
+
+    Methods
+    -------
+    get_window_loss_probability(window_size, entropy)
+        Abstract method to calculate the loss probability for a given window size and entropy.
+    make_stock_price(price, loss, random)
+        Abstract method to calculate the stock price based on initial price, loss, and random generator.
+    _coerce_price(stocks, prices)
+        Coerces the initial prices into an array of float values.
+    _make_stocks_seeds(stocks)
+        Generate seeds for random number generation for each stock.
+    _make_loss_sequence(days, loss_probability, random)
+        Generate a sequence of losses based on the given loss probability.
+    _make_stock(days, loss_probability, stock_idx, initial_price, random)
+        Generate a DataFrame for a single stock with random prices based on loss sequence.
+    make_portfolio(*, window_size=5, days=365, stocks=10, price=100, weights=None)
+        Create a portfolio of stocks with random prices and specified parameters.
+
+    Notes
+    -----
+    This class extends PortfolioMakerABC and provides methods to generate random
+    portfolios based on entropy and loss probabilities.
+    """
+
+    # HYPERS ================================================================
     entropy = mabc.hparam(default=0.5)
     random_state = mabc.hparam(
         default=None, converter=np.random.default_rng, repr=False
@@ -73,15 +156,74 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
 
     @mabc.abstractmethod
     def get_window_loss_probability(self, window_size, entropy):
+        """Abstract method to calculate the loss probability for a given window size and entropy.
+
+        Parameters
+        ----------
+        window_size : int
+            Window size for portfolio creation.
+        entropy : float
+            Entropy parameter for portfolio creation.
+
+        Returns
+        -------
+        float
+            Loss probability for the given window size and entropy.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in a subclass.
+        """
         raise NotImplementedError()
 
     @mabc.abstractmethod
     def make_stock_price(self, price, loss, random):
+        """Abstract method to calculate the stock price based on initial price, loss, and random generator.
+
+        Parameters
+        ----------
+        price : float
+            Initial price of the stock.
+        loss : bool
+            Whether there is a loss on the current day.
+        random : numpy.random.Generator
+            Random number generator.
+
+        Returns
+        -------
+        float
+            Updated stock price based on loss and randomness.
+
+        Raises
+        ------
+        NotImplementedError
+            If the method is not implemented in a subclass.
+        """
         raise NotImplementedError()
 
     # INTERNAL ================================================================
 
     def _coerce_price(self, stocks, prices):
+        """Coerces the initial prices into an array of float values.
+
+        Parameters
+        ----------
+        stocks : int
+            Number of stocks.
+        prices : int, float, or array-like
+            Initial prices of stocks.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of initial prices.
+
+        Raises
+        ------
+        ValueError
+            If the number of prices does not match the number of stocks.
+        """
         if isinstance(prices, (int, float)):
             prices = np.full(stocks, prices, dtype=float)
         elif len(prices) != stocks:
@@ -89,6 +231,18 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         return np.asarray(prices, dtype=float)
 
     def _make_stocks_seeds(self, stocks):
+        """Generate seeds for random number generation for each stock.
+
+        Parameters
+        ----------
+        stocks : int
+            Number of stocks.
+
+        Returns
+        -------
+        numpy.ndarray
+            Array of seeds for random number generation.
+        """
         iinfo = np.iinfo(int)
         seeds = self.random_state.integers(
             low=0,
@@ -101,6 +255,22 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         return seeds
 
     def _make_loss_sequence(self, days, loss_probability, random):
+        """Generate a sequence of losses based on the given loss probability.
+
+        Parameters
+        ----------
+        days : int
+            Number of days.
+        loss_probability : float
+            Probability of loss on each day.
+        random : numpy.random.Generator
+            Random number generator.
+
+        Returns
+        -------
+        numpy.ndarray
+            Boolean array indicating loss (True) or no loss (False) on each day.
+        """
         win_probability = 1.0 - loss_probability
 
         # primero seleccionamos con las probabilidades adecuadas si en cada
@@ -129,6 +299,26 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         initial_price,
         random,
     ):
+        """Generate a DataFrame for a single stock with random prices based on loss sequence.
+
+        Parameters
+        ----------
+        days : int
+            Number of days.
+        loss_probability : float
+            Probability of loss on each day.
+        stock_idx : int
+            Index of the stock.
+        initial_price : float
+            Initial price of the stock.
+        random : numpy.random.Generator
+            Random number generator.
+
+        Returns
+        -------
+        pandas.DataFrame
+            DataFrame containing the stock prices for each day.
+        """
         # determinamos que dia se pierde y que dia se gana
         loss_sequence = self._make_loss_sequence(
             days, loss_probability, random
@@ -162,6 +352,26 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         price=100,
         weights=None,
     ):
+        """Create a portfolio of stocks with random prices and specified parameters.
+
+        Parameters
+        ----------
+        window_size : int, optional
+            Window size for portfolio creation (default is 5).
+        days : int, optional
+            Number of days for portfolio evaluation (default is 365).
+        stocks : int, optional
+            Number of stocks in the portfolio (default is 10).
+        price : int, float, or array-like, optional
+            Initial price or prices of stocks (default is 100).
+        weights : array-like or None, optional
+            Initial weights of stocks (default is None).
+
+        Returns
+        -------
+        Portfolio
+            Portfolio object representing the generated portfolio.
+        """
         if window_size <= 0:
             raise ValueError("'window_size' must be > 0")
         if days < window_size:

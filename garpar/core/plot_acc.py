@@ -4,6 +4,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Plot Accessor."""
 
 # =============================================================================
 # IMPORTS
@@ -23,7 +24,38 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class PortfolioPlotter(accabc.AccessorABC):
-    """Make plots of Portfolio."""
+    """Accessor class for plotting portfolio data.
+
+    Attributes
+    ----------
+    _default_kind : str
+        Default kind of plot.
+    _pf : Portfolio
+        Portfolio object containing data to plot.
+
+    Methods
+    -------
+    line(returns=False, **kwargs)
+        Plot data as a line plot.
+    heatmap(returns=False, **kwargs)
+        Plot data as a heatmap.
+    wheatmap(**kwargs)
+        Plot weights as a heatmap.
+    hist(returns=False, **kwargs)
+        Plot data as a histogram.
+    whist(**kwargs)
+        Plot weights as a histogram.
+    box(returns=False, **kwargs)
+        Plot data as a box plot.
+    wbox(**kwargs)
+        Plot weights as a box plot.
+    kde(returns=False, **kwargs)
+        Plot data as a kernel density estimate plot.
+    wkde(**kwargs)
+        Plot weights as a kernel density estimate plot.
+    ogive(returns=False, **kwargs)
+        Plot data as an ogive (empirical cumulative distribution function).
+    """
 
     _default_kind = "line"
 
@@ -32,11 +64,13 @@ class PortfolioPlotter(accabc.AccessorABC):
     # INTERNAL ================================================================
 
     def _ddf(self, returns):
+        """Retrieve returns for plotting."""
         if returns:
             return self._pf.as_returns(), "Returns"
         return self._pf._prices_df, "Price"
 
     def _wdf(self):
+        """Retrieve weights data for plotting."""
         # proxy to access the dataframe with the weights
         return self._pf.weights.to_frame(), "Weights"
 
@@ -46,6 +80,20 @@ class PortfolioPlotter(accabc.AccessorABC):
     # PLOTS ===================================================================
 
     def line(self, returns=False, **kwargs):
+        """Plot data as a line plot.
+
+        Parameters
+        ----------
+        returns : bool, optional
+            Whether to plot returns data (default is False).
+        **kwargs
+            Additional keyword arguments passed to seaborn.lineplot.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            The matplotlib Axes object containing the plot.
+        """
         data, title = self._ddf(returns=returns)
         ax = sns.lineplot(data=data, **kwargs)
         ax.set_title(title)
@@ -254,6 +302,20 @@ class PortfolioPlotter(accabc.AccessorABC):
         return ax
 
     def ogive(self, returns=False, **kwargs):
+        """Plot data as an ogive (empirical cumulative distribution function).
+
+        Parameters
+        ----------
+        returns : bool, optional
+            Whether to plot returns data (default is False).
+        **kwargs
+            Additional keyword arguments passed to seaborn.ecdfplot.
+
+        Returns
+        -------
+        matplotlib.axes.Axes
+            The matplotlib Axes object containing the plot.
+        """
         data, title = self._ddf(returns=returns)
         ax = sns.ecdfplot(data=data, **kwargs)
         ax.set_title(title)

@@ -4,6 +4,8 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Metadata utilities."""
+
 import attr
 
 from abc import ABCMeta, abstractmethod  # noqa
@@ -73,12 +75,31 @@ def mproperty(**kwargs):
 
 @attr.s(repr=False)
 class ModelABC(metaclass=ABCMeta):
+    """
+    Base class for all model classes.
+
+    This class provides a base for all model classes in the project. It is
+    designed to be used with the `attrs` library, and it ensures that all
+    inherited classes are decorated with `attr.s()` and have a frozen
+    configuration.
+
+    Parameters
+    ----------
+    None
+
+    Attributes
+    ----------
+    __model_cls_config__ : dict
+        Class configuration for `attr.s()`.
+    """
+
     __model_cls_config__ = {"repr": False, "frozen": True}
 
     def __init_subclass__(cls):
-        """Initiate of subclasses.
+        """
+        Initiate of subclasses.
 
-        It ensures that every inherited class is decorated by ``attr.s()`` and
+        It ensures that every inherited class is decorated by `attr.s()` and
         assigns as class configuration the parameters defined in the class
         variable `__portfolio_maker_cls_config__`.
 
@@ -90,6 +111,16 @@ class ModelABC(metaclass=ABCMeta):
             class Decomposer(PortfolioMakerABC):
                 pass
 
+        Parameters
+        ----------
+        cls : type
+            The class being initialized.
+
+        Returns
+        -------
+        type
+            The decorated class.
+
         """
         model_config = getattr(cls, MODEL_CONFIG)
         acls = attr.s(maybe_cls=cls, **model_config)
@@ -97,7 +128,21 @@ class ModelABC(metaclass=ABCMeta):
         return acls
 
     def __repr__(self):
-        """x.__repr__() <==> repr(x)."""
+        """
+        x.__repr__() <==> repr(x).
+
+        Returns a string representation of the object.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        str
+            String representation of the object.
+
+        """
         clsname = type(self).__name__
 
         selfd = attr.asdict(

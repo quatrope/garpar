@@ -4,4 +4,6 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Core utilities."""
+
 from .portfolio import GARPAR_METADATA_KEY, Portfolio
