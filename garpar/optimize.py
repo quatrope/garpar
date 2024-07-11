@@ -13,13 +13,11 @@ import numpy as np
 from .core import Portfolio
 from .utils import Bunch, mabc
 
-
 # =============================================================================
 # ABSTRACT OPTIMIZER
 # =============================================================================
 
 _Unknow = object()
-
 
 class OptimizerABC(mabc.ModelABC):
     """
@@ -41,17 +39,18 @@ class OptimizerABC(mabc.ModelABC):
     family = _Unknow
 
     def __init_subclass__(cls):
+        """Check if the 'family' attribute is of type string and raise a TypeError if it is not."""
         if cls.family is _Unknow or not isinstance(cls.family, str):
             cls_name = cls.__name__
             raise TypeError(f"'{cls_name}.family' must be redefined as string")
 
     @mabc.abstractmethod
     def _calculate_weights(self, pf):
+        """Boilerplate method to calculate portfolio weights."""
         raise NotImplementedError()
 
     def optimize(self, pf):
-        """
-        Optimize the given portfolio.
+        """Optimize the given portfolio.
 
         Parameters
         ----------
@@ -68,8 +67,7 @@ class OptimizerABC(mabc.ModelABC):
 
     @classmethod
     def get_optimizer_family(cls):
-        """
-        Get the family of the optimizer.
+        """Get the family of the optimizer.
 
         Returns
         -------
@@ -107,6 +105,20 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     covariance_kw = mabc.hparam(factory=dict)
 
     def _coerce_target_return(self, pf):
+        """Coerce the target return.
+
+        Parameters
+        ----------
+        pf : Portfolio
+            The portfolio to optimize.
+
+        Returns
+        -------
+        float
+            The coerced target return.
+
+        This function checks if the target return is None. If it is, it calculates the target return by finding the minimum absolute value of the non-zero and non-NaN returns of the portfolio. Otherwise, it returns the target return as it is.
+        """
         if self.target_return is None:
             returns = pf.as_returns().to_numpy().flatten()
             returns = returns[returns != 0]
@@ -115,12 +127,38 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return self.target_return
 
     def _coerce_target_volatility(self, pf):
+        """Coerces the target volatility parameter based on the given portfolio.
+
+        Parameters
+        ----------
+        self : MVOptimizer
+            The MVOptimizer instance.
+        pf : Portfolio
+            The portfolio for which the volatility needs to be coerced.
+
+        Returns
+        -------
+        float
+            The coerced target volatility value.
+        """
         if self.target_risk is None:
             volatilities = np.std(pf.as_prices()) # Se revisó y se usa efectivamente la deviacion estandar. Ya que despues usa el cuadrado de este valor. Se entiende este parametro como volatilidad?
             return np.min(volatilities)
         return self.target_risk
 
     def _get_optimizer(self, pf):
+        """Get the pypfopt EfficientFrontier optimizer.
+
+        Parameters
+        ----------
+        pf : Portfolio
+            The portfolio to optimize.
+
+        Returns
+        -------
+        pypfopt.EfficientFrontier
+            The configured optimizer.
+        """
         expected_returns = pf.ereturns(self.returns, **self.returns_kw)
         cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
         weight_bounds = self.weight_bounds
@@ -132,6 +170,20 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return optimizer
 
     def __calculate_weights_by_risk(self, pf):
+        """Calculate weights based on the risk of the portfolio.
+
+        Parameters
+        ----------
+        self : MVOptimizer
+            The MVOptimizer instance.
+        pf : Portfolio
+            The portfolio for which to calculate the weights.
+
+        Returns
+        -------
+        tuple
+            The calculated weights based on risk and optimizer metadata.
+        """
         optimizer = self._get_optimizer(pf)
         target_volatility = self._coerce_target_volatility(pf)
         market_neutral = self.market_neutral
@@ -147,6 +199,20 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return weights, optimizer_metadata
 
     def __calculate_weights_by_return(self, pf):
+        """Calculate weights based on the return of the portfolio.
+
+        Parameters
+        ----------
+        self : MVOptimizer
+            The MVOptimizer instance.
+        pf : Portfolio
+            The portfolio for which to calculate the weights.
+
+        Returns
+        -------
+        tuple
+            The calculated weights based on return and optimizer metadata.
+        """
         optimizer = self._get_optimizer(pf)
         target_return = self._coerce_target_return(pf)
         market_neutral = self.market_neutral
@@ -162,6 +228,18 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return weights, optimizer_metadata
 
     def __calculate_weights_general(self, pf):
+        """Calculate the optimal weights for a portfolio using a general optimization method.
+
+        Parameters
+        ----------
+        pf : Portfolio
+            The portfolio to optimize.
+
+        Returns
+        -------
+        tuple
+            A tuple containing the optimal weights and optimizer metadata.
+        """
         optimizer = self._get_optimizer(pf)
         market_neutral = self.market_neutral
 
@@ -175,6 +253,18 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return weights, optimizer_metadata
 
     def _calculate_weights(self, pf):
+        """Calculate the optimal weights for a portfolio based on the specified method.
+
+        Parameters
+        ----------
+        self : The MVOptimizer instance.
+        pf : Portfolio
+            The portfolio to optimize.
+
+        Returns
+        -------
+        The optimal weights for the portfolio calculated using the specified method.
+        """
         if self.method == "efficient_risk":
             return self.__calculate_weights_by_risk(pf)
         elif self.method == "efficient_return":
@@ -223,8 +313,7 @@ class Markowitz(MVOptimizer):
     covariance_kw = mabc.hparam(factory=dict)
 
     def _get_optimizer(self, pf):
-        """
-        Get the pypfopt EfficientFrontier optimizer.
+        """Get the pypfopt EfficientFrontier optimizer.
 
         Parameters
         ----------
@@ -247,8 +336,7 @@ class Markowitz(MVOptimizer):
         return optimizer
 
     def _coerce_target_return(self, pf):
-        """
-        Coerce the target return.
+        """Coerce the target return.
 
         Parameters
         ----------
@@ -268,8 +356,7 @@ class Markowitz(MVOptimizer):
         return self.target_return
 
     def _calculate_weights(self, pf):
-        """
-        Calculate the optimal weights for the portfolio.
+        """Calculate the optimal weights for the portfolio.
 
         Parameters
         ----------
@@ -298,8 +385,7 @@ class Markowitz(MVOptimizer):
         return weights, optimizer_metadata
 
 class BlackLitterman(OptimizerABC):
-    """
-    Classic Black Litterman model.
+    """Classic Black Litterman model.
 
     Attributes
     ----------
@@ -332,8 +418,7 @@ class BlackLitterman(OptimizerABC):
     covariance_kw = mabc.hparam(factory=dict)
 
     def _get_optimizer(self, pf):
-        """
-        Get the pypfopt BlackLittermanModel optimizer.
+        """Get the pypfopt BlackLittermanModel optimizer.
 
         Parameters
         ----------
@@ -356,8 +441,7 @@ class BlackLitterman(OptimizerABC):
         )
 
     def _calculate_weights(self, pf):
-        """
-        Calculate the optimal weights for the portfolio.
+        """Calculate the optimal weights for the portfolio.
 
         Parameters
         ----------
@@ -367,7 +451,7 @@ class BlackLitterman(OptimizerABC):
         Returns
         -------
         tuple
-            A tuple containing the optimal weights and optimizer metadata.
+            Tuple containing the optimal weights and optimizer metadata.
         """
         blm = self._get_optimizer(pf)
         risk_aversion = self.risk_aversion
