@@ -8,6 +8,8 @@
 
 import pypfopt
 
+import attr
+
 import numpy as np
 
 from .core import Portfolio
@@ -85,10 +87,9 @@ class MeanVarianceFamilyMixin:
 
     family = "mean-variance"
 
+@attr.define(repr=False)
 class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     """Mean Variance Optimizer."""
-
-    weight_bounds = mabc.hparam(default=(0, 1))
 
     target_return = mabc.hparam(default=None)
     target_risk = mabc.hparam(default=None)
@@ -279,38 +280,7 @@ class Markowitz(MVOptimizer):
     WLodzimierz, O., and Speranza, M. G. (2015). Linear and mixed
     integer programming for portfolio optimization. Springer and EURO: The
     Association of European Operational Research Societies
-
-    Attributes
-    ----------
-    target_return : float, optional
-        The target return for the portfolio.
-    weight_bounds : tuple of float, optional
-        The bounds for asset weights (default is (0, 1)).
-    market_neutral : bool, optional
-        Whether to enforce a market neutral portfolio (default is False).
-    returns : str, optional
-        The method to calculate expected returns (default is "mah").
-    returns_kw : dict, optional
-        Additional keyword arguments for returns calculation.
-    covariance : str, optional
-        The method to calculate covariance matrix (default is "sample_cov").
-    covariance_kw : dict, optional
-        Additional keyword arguments for covariance calculation.
-    optimize_options : list of str
-        Available optimization strategies.
     """
-
-    target_return = mabc.hparam(default=None) # No es buena idea hacer esto. Preguntarle a Juan
-    
-    weight_bounds = mabc.hparam(default=(0, 1))
-    
-    market_neutral = mabc.hparam(default=False)
-    
-    returns = mabc.hparam(default="mah")
-    returns_kw = mabc.hparam(factory=dict)
-
-    covariance = mabc.hparam(default="sample_cov")
-    covariance_kw = mabc.hparam(factory=dict)
 
     def _get_optimizer(self, pf):
         """Get the pypfopt EfficientFrontier optimizer.
@@ -384,6 +354,7 @@ class Markowitz(MVOptimizer):
 
         return weights, optimizer_metadata
 
+@attr.define(repr=False)
 class BlackLitterman(OptimizerABC):
     """Classic Black Litterman model.
 
