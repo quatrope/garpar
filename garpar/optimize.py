@@ -1,6 +1,7 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo, Juan Cabral and QuatroPe
+# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
@@ -41,7 +42,7 @@ class OptimizerABC(mabc.ModelABC):
     family = _Unknow
 
     def __init_subclass__(cls):
-        """Check if the 'family' attribute is of type string and raise a TypeError if it is not."""
+        """Check if the 'family' attribute is of type string."""
         if cls.family is _Unknow or not isinstance(cls.family, str):
             cls_name = cls.__name__
             raise TypeError(f"'{cls_name}.family' must be redefined as string")
