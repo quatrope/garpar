@@ -177,6 +177,14 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
             weight_bounds=weight_bounds,
         )
         return optimizer
+    
+    def _get_market_neutral(self):
+        """Get the market_neutral parameter."""
+        return self.market_neutral
+    
+    def _get_method(self):
+        """Get current optimization method"""
+        return this.method
 
     def __calculate_weights_by_risk(self, pf):
         """Calculate weights based on the risk of the portfolio.
@@ -256,9 +264,10 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
             A tuple containing the optimal weights and optimizer metadata.
         """
         optimizer = self._get_optimizer(pf)
+        market_neutral = self._get_market_neutral()
         # market_neutral = self.market_neutral FIXME comentario pasarlo a acc
 
-        weights_dict = getattr(optimizer, self.method)()  # TODO Pasarlo a acc
+        weights_dict = getattr(optimizer, self._get_method())()  # TODO Pasarlo a acc
         weights = [weights_dict[stock] for stock in pf.stocks]
 
         optimizer_metadata = {
@@ -358,7 +367,8 @@ class Markowitz(MVOptimizer):
         """
         optimizer = self._get_optimizer(pf)
         target_return = self._coerce_target_return(pf)
-        market_neutral = self.market_neutral
+        market_neutral = self._get_market_neutral()
+        # market_neutral = self.market_neutral
 
         weights_dict = optimizer.efficient_return(
             target_return, market_neutral=market_neutral
