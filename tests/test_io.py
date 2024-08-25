@@ -12,10 +12,9 @@
 
 from io import BytesIO
 
+from garpar import Portfolio, io
+
 import pandas as pd
-
-from garpar import io, Portfolio
-
 
 # =============================================================================
 # TESTS

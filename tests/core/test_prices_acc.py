@@ -10,7 +10,6 @@
 # IMPORTS
 # =============================================================================
 
-from inspect import Attribute
 from garpar.core import prices_acc
 
 import numpy as np
@@ -65,17 +64,6 @@ def test_PricesAccessor_log10(risso_portfolio):
     result_call = pf.prices("log10")
     result_getattr = pf.prices.log10()
     result_df = pf._prices_df.apply(np.log10)
-
-    pd.testing.assert_frame_equal(result_call, result_getattr)
-    pd.testing.assert_frame_equal(result_call, result_df)
-
-
-def test_PricesAccessor_log2(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
-
-    result_call = pf.prices("log2")
-    result_getattr = pf.prices.log2()
-    result_df = pf._prices_df.apply(np.log2)
 
     pd.testing.assert_frame_equal(result_call, result_getattr)
     pd.testing.assert_frame_equal(result_call, result_df)

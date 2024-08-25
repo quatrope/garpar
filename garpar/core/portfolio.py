@@ -85,7 +85,7 @@ class Portfolio:
         Accessor for utility-related operations.
     diversification : DiversificationAccessor
         Accessor for diversification-related operations.
-    
+
     Methods
     -------
     __attrs_post_init__()
@@ -143,9 +143,7 @@ class Portfolio:
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=_as_float_array)
     _entropy = attr.ib(converter=_as_float_array)
-    _window_size = attr.ib(
-        converter=lambda v: (None if pd.isna(v) else int(v))
-    )
+    _window_size = attr.ib(converter=lambda v: (None if pd.isna(v) else int(v)))
     _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
 
     # accessors
@@ -198,7 +196,7 @@ class Portfolio:
 
     def __attrs_post_init__(self):
         """Initialize additional attributes and performs validation.
-        
+
         Raises
         ------
         ValueError
@@ -462,7 +460,7 @@ class Portfolio:
 
     # UTILS ===================================================================
     def copy(
-        self, 
+        self,
         *,
         prices=None,
         weights=None,
@@ -503,9 +501,7 @@ class Portfolio:
             self._window_size if window_size is None else window_size
         )
 
-        new_metadata = (
-            self._metadata.to_dict() if preserve_old_metadata else {}
-        )
+        new_metadata = self._metadata.to_dict() if preserve_old_metadata else {}
         new_metadata.update(metadata)
 
         new_pf = self.from_dfkws(

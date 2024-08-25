@@ -9,24 +9,18 @@
 # DOCS
 # =============================================================================
 
-"""Configuration of garpar tests
-
-"""
+"""Configuration of garpar tests."""
 
 
 # =============================================================================
 # IMPORTS
 # =============================================================================
 
-from distutils.dist import Distribution
-import functools
-
+import garpar as gp
 
 import numpy as np
 
 import pytest
-
-import garpar as gp
 
 # =============================================================================
 # CONSTANTS
@@ -47,7 +41,7 @@ DISTRIBUTIONS = {
 def risso_portfolio():
     def make(*, distribution="normal", random_state=None, **kwargs):
         maker = DISTRIBUTIONS[distribution]
-        random_state=np.random.default_rng(random_state)
+        random_state = np.random.default_rng(random_state)
         kwargs.setdefault("days", 5)
         kwargs.setdefault("stocks", 10)
 
@@ -69,9 +63,11 @@ def risso_portfolio_values(risso_portfolio):
 
     return make
 
+
 # =============================================================================
 # CONFIGURATIONS
 # =============================================================================
+
 
 def pytest_configure():
     pytest.DISTRIBUTIONS = DISTRIBUTIONS

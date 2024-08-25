@@ -7,20 +7,20 @@
 
 """Portfolio optimizers."""
 
-import pypfopt
-
 import attr
 
 import numpy as np
 
-from .core import Portfolio
-from .utils import Bunch, mabc
+import pypfopt
+
+from .utils import mabc
 
 # =============================================================================
 # ABSTRACT OPTIMIZER
 # =============================================================================
 
 _Unknow = object()
+
 
 class OptimizerABC(mabc.ModelABC):
     """
@@ -79,14 +79,17 @@ class OptimizerABC(mabc.ModelABC):
         """
         return cls.family
 
+
 # =============================================================================
 # OPTIMIZER
 # =============================================================================
+
 
 class MeanVarianceFamilyMixin:
     """Mixin class for mean-variance family optimizers."""
 
     family = "mean-variance"
+
 
 @attr.define(repr=False)
 class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
@@ -119,7 +122,10 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         float
             The coerced target return.
 
-        This function checks if the target return is None. If it is, it calculates the target return by finding the minimum absolute value of the non-zero and non-NaN returns of the portfolio. Otherwise, it returns the target return as it is.
+        This function checks if the target return is None. If it is, it
+        calculates the target return by finding the minimum absolute value of
+        the non-zero and non-NaN returns of the portfolio. Otherwise, it
+        returns the target return as it is.
         """
         if self.target_return is None:
             returns = pf.as_returns().to_numpy().flatten()
@@ -129,7 +135,8 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return self.target_return
 
     def _coerce_target_volatility(self, pf):
-        """Coerces the target volatility parameter based on the given portfolio.
+        """
+        Coerces the target volatility parameter based on the given portfolio.
 
         Parameters
         ----------
@@ -144,7 +151,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
             The coerced target volatility value.
         """
         if self.target_risk is None:
-            volatilities = np.std(pf.as_prices()) # Se revisó y se usa efectivamente la deviacion estandar. Ya que despues usa el cuadrado de este valor. Se entiende este parametro como volatilidad?
+            volatilities = np.std(pf.as_prices())
             return np.min(volatilities)
         return self.target_risk
 
@@ -190,7 +197,9 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         target_volatility = self._coerce_target_volatility(pf)
         market_neutral = self.market_neutral
 
-        weights_dict = optimizer.efficient_risk(target_volatility, market_neutral=market_neutral)
+        weights_dict = optimizer.efficient_risk(
+            target_volatility, market_neutral=market_neutral
+        )
         weights = [weights_dict[stock] for stock in pf.stocks]
 
         optimizer_metadata = {
@@ -219,7 +228,9 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         target_return = self._coerce_target_return(pf)
         market_neutral = self.market_neutral
 
-        weights_dict = optimizer.efficient_return(target_return, market_neutral=market_neutral)
+        weights_dict = optimizer.efficient_return(
+            target_return, market_neutral=market_neutral
+        )
         weights = [weights_dict[stock] for stock in pf.stocks]
 
         optimizer_metadata = {
@@ -230,7 +241,9 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return weights, optimizer_metadata
 
     def __calculate_weights_general(self, pf):
-        """Calculate the optimal weights for a portfolio using a general optimization method.
+        """
+        Calculate the optimal weights for a portfolio using a general
+        optimization method.
 
         Parameters
         ----------
@@ -243,9 +256,9 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
             A tuple containing the optimal weights and optimizer metadata.
         """
         optimizer = self._get_optimizer(pf)
-        market_neutral = self.market_neutral
+        # market_neutral = self.market_neutral FIXME comentario pasarlo a acc
 
-        weights_dict = getattr(optimizer, self.method)()
+        weights_dict = getattr(optimizer, self.method)()  # TODO Pasarlo a acc
         weights = [weights_dict[stock] for stock in pf.stocks]
 
         optimizer_metadata = {
@@ -255,7 +268,9 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         return weights, optimizer_metadata
 
     def _calculate_weights(self, pf):
-        """Calculate the optimal weights for a portfolio based on the specified method.
+        """
+        Calculate the optimal weights for a portfolio based on the
+        specified method.
 
         Parameters
         ----------
@@ -265,7 +280,8 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
         Returns
         -------
-        The optimal weights for the portfolio calculated using the specified method.
+        The optimal weights for the portfolio calculated using the specified
+        method.
         """
         if self.method == "efficient_risk":
             return self.__calculate_weights_by_risk(pf)
@@ -273,6 +289,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
             return self.__calculate_weights_by_return(pf)
         else:
             return self.__calculate_weights_general(pf)
+
 
 class Markowitz(MVOptimizer):
     """Classic Markowitz model.
@@ -354,6 +371,7 @@ class Markowitz(MVOptimizer):
         }
 
         return weights, optimizer_metadata
+
 
 @attr.define(repr=False)
 class BlackLitterman(OptimizerABC):

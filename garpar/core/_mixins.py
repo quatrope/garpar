@@ -63,9 +63,7 @@ class CoercerMixin:
         """
         if isinstance(expected_returns, str):
             kw = {} if kw is None else kw
-            expected_returns = self._pf.ereturns(
-                expected_returns.lower(), **kw
-            )
+            expected_returns = self._pf.ereturns(expected_returns.lower(), **kw)
         return np.asarray(expected_returns) if asarray else expected_returns
 
     def coerce_weights(self, weights, asarray=True):

@@ -7,9 +7,9 @@
 
 """Entropy."""
 
-from scipy import stats
-
 import warnings
+
+from scipy import stats
 
 
 def shannon(prices, window_size=None, **kwargs):
@@ -58,4 +58,4 @@ def risso(prices, window_size, **kwargs):
     None
     """
     if not window_size or window_size < 0:
-        raise ValueError(f"'window_size' must be >= 0")
+        raise ValueError("'window_size' must be >= 0")

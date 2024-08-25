@@ -7,18 +7,21 @@
 
 # TODO: Meter en una clase para no crear todo el tiempo el plotter
 
-import pytest
-from garpar.datasets.risso import make_risso_uniform
-from garpar.core.portfolio import Portfolio
 from garpar.core.plot_acc import PortfolioPlotter
+
 from matplotlib.testing.decorators import check_figures_equal
+
+import pytest
+
 import seaborn as sns
-import numpy as np
+
 
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_line(fig_test, fig_ref, risso_portfolio, returns, distribution):
+def test_PortfolioPlotter_line(
+    fig_test, fig_ref, risso_portfolio, returns, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -31,10 +34,13 @@ def test_PortfolioPlotter_line(fig_test, fig_ref, risso_portfolio, returns, dist
     ax_ref = sns.lineplot(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_heatmap(fig_test, fig_ref, risso_portfolio, returns, distribution):
+def test_PortfolioPlotter_heatmap(
+    fig_test, fig_ref, risso_portfolio, returns, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -47,9 +53,12 @@ def test_PortfolioPlotter_heatmap(fig_test, fig_ref, risso_portfolio, returns, d
     ax_ref = sns.heatmap(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_wheatmap(fig_test, fig_ref, risso_portfolio, distribution):
+def test_PortfolioPlotter_wheatmap(
+    fig_test, fig_ref, risso_portfolio, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -63,10 +72,13 @@ def test_PortfolioPlotter_wheatmap(fig_test, fig_ref, risso_portfolio, distribut
     ax_ref.set_title(title)
     ax_ref.set_xlabel("Stocks")
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_hist(fig_test, fig_ref, risso_portfolio, returns, distribution):
+def test_PortfolioPlotter_hist(
+    fig_test, fig_ref, risso_portfolio, returns, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -79,9 +91,12 @@ def test_PortfolioPlotter_hist(fig_test, fig_ref, risso_portfolio, returns, dist
     ax_ref = sns.histplot(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_whist(fig_test, fig_ref, risso_portfolio, distribution):
+def test_PortfolioPlotter_whist(
+    fig_test, fig_ref, risso_portfolio, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -94,10 +109,13 @@ def test_PortfolioPlotter_whist(fig_test, fig_ref, risso_portfolio, distribution
     ax_ref = sns.histplot(data=data.T)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_box(fig_test, fig_ref, risso_portfolio, returns, distribution):
+def test_PortfolioPlotter_box(
+    fig_test, fig_ref, risso_portfolio, returns, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -110,9 +128,12 @@ def test_PortfolioPlotter_box(fig_test, fig_ref, risso_portfolio, returns, distr
     ax_ref = sns.boxplot(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_wbox(fig_test, fig_ref, risso_portfolio, distribution):
+def test_PortfolioPlotter_wbox(
+    fig_test, fig_ref, risso_portfolio, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -125,10 +146,13 @@ def test_PortfolioPlotter_wbox(fig_test, fig_ref, risso_portfolio, distribution)
     ax_ref = sns.boxplot(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_kde(fig_test, fig_ref, risso_portfolio, returns, distribution):
+def test_PortfolioPlotter_kde(
+    fig_test, fig_ref, risso_portfolio, returns, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -141,9 +165,12 @@ def test_PortfolioPlotter_kde(fig_test, fig_ref, risso_portfolio, returns, distr
     ax_ref = sns.kdeplot(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_wkde(fig_test, fig_ref, risso_portfolio, distribution):
+def test_PortfolioPlotter_wkde(
+    fig_test, fig_ref, risso_portfolio, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)
@@ -156,10 +183,13 @@ def test_PortfolioPlotter_wkde(fig_test, fig_ref, risso_portfolio, distribution)
     ax_ref = sns.kdeplot(data=data)
     ax_ref.set_title(title)
 
+
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("distribution", pytest.DISTRIBUTIONS)
-def test_PortfolioPlotter_ogive(fig_test, fig_ref, risso_portfolio, returns, distribution):
+def test_PortfolioPlotter_ogive(
+    fig_test, fig_ref, risso_portfolio, returns, distribution
+):
     pf = risso_portfolio(random_state=3, distribution=distribution)
 
     plotter = PortfolioPlotter(pf)

@@ -13,16 +13,16 @@ import numpy as np
 def proportion_scaler(arr):
     """
     Scale the input array by dividing each element by the sum of the array.
-    
+
     Parameters
     ----------
     arr : array-like
         Input array to be scaled.
-    
+
     Returns
     -------
     array-like
-        Scaled array where each element is divided by the sum of the input array.
+        Scaled array where each element is divided by the sum of the parameter.
     """
     arr = np.asarray(arr)
     asum = np.sum(arr)
@@ -41,7 +41,8 @@ def minmax_scaler(arr):
     Returns
     -------
     array-like
-        The scaled array where each element is normalized to the range [0, 1] based on the minimum and maximum values of the input array.
+        The scaled array where each element is normalized to the range [0, 1]
+        based on the minimum and maximum values of the input array.
     """
     arr = np.asarray(arr)
     amin, amax = np.min(arr), np.max(arr)
@@ -50,7 +51,8 @@ def minmax_scaler(arr):
 
 def max_scaler(arr):
     """
-    Scales the input array to have the maximum value in the array as the scaler.
+    Scales the input array to have the maximum value in the array as the
+    scaler.
 
     Parameters
     ----------
@@ -60,12 +62,14 @@ def max_scaler(arr):
     Returns
     -------
     array-like
-        The scaled array where each element is divided by the maximum value of the input array.
+        The scaled array where each element is divided by the maximum value of
+        the input array.
 
     Notes
     -----
-    This function uses the `numpy.max` function to find the maximum value in the input array.
-    The input array is then divided element-wise by the maximum value, resulting in a scaled array.
+    This function uses the `numpy.max` function to find the maximum value in
+    the input array. The input array is then divided element-wise by the
+    maximum value, resulting in a scaled array.
 
     Examples
     --------
@@ -81,7 +85,8 @@ def max_scaler(arr):
 
 def standar_scaler(arr):
     """
-    Standardize an array by subtracting the mean and dividing by the standard deviation.
+    Standardize an array by subtracting the mean and dividing by the standard
+    deviation.
 
     Parameters
     ----------
@@ -91,11 +96,15 @@ def standar_scaler(arr):
     Returns
     -------
     array-like
-        The standardized array where each element is the result of subtracting the mean and dividing by the standard deviation of the input array.
+        The standardized array where each element is the result of subtracting
+        the mean and dividing by the standard deviation of the input array.
 
     Notes
     -----
-    This function uses the `numpy.mean` and `numpy.std` functions to calculate the mean and standard deviation of the input array. The input array is then subtracted by the mean and divided element-wise by the standard deviation, resulting in a standardized array.
+    This function uses the `numpy.mean` and `numpy.std` functions to calculate
+    the mean and standard deviation of the input array. The input array is then
+    subtracted by the mean and divided element-wise by the standard deviation,
+    resulting in a standardized array.
 
     Examples
     --------

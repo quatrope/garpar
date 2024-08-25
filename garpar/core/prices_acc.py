@@ -154,7 +154,7 @@ class PricesAccessor(accabc.AccessorABC):
         ----------
         skipna : bool, default True
             Exclude NA/null values when computing the result.
-        
+
         Returns
         -------
         Series

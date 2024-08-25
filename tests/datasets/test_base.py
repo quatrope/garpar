@@ -12,8 +12,6 @@
 
 from garpar import datasets
 
-import numpy as np
-
 import pytest
 
 

@@ -10,14 +10,7 @@
 # IMPORTS
 # =============================================================================
 
-from garpar.core import div_acc
-
 import numpy as np
-
-import pandas as pd
-
-import pytest
-
 
 # =============================================================================
 # DRISK TESTS

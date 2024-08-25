@@ -13,9 +13,6 @@
 import attr
 
 from garpar.utils import mabc
-import numpy as np
-
-import pytest
 
 # =============================================================================
 # TESTS

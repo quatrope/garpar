@@ -16,26 +16,24 @@
 # =============================================================================
 
 
-from . import entropy, mabc, scalers
-
 # export skcutils as own utils
 from skcriteria.utils import (
     Bunch as _SKCBunch,
-    df_temporal_header,
     accabc,
+    df_temporal_header,
     unique_names,
 )
 
+from . import entropy, mabc, scalers
+
 
 # custom bunch method
-
-
 class Bunch(_SKCBunch):
     """
     Container object exposing keys as attributes.
 
-    The Bunch class extends the _SKCBunch class, allowing for deep copying of its
-    data attribute to a dictionary format.
+    The Bunch class extends the _SKCBunch class, allowing for deep copying of
+    its data attribute to a dictionary format.
 
     Methods
     -------
@@ -47,7 +45,7 @@ class Bunch(_SKCBunch):
         """
         Convert the Bunch object to a dictionary.
 
-        This method performs a deep copy of the _data attribute, ensuring that 
+        This method performs a deep copy of the _data attribute, ensuring that
         the original data remains unchanged.
 
         Returns

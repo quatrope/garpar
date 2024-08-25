@@ -56,7 +56,7 @@ class PortfolioMakerABC(mabc.ModelABC):
 
     def __init_subclass__(cls):
         """Ensure that the make_portfolio method in subclasses conforms to _MKPORT_SIGNATURE.
-        
+
         Raises
         ------
         TypeError
@@ -321,9 +321,7 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
             DataFrame containing the stock prices for each day.
         """
         # determinamos que dia se pierde y que dia se gana
-        loss_sequence = self._make_loss_sequence(
-            days, loss_probability, random
-        )
+        loss_sequence = self._make_loss_sequence(days, loss_probability, random)
 
         # fijamos el primer precio como el precio orginal
         current_price = initial_price

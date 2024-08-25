@@ -12,8 +12,8 @@
 
 from io import BytesIO
 
+from garpar.core.portfolio import Portfolio
 from garpar.io import read_hdf5
-from garpar.core.portfolio import GARPAR_METADATA_KEY, Bunch, Portfolio
 
 import numpy as np
 

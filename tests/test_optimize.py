@@ -11,7 +11,7 @@
 # =============================================================================
 
 
-from garpar import optimize, Portfolio
+from garpar import Portfolio, optimize
 
 
 import numpy as np

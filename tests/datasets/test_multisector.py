@@ -11,12 +11,11 @@
 # =============================================================================
 
 
-from garpar import datasets, Portfolio
-
-import pytest
+from garpar import Portfolio, datasets
 
 import pandas as pd
 
+import pytest
 
 # =============================================================================
 # TESTS
