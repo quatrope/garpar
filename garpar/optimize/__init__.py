@@ -13,6 +13,6 @@
 
 __version__ = "0.1"
 
-from . import markowitz, mean_variance
+from . import mean_variance
 
-__all__ = ["markowitz", "mean_variance"]
+__all__ = [ "mean_variance"]
