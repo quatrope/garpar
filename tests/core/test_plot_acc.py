@@ -14,6 +14,8 @@ import pytest
 
 import seaborn as sns
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -30,6 +32,8 @@ def test_PortFolioPlotter_line(risso_portfolio, fig_test, fig_ref, returns, pric
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -46,6 +50,8 @@ def test_PortFolioPlotter_heatmap(risso_portfolio, fig_test, fig_ref, returns, p
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_PortFolioPlotter_wheatmap(risso_portfolio, fig_test, fig_ref, price_distribution):
@@ -62,6 +68,8 @@ def test_PortFolioPlotter_wheatmap(risso_portfolio, fig_test, fig_ref, price_dis
     ax_ref.set_xlabel("Stocks")
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -78,6 +86,8 @@ def test_PortFolioPlotter_hist(risso_portfolio, fig_test, fig_ref, returns, pric
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_PortFolioPlotter_whist(risso_portfolio, fig_test, fig_ref, price_distribution):
@@ -93,6 +103,8 @@ def test_PortFolioPlotter_whist(risso_portfolio, fig_test, fig_ref, price_distri
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -109,6 +121,8 @@ def test_PortFolioPlotter_box(risso_portfolio, fig_test, fig_ref, returns, price
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_PortFolioPlotter_wbox(risso_portfolio, fig_test, fig_ref, price_distribution):
@@ -124,6 +138,8 @@ def test_PortFolioPlotter_wbox(risso_portfolio, fig_test, fig_ref, price_distrib
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -140,6 +156,8 @@ def test_PortFolioPlotter_kde(risso_portfolio, fig_test, fig_ref, returns, price
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_PortFolioPlotter_wkde(risso_portfolio, fig_test, fig_ref, price_distribution):
@@ -155,6 +173,8 @@ def test_PortFolioPlotter_wkde(risso_portfolio, fig_test, fig_ref, price_distrib
     ax_ref.set_title(title)
 
 
+@pytest.mark.slow
+@pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)

@@ -17,7 +17,7 @@ import numpy as np
 
 import scipy.stats
 
-from .base import RandomEntropyPortfolioMakerABC
+from .ds_base import RandomEntropyPortfolioMakerABC
 from ..utils import mabc
 
 

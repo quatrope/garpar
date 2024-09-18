@@ -13,7 +13,7 @@
 
 from garpar import Portfolio
 
-from garpar.optimize import base
+from garpar.optimize import opt_base as base
 
 import numpy as np
 

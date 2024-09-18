@@ -15,4 +15,4 @@ __version__ = "0.1"
 
 from . import mean_variance
 
-__all__ = [ "mean_variance"]
+__all__ = [ "mean_variance" ]

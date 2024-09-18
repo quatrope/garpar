@@ -24,7 +24,7 @@ import pandas as pd
 import pytest
 
 # =============================================================================
-# MARKOWITS TEST
+# MARKOWITZ TEST
 # =============================================================================
 
 def test_Markowitz_optimize():

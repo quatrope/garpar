@@ -9,7 +9,7 @@
 
 import attr
 
-from .base import OptimizerABC, MeanVarianceFamilyMixin
+from .opt_base import OptimizerABC, MeanVarianceFamilyMixin
 
 from ..utils import mabc
 
@@ -83,7 +83,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         
         return optimization_methods[method](optimizer, pf)
 
-    def _min_volatiliy(self, optimizer, pf):
+    def _min_volatility(self, optimizer, pf):
         weights_dict = optimizer.min_volatility()
         weights = [weights_dict[stock] for stock in pf.stocks]
         return weights, {"name": "min_volatility"}

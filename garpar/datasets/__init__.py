@@ -8,7 +8,7 @@
 
 """Different utilities to create or load portfolios."""
 
-from .base import PortfolioMakerABC, RandomEntropyPortfolioMakerABC
+from .ds_base import PortfolioMakerABC, RandomEntropyPortfolioMakerABC
 from .data import load_MERVAL
 from .multisector import MultiSector, make_multisector
 from .risso import (

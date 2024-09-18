@@ -11,7 +11,7 @@ import numpy as np
 
 import pandas as pd
 
-from .base import PortfolioMakerABC
+from .ds_base import PortfolioMakerABC
 from ..core.portfolio import Portfolio
 from ..utils import Bunch, mabc, unique_names
 

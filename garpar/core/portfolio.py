@@ -55,89 +55,6 @@ def _as_float_array(arr):
 class Portfolio:
     """
     Represents a financial portfolio with utilities for analysis and manipulation.
-
-    Attributes
-    ----------
-    _prices_df : pd.DataFrame
-        DataFrame containing the prices of the assets.
-    _weights : np.ndarray
-        Array of asset weights in the portfolio.
-    _entropy : np.ndarray
-        Array of entropy values associated with the assets.
-    _window_size : int or None
-        Window size for rolling calculations, if applicable.
-    _metadata : Bunch
-        Additional metadata related to the portfolio.
-
-    plot : PortfolioPlotter
-        Accessor for plotting portfolio data.
-    prices : PricesAccessor
-        Accessor for price-related operations.
-    ereturns : ExpectedReturnsAccessor
-        Accessor for expected returns calculations.
-    covariance : CovarianceAccessor
-        Accessor for covariance matrix calculations.
-    correlation : CorrelationAccessor
-        Accessor for correlation matrix calculations.
-    risk : RiskAccessor
-        Accessor for risk-related operations.
-    utilities : UtilitiesAccessor
-        Accessor for utility-related operations.
-    diversification : DiversificationAccessor
-        Accessor for diversification-related operations.
-
-    Methods
-    -------
-    __attrs_post_init__()
-        Initialize additional attributes and performs validation.
-    from_dfkws(prices, weights=None, entropy=None, window_size=None, stocks=None, **metadata)
-        Alternative constructor to create a Portfolio instance from various inputs.
-    __len__()
-        Return the number of days in the price DataFrame.
-    __eq__(other)
-        Check equality with another Portfolio instance.
-    __ne__(other)
-        Check inequality with another Portfolio instance.
-    __getitem__(key)
-        Slice the Portfolio by the given key.
-    weights()
-        Return the weights as a pandas Series.
-    entropy()
-        Return the entropy values as a pandas Series.
-    stocks()
-        Return the stocks in the portfolio.
-    stocks_number()
-        Return the number of stocks in the portfolio.
-    metadata()
-        Return the metadata as a Bunch object.
-    window_size()
-        Return the window size for rolling calculations.
-    delisted()
-        Return a Series indicating if a stock has been delisted.
-    shape()
-        Return the shape of the price DataFrame.
-    copy(prices=None, weights=None, entropy=None, window_size=None, stocks=None, preserve_old_metadata=True, **metadata)
-        Create a copy of the Portfolio with optional modifications.
-    to_hdf5(stream_or_buff, **kwargs)
-        Save the Portfolio to an HDF5 file.
-    to_dataframe()
-        Convert the Portfolio to a pandas DataFrame.
-    as_returns(**kwargs)
-        Convert the price DataFrame to returns.
-    as_prices()
-        Return a copy of the price DataFrame.
-    weights_prune(threshold=1e-4)
-        Prune the Portfolio by removing assets with weights below the threshold.
-    delisted_prune()
-        Prune the Portfolio by removing delisted assets.
-    scale_weights(scaler="proportion")
-        Scale the weights to a range of [0, 1].
-    refresh_entropy(entropy="shannon", entropy_kws=None)
-        Recalculate the entropy values for the Portfolio.
-    __repr__()
-        Return a string representation of the Portfolio.
-    _repr_html_()
-        Return an HTML representation of the Portfolio for IPython notebooks.
     """
 
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
@@ -703,7 +620,7 @@ class Portfolio:
         return self.copy(weights=scaled_weights)
 
     # CALCULATE ENTROPY =======================================================
-    # TODO
+    # TODO Risso
     def refresh_entropy(self, *, entropy="shannon", entropy_kws=None):
         """Refresh entropy values using a specified entropy calculation method.
 
