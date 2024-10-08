@@ -26,8 +26,10 @@ def load_MERVAL(imputation="ffill", first=None, last=None):
     # pd.to_datetime(None) -> None
     first, last = pd.to_datetime(first), pd.to_datetime(last)
 
-    if imputation in ("backfill", "bfill", "pad", "ffill"):
-        df.fillna(method=imputation, inplace=True)
+    if imputation in ("backfill", "bfill"):
+        df.bfill(inplace=True)
+    elif imputation in ("pad", "ffill"):
+        df.ffill(inplace=True)
     else:
         df.fillna(value=imputation, inplace=True)
 

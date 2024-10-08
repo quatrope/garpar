@@ -13,7 +13,7 @@
 
 from garpar import Portfolio
 
-from garpar.optimize import mean_variance
+from garpar.optimize.mean_variance import MVOptimizer, Markowitz
 
 from garpar import datasets
 
@@ -22,6 +22,52 @@ import numpy as np
 import pandas as pd
 
 import pytest
+
+# =============================================================================
+# TESTS MV
+# =============================================================================
+
+def test_MVOptimizer_default_initialization():
+    optimizer = MVOptimizer()
+    assert optimizer.method == "max_sharpe"
+    assert optimizer.weight_bounds == (0, 1)
+    assert optimizer.market_neutral is False
+
+def test_MVOptimizer_custom_initialization():
+    optimizer = MVOptimizer(method="min_volatility", weight_bounds=(-1, 1))
+    assert optimizer.method == "min_volatility"
+    assert optimizer.weight_bounds == (-1, 1)
+
+@pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
+def test_MVOptimizer_calculate_weights_max_sharpe(risso_portfolio, price_distribution):
+    pf = risso_portfolio(random_state=42, distribution=price_distribution)
+    optimizer = MVOptimizer(risk_free_rate=0.001)
+    weights, meta = optimizer._calculate_weights(pf)
+    assert len(weights) == len(pf.stocks)
+    assert meta["name"] == "max_sharpe"
+    assert meta["risk_free_rate"] == 0.001
+
+@pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
+def test_MVOptimizer_min_volatility(risso_portfolio, price_distribution):
+    pf = risso_portfolio(random_state=42, distribution=price_distribution)
+    optimizer = MVOptimizer(method="min_volatility")
+    weights, meta = optimizer._calculate_weights(pf)
+    assert len(weights) == len(pf.stocks)
+    assert meta["name"] == "min_volatility"
+
+@pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
+def test_MVOptimizer_invalid_method(risso_portfolio, price_distribution):
+    pf = risso_portfolio(random_state=42, distribution=price_distribution)
+    optimizer = MVOptimizer(method="unknown_method")
+    with pytest.raises(ValueError):
+        optimizer._calculate_weights(pf)
+
+@pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
+def test_MVOptimizer_coerce_target_return(risso_portfolio, price_distribution):
+    pf = risso_portfolio(random_state=42, distribution=price_distribution)
+    optimizer = MVOptimizer(target_return=None)
+    coerced_return = optimizer._coerce_target_return(pf)
+    assert coerced_return == 0.05  # The minimum absolute return from mock portfolio
 
 # =============================================================================
 # MARKOWITZ TEST
@@ -39,7 +85,7 @@ def test_Markowitz_optimize():
     )
 
     # Instance
-    markowitz = mean_variance.Markowitz(target_return=1.0)
+    markowitz = Markowitz(target_return=1.0)
 
     # Tested method
     result = markowitz.optimize(pf)
@@ -71,7 +117,7 @@ def test_Markowitz_optimize_default_target_return():
     )
 
     # Instance
-    markowitz = mean_variance.Markowitz()
+    markowitz = Markowitz()
 
     # Tested method
     result = markowitz.optimize(pf)
@@ -91,4 +137,3 @@ def test_Markowitz_optimize_default_target_return():
 
     assert isinstance(result.weights, pd.Series)
     pd.testing.assert_series_equal(result.weights, expected_weights)
-
