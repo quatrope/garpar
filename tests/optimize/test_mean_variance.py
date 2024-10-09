@@ -15,6 +15,8 @@ from garpar import Portfolio
 
 from garpar.optimize.mean_variance import MVOptimizer, Markowitz
 
+import pypfopt
+
 from garpar import datasets
 
 import numpy as np
@@ -68,6 +70,26 @@ def test_MVOptimizer_coerce_target_return(risso_portfolio, price_distribution):
     optimizer = MVOptimizer(target_return=None)
     coerced_return = optimizer._coerce_target_return(pf)
     assert coerced_return == 0.05  # The minimum absolute return from mock portfolio
+
+@pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
+def test_MVOptimizer_get_optimizer(risso_portfolio, price_distribution):
+    pf = risso_portfolio(random_state=42, distribution=price_distribution)
+    optimizer = MVOptimizer()
+    assert type(optimizer._get_optimizer(pf)) == pypfopt.efficient_frontier.EfficientFrontier
+
+@pytest.mark.parametrize(
+    "volatiliy, price_distribution",
+    [
+        (0.03313144315467211, pytest.DISTRIBUTIONS['levy-stable']),
+        (0.8509377578214843, pytest.DISTRIBUTIONS['normal']),
+        (13.383798092382262, pytest.DISTRIBUTIONS['uniform'])
+    ]
+)
+def test_MVOptimizer_coerce_volatiliy(volatiliy, price_distribution):
+    pf = price_distribution(random_state=43)
+    optimizer = MVOptimizer(method="max-sharpe")
+    coerced_volatility = optimizer._coerce_target_volatility(pf)
+    assert coerced_volatility == pytest.approx(volatiliy, 1e-9)
 
 # =============================================================================
 # MARKOWITZ TEST

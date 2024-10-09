@@ -62,13 +62,13 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
     def _coerce_target_volatility(self, pf):
         if self.target_risk is None:
-            return np.min(np.std(pf.as_prices()))
+            return np.min(np.std(pf.as_prices(), axis=0))
         return self.target_risk
 
     def _calculate_weights(self, pf):
         optimizer = self._get_optimizer(pf)
         method = self.method
-        
+
         optimization_methods = {
             "min_volatility": self._min_volatility,
             "max_sharpe": self._max_sharpe,
@@ -77,10 +77,10 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
             "efficient_return": self._efficient_return,
             "portfolio_performance": self._portfolio_performance,
         }
-        
+
         if method not in optimization_methods:
             raise ValueError(f"Unknown optimization method: {method}")
-        
+
         return optimization_methods[method](optimizer, pf)
 
     def _min_volatility(self, optimizer, pf):
