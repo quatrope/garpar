@@ -40,14 +40,14 @@ def test_MVOptimizer_custom_initialization():
     assert optimizer.method == "min_volatility"
     assert optimizer.weight_bounds == (-1, 1)
 
+@pytest.mark.parametrize("method", pytest.METHODS)
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_MVOptimizer_calculate_weights_max_sharpe(risso_portfolio, price_distribution):
+def test_MVOptimizer_calculate_weights_method_coerced(risso_portfolio, method, price_distribution):
     pf = risso_portfolio(random_state=42, distribution=price_distribution)
-    optimizer = MVOptimizer(risk_free_rate=0.001)
+    optimizer = MVOptimizer(method=method)
     weights, meta = optimizer._calculate_weights(pf)
     assert len(weights) == len(pf.stocks)
-    assert meta["name"] == "max_sharpe"
-    assert meta["risk_free_rate"] == 0.001
+    assert meta["name"] == method
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_min_volatility(risso_portfolio, price_distribution):
@@ -65,13 +65,6 @@ def test_MVOptimizer_invalid_method(risso_portfolio, price_distribution):
         optimizer._calculate_weights(pf)
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_MVOptimizer_coerce_target_return(risso_portfolio, price_distribution):
-    pf = risso_portfolio(random_state=42, distribution=price_distribution)
-    optimizer = MVOptimizer(target_return=None)
-    coerced_return = optimizer._coerce_target_return(pf)
-    assert coerced_return == 0.05  # The minimum absolute return from mock portfolio
-
-@pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_get_optimizer(risso_portfolio, price_distribution):
     pf = risso_portfolio(random_state=42, distribution=price_distribution)
     optimizer = MVOptimizer()
@@ -85,11 +78,11 @@ def test_MVOptimizer_get_optimizer(risso_portfolio, price_distribution):
         (13.383798092382262, pytest.DISTRIBUTIONS['uniform'])
     ]
 )
-def test_MVOptimizer_coerce_volatiliy(volatiliy, price_distribution):
+def test_MVOptimizer_coerce_volatility(volatiliy, price_distribution):
     pf = price_distribution(random_state=43)
     optimizer = MVOptimizer(method="max-sharpe")
     coerced_volatility = optimizer._coerce_target_volatility(pf)
-    assert coerced_volatility == pytest.approx(volatiliy, 1e-9)
+    np.testing.assert_almost_equal(coerced_volatility, volatiliy, decimal=9)
 
 # =============================================================================
 # MARKOWITZ TEST

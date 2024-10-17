@@ -376,6 +376,7 @@ class Portfolio:
         return self._prices_df.shape
 
     # UTILS ===================================================================
+    # TODO: Hacer que copy pueda elegir desde que dia hasta que dia copiar
     def copy(
         self,
         *,

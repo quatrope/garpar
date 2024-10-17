@@ -32,6 +32,14 @@ DISTRIBUTIONS = {
     "uniform": gp.datasets.make_risso_uniform,
 }
 
+METHODS = [
+    "min_volatility",
+    "max_sharpe",
+    "max_quadratic_utility",
+    "efficient_risk",
+    "efficient_return",
+]
+
 # =============================================================================
 # FIXTURES
 # =============================================================================
@@ -71,3 +79,4 @@ def risso_portfolio_values(risso_portfolio):
 
 def pytest_configure():
     pytest.DISTRIBUTIONS = DISTRIBUTIONS
+    pytest.METHODS = METHODS

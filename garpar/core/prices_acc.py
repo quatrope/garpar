@@ -11,6 +11,8 @@ import attr
 
 import numpy as np
 
+import pandas as pd
+
 from ..utils import accabc
 
 # =============================================================================
@@ -162,3 +164,37 @@ class PricesAccessor(accabc.AccessorABC):
         """
         df = self._pf._prices_df
         return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)
+
+    def mean_tendency_size(self):
+    
+        def count_consecutive(stock_groups):
+            # Calculate the size of each consecutive group
+            stock_counts = stock_groups.groupby(stock_groups).size()
+            
+            # Return the mean size of consecutive groups
+            return stock_counts.mean()
+        
+        # Convert the entire DataFrame to boolean values
+        # True if return is positive, False otherwise
+        wins = self._pf.as_returns() > 0
+        
+        # Detect changes in the sequence of wins/losses
+        # Shift all values down by one position and compare
+        # False indicates a change in the sequence
+        # (win to loss or vice versa)
+        changes = wins != wins.shift()
+        
+        # Use cumulative sum to assign a unique identifier to each consecutive
+        # group. Each time a change is detected (False in 'changes'), the group
+        # number increments
+        groups = changes.cumsum()
+        
+        # Apply the count_consecutive function to each column
+        # This calculates the mean size of
+        # consecutive win/loss streaks
+        counts = groups.apply(count_consecutive)
+        
+        # Name the resulting Series for clarity
+        counts.name = "mean_tendency_size"
+        
+        return counts
