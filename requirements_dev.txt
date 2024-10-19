@@ -13,7 +13,7 @@ cycler==0.12.1
 Deprecated==1.2.14
 distlib==0.3.8
 ecos==2.0.13
-filelock==3.14.0
+filelock==3.16.1
 fonttools==4.52.4
 h5py==3.11.0
 importlib_metadata==7.1.0
