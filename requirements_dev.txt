@@ -15,7 +15,6 @@ distlib==0.3.8
 ecos==2.0.13
 filelock==3.14.0
 fonttools==4.52.4
-garpar @ file:///home/divasco/Documents/Tesina/garpar/dist/garpar-0.1-py3-none-any.whl#sha256=9f23544e68e8833ad6f84cb5fa3eb1ea5d538ea1e11a496572bc426ec99d8438
 h5py==3.11.0
 importlib_metadata==7.1.0
 Jinja2==3.1.4
