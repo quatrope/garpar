@@ -9,7 +9,10 @@
 
 import warnings
 
+import numpy as np
+
 from scipy import stats
+from scipy.optimize import minimize
 
 
 def shannon(prices, window_size=None, **kwargs):
@@ -59,3 +62,36 @@ def risso(prices, window_size, **kwargs):
     """
     if not window_size or window_size < 0:
         raise ValueError("'window_size' must be >= 0")
+
+    
+
+def HOne (weights):
+    weights = np.asarray(weights)
+    return 1 - np.sum(weights**2)
+
+def HInf (weights):
+    weights = np.asarray(weights)
+    return 1 - np.max(weights)
+
+def yagerOne (weights):
+    """
+    Computes Yager's entropy for a fuzzy set.
+
+    Parameters:
+    - weights: array-like, list of membership degrees (values in [0, 1])
+    - p: float, parameter to control sensitivity (default = 1)
+
+    Returns:
+    - entropy: float, Yager's entropy
+    """
+
+    n = len(weights)
+    weights = np.asarray(weights)
+
+    return (sum((weights - 1/n) ** p)) ** (1/p)
+
+def yagerInf (weigths):
+    weigths = np.asarray(weigths)
+    n = len(weigths)
+
+    return np.max(weigths) - 1/n

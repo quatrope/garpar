@@ -143,6 +143,21 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         float
             Loss probability that corresponds to the nearest candidate entropy
             value to the target entropy.
+
+        Example
+        --------
+        If we run this function with window_size=3 and entropy=.99
+        >>> # Example with a sliding window size of 3 and target entropy of 0.99
+        >>> get_window_loss_probability(window_size=3, entropy=0.99)
+        We get the following data
+        Candidates
+        [1.18666621e-14 9.18295834e-01 9.18295834e-01 1.18666621e-14]
+        Entropy
+        0.99
+        Loss probabilities
+        [2.22044605e-16 3.33333333e-01 6.66666667e-01 1.00000000e+00]
+        Loss probability
+        0.3333333333333333
         """
         h_candidates, loss_probabilities = self.candidate_entropy(window_size)
         idx = argnearest(h_candidates, entropy)
