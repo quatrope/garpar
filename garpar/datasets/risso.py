@@ -89,7 +89,7 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
 
     Methods
     -------
-    candidate_entropy(window_size)
+    generate_loss_probabilities(window_size)
         Calculate candidate entropies and corresponding loss probabilities.
 
     get_window_loss_probability(window_size, entropy)
@@ -97,8 +97,11 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         entropy value to the target entropy.
     """
 
-    def candidate_entropy(self, window_size):
-        """Calculate candidate entropies and corresponding loss probabilities.
+    def generate_loss_probabilities(self, window_size):
+        """
+        Calculate candidate entropies and corresponding loss probabilities.
+        Note that for a greater window size, the chances of losing or winning
+        are more transparent.
 
         Parameters
         ----------
@@ -117,13 +120,13 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         # con logaritmo y el logaritmo de cero no puede calcularse
         epsilon = np.finfo(loss_probability.dtype).eps
         loss_probability[0] = epsilon
-        loss_probability[-1] = 1 - epsilon
+        loss_probability[-1] = 1.0 - epsilon
 
         # Calcula entropy
         first_part = loss_probability * np.log2(loss_probability)
-        second_part = (1 - loss_probability) * np.log2(1 - loss_probability)
+        second_part = (1.0 - loss_probability) * np.log2(1.0 - loss_probability)
 
-        modificated_entropy = -1 * (first_part + second_part)
+        modificated_entropy = -1.0 * (first_part + second_part)
         return modificated_entropy, loss_probability
 
     def get_window_loss_probability(self, window_size, entropy):
@@ -159,7 +162,7 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         Loss probability
         0.3333333333333333
         """
-        h_candidates, loss_probabilities = self.candidate_entropy(window_size)
+        h_candidates, loss_probabilities = self.generate_loss_probabilities(window_size)
         idx = argnearest(h_candidates, entropy)
         loss_probability = loss_probabilities[idx]
 
