@@ -19,6 +19,7 @@ import scipy.stats
 
 from .ds_base import RandomEntropyPortfolioMakerABC
 from ..utils import mabc
+from .. import EPSILON
 
 
 # =============================================================================
@@ -68,7 +69,7 @@ def argnearest(arr, v):
 # =============================================================================
 
 
-class RissoABC(RandomEntropyPortfolioMakerABC):
+class RissoMixin:
     """
     Implementation of a portfolio maker based on entropy calculation by Risso.
 
@@ -97,7 +98,7 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         entropy value to the target entropy.
     """
 
-    def generate_loss_probabilities(self, window_size):
+    def generate_loss_probabilities(self, window_size, eps=None):
         """
         Calculate candidate entropies and corresponding loss probabilities.
         Note that for a greater window size, the chances of losing or winning
@@ -114,13 +115,11 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
             Tuple containing the calculated modified entropy values and
             corresponding loss probabilities.
         """
-        loss_probability = np.linspace(0.0, 1.0, num=window_size + 1)
-
         # Se corrigen probabilidades porque el cálculo de la entropía trabaja
         # con logaritmo y el logaritmo de cero no puede calcularse
-        epsilon = np.finfo(loss_probability.dtype).eps
-        loss_probability[0] = epsilon
-        loss_probability[-1] = 1.0 - epsilon
+        epsilon = EPSILON if eps is None else eps
+
+        loss_probability = np.linspace(epsilon, 1.0 - epsilon, num=window_size + 1)
 
         # Calcula entropy
         first_part = loss_probability * np.log2(loss_probability)
@@ -129,7 +128,7 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         modificated_entropy = -1.0 * (first_part + second_part)
         return modificated_entropy, loss_probability
 
-    def get_window_loss_probability(self, window_size, entropy):
+    def get_window_loss_probability(self, window_size, entropy, eps=None):
         """
         Get the loss probability that corresponds to the nearest candidate
         entropy value to the target entropy.
@@ -162,7 +161,7 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
         Loss probability
         0.3333333333333333
         """
-        h_candidates, loss_probabilities = self.generate_loss_probabilities(window_size)
+        h_candidates, loss_probabilities = self.generate_loss_probabilities(window_size, eps)
         idx = argnearest(h_candidates, entropy)
         loss_probability = loss_probabilities[idx]
 
@@ -172,7 +171,7 @@ class RissoABC(RandomEntropyPortfolioMakerABC):
 # =============================================================================
 # NORMAL
 # =============================================================================
-class RissoUniform(RissoABC):
+class RissoUniform(RissoMixin, RandomEntropyPortfolioMakerABC):
     """
     Implementation of a portfolio maker using a uniform distribution for
     price changes.
@@ -292,7 +291,7 @@ def make_risso_uniform(
 # =============================================================================
 # NORMAL
 # =============================================================================
-class RissoNormal(RissoABC):
+class RissoNormal(RissoMixin, RandomEntropyPortfolioMakerABC):
     """
     Portfolio maker implementing a stochastic model with normal
     distribution for daily returns.
@@ -457,7 +456,7 @@ class _LStableCache:
         return cache.pop(0)
 
 
-class RissoLevyStable(RissoABC):
+class RissoLevyStable(RissoMixin, RandomEntropyPortfolioMakerABC):
     """
     Portfolio maker implementing a stochastic model with Levy stable
     distribution for daily returns.

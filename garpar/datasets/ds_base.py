@@ -371,10 +371,8 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         Portfolio
             Portfolio object representing the generated portfolio.
         """
-        if window_size <= 0:
+        if window_size <= 0 or days < window_size:
             raise ValueError("'window_size' must be > 0")
-        if days < window_size:
-            raise ValueError("'days' must be >= window_size")
 
         initial_prices = self._coerce_price(stocks, price)
 
