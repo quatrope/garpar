@@ -20,13 +20,13 @@ import pandas as pd
 # =============================================================================
 
 
-def test_DiversificationAccessor_ratio(risso_portfolio):
+def test_DiversificationMetricsAccessor_ratio(risso_portfolio):
     pf = risso_portfolio(random_state=42)
     expected = 0.019438624174371914
     np.testing.assert_allclose(pf.div.ratio(), expected)
 
 
-def test_DiversificationAccessor_mrc(risso_portfolio):
+def test_DiversificationMetricsAccessor_mrc(risso_portfolio):
     pf = risso_portfolio(random_state=42, stocks=3)
 
     expected = pd.Series(
@@ -41,25 +41,25 @@ def test_DiversificationAccessor_mrc(risso_portfolio):
     )
 
 
-def test_DiversificationAccessor_pdi(risso_portfolio):
+def test_DiversificationMetricsAccessor_pdi(risso_portfolio):
     pf = risso_portfolio(random_state=42)
     expected = 3.0459243730151204
     np.testing.assert_allclose(pf.div.pdi(), expected)
 
 
-def test_DiversificationAccessor_zheng_entropy(risso_portfolio):
+def test_DiversificationMetricsAccessor_zheng_entropy(risso_portfolio):
     pf = risso_portfolio(random_state=42)
     expected = 2.302585
     np.testing.assert_allclose(pf.div.zheng_entropy(), expected)
 
 
-def test_DiversificationAccessor_cross_entropy(risso_portfolio):
+def test_DiversificationMetricsAccessor_cross_entropy(risso_portfolio):
     pf = risso_portfolio(random_state=42)
     expected = 0.
     np.testing.assert_allclose(pf.div.cross_entropy(), expected)
 
 
-def test_DiversificationAccessor_ke_zang_entropy(risso_portfolio):
+def test_DiversificationMetricsAccessor_ke_zang_entropy(risso_portfolio):
     pf = risso_portfolio(random_state=42)
     expected = 2.3133717
     np.testing.assert_allclose(pf.div.ke_zang_entropy(), expected)

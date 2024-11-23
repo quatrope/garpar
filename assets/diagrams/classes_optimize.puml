@@ -1,0 +1,44 @@
+@startuml classes_optimize
+set namespaceSeparator none
+
+package Optimize {
+  class "MVOptimizer" as garpar.optimize.mean_variance.MVOptimizer {
+    covariance : _CountingAttr
+    covariance_kw : _CountingAttr
+    market_neutral : _CountingAttr
+    method : _CountingAttr
+    returns : _CountingAttr
+    returns_kw : _CountingAttr
+    risk_aversion : _CountingAttr
+    risk_free_rate : _CountingAttr
+    target_return : _CountingAttr
+    target_risk : _CountingAttr
+    weight_bounds : _CountingAttr
+  }
+  class "Markowitz" as garpar.optimize.mean_variance.Markowitz {
+    covariance : _CountingAttr
+    covariance_kw : _CountingAttr
+    market_neutral : _CountingAttr
+    method : _CountingAttr
+    returns : _CountingAttr
+    returns_kw : _CountingAttr
+    target_return : _CountingAttr
+    target_risk : _CountingAttr
+    weight_bounds : _CountingAttr
+  }
+  class "MeanVarianceFamilyMixin" as garpar.optimize.opt_base.MeanVarianceFamilyMixin {
+    family : str
+  }
+  class "OptimizerABC" as garpar.optimize.opt_base.OptimizerABC {
+    family : object
+    get_optimizer_family()
+    optimize(pf)
+  }
+}
+
+garpar.optimize.mean_variance.MVOptimizer -u-> garpar.optimize.opt_base.MeanVarianceFamilyMixin
+garpar.optimize.mean_variance.MVOptimizer -u-> garpar.optimize.opt_base.OptimizerABC
+garpar.optimize.mean_variance.Markowitz -u-> garpar.optimize.opt_base.MeanVarianceFamilyMixin
+garpar.optimize.mean_variance.Markowitz -u-> garpar.optimize.opt_base.OptimizerABC
+
+@enduml

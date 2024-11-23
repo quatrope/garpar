@@ -6,7 +6,7 @@
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
 
-from garpar.core.plot_acc import PortfolioPlotter
+from garpar.core.plot_acc import PortfolioPlotterAccessor
 
 from matplotlib.testing.decorators import check_figures_equal
 
@@ -19,9 +19,9 @@ import seaborn as sns
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_line(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
+def test_PortfolioPlotterAccessor_line(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.line(returns=returns, ax=ax_test)
@@ -37,9 +37,9 @@ def test_PortFolioPlotter_line(risso_portfolio, fig_test, fig_ref, returns, pric
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_heatmap(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
+def test_PortfolioPlotterAccessor_heatmap(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.heatmap(returns=returns, ax=ax_test)
@@ -54,9 +54,9 @@ def test_PortFolioPlotter_heatmap(risso_portfolio, fig_test, fig_ref, returns, p
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_wheatmap(risso_portfolio, fig_test, fig_ref, price_distribution):
+def test_PortfolioPlotterAccessor_wheatmap(risso_portfolio, fig_test, fig_ref, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.wheatmap(ax=ax_test)
@@ -73,9 +73,9 @@ def test_PortFolioPlotter_wheatmap(risso_portfolio, fig_test, fig_ref, price_dis
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_hist(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
+def test_PortfolioPlotterAccessor_hist(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.hist(returns=returns, ax=ax_test)
@@ -90,9 +90,9 @@ def test_PortFolioPlotter_hist(risso_portfolio, fig_test, fig_ref, returns, pric
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_whist(risso_portfolio, fig_test, fig_ref, price_distribution):
+def test_PortfolioPlotterAccessor_whist(risso_portfolio, fig_test, fig_ref, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.whist(ax=ax_test)
@@ -108,9 +108,9 @@ def test_PortFolioPlotter_whist(risso_portfolio, fig_test, fig_ref, price_distri
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_box(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
+def test_PortfolioPlotterAccessor_box(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.box(returns=returns, ax=ax_test)
@@ -125,9 +125,9 @@ def test_PortFolioPlotter_box(risso_portfolio, fig_test, fig_ref, returns, price
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_wbox(risso_portfolio, fig_test, fig_ref, price_distribution):
+def test_PortfolioPlotterAccessor_wbox(risso_portfolio, fig_test, fig_ref, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.wbox(ax=ax_test)
@@ -143,9 +143,9 @@ def test_PortFolioPlotter_wbox(risso_portfolio, fig_test, fig_ref, price_distrib
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_kde(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
+def test_PortfolioPlotterAccessor_kde(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.kde(returns=returns, ax=ax_test)
@@ -160,9 +160,9 @@ def test_PortFolioPlotter_kde(risso_portfolio, fig_test, fig_ref, returns, price
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_wkde(risso_portfolio, fig_test, fig_ref, price_distribution):
+def test_PortfolioPlotterAccessor_wkde(risso_portfolio, fig_test, fig_ref, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.wkde(ax=ax_test)
@@ -178,9 +178,9 @@ def test_PortFolioPlotter_wkde(risso_portfolio, fig_test, fig_ref, price_distrib
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_PortFolioPlotter_ogive(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
+def test_PortfolioPlotterAccessor_ogive(risso_portfolio, fig_test, fig_ref, returns, price_distribution):
     pf = risso_portfolio(random_state=3, distribution=price_distribution)
-    plotter = PortfolioPlotter(pf)
+    plotter = PortfolioPlotterAccessor(pf)
 
     ax_test = fig_test.subplots()
     plotter.ogive(returns=returns, ax=ax_test)

@@ -1,0 +1,97 @@
+@startuml classes_core
+set namespaceSeparator none
+package Core{
+
+  class "Portfolio" as garpar.core.portfolio.Portfolio {
+    entropy
+    stocks
+    weights
+    window_size
+    as_prices()
+    as_returns()
+    copy()
+    delisted_prune()
+    from_dfkws(prices, weights, entropy, window_size, stocks)
+    refresh_entropy()
+    scale_weights()
+    to_dataframe()
+    to_hdf5(stream_or_buff)
+    weights_prune(threshold)
+  }
+  class "PortfolioPlotterAccessor" as garpar.core.plot_acc.PortfolioPlotterAccessor {
+    box(returns)
+    heatmap(returns)
+    hist(returns)
+    kde(returns)
+    line(returns)
+    ogive(returns)
+    wbox()
+    wheatmap()
+    whist()
+    wkde()
+  }
+  class "PricesAccessor" as garpar.core.prices_acc.PricesAccessor {
+    log()
+    log10()
+    log2()
+    mad(skipna)
+    mean_tendency_size()
+  }
+  class "RiskAccessor" as garpar.core.risk_acc.RiskAccessor {
+    pf_beta
+    pf_var
+    var
+    portfolio_beta()
+    portfolio_variance(covariance, covariance_kw)
+    sharpe_ratio()
+    stock_beta(market_prices, log_returns)
+    treynor_ratio()
+    value_at_risk()
+  }
+  class "CorrelationAccessor" as garpar.core.covcorr_acc.CorrelationAccessor {
+    exp_corr()
+    ledoit_wolf_corr()
+    oracle_approximating_corr()
+    sample_corr()
+    semi_corr()
+  }
+  class "CovarianceAccessor" as garpar.core.covcorr_acc.CovarianceAccessor {
+    exp_cov()
+    ledoit_wolf_cov(shrinkage_target)
+    oracle_approximating_cov()
+    sample_cov()
+    semi_cov()
+  }
+  class "DiversificationMetricsAccessor" as garpar.core.div_acc.DiversificationMetricsAccessor {
+    cross_entropy(benchmark_weights)
+    ke_zang_entropy()
+    mrc()
+    pdi()
+    ratio()
+    zheng_entropy()
+  }
+  class "ExpectedReturnsAccessor" as garpar.core.ereturns_acc.ExpectedReturnsAccessor {
+    capm()
+    emah()
+    mah()
+  }
+  class "UtilitiesAccessor" as garpar.core.utilities_acc.UtilitiesAccessor {
+    pf_return
+    qutility
+    ex_ante_tracking_error()
+    ex_post_tracking_error()
+    portfolio_return()
+    quadratic_utility()
+  }
+}
+
+garpar.core.portfolio.Portfolio o-- garpar.core.div_acc.DiversificationMetricsAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.plot_acc.PortfolioPlotterAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.risk_acc.RiskAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.prices_acc.PricesAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.covcorr_acc.CovarianceAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.covcorr_acc.CorrelationAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.ereturns_acc.ExpectedReturnsAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.utilities_acc.UtilitiesAccessor
+
+@enduml

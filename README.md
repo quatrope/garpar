@@ -24,4 +24,4 @@ pip install dist/garpar-0.1-py3-none-any.whl
 
 ## Diagrama de clases de Garpar
 
-![estructura](classes_garpar.png)
+![estructura](assets/diagrams/classes_garpar.png)

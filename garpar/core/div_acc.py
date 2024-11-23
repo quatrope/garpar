@@ -24,7 +24,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
+class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
     """A class to calculate various diversification metrics for a portfolio.
 
     Attributes
@@ -72,7 +72,7 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(pf)
         >>> ratio = accessor.ratio()
         """
         weights = self._pf.scale_weights().weights
@@ -100,7 +100,7 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(pf)
         >>> mrc = accessor.mrc()
         """
         weights = self._pf.scale_weights().weights
@@ -157,7 +157,7 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(pf)
         >>> pdi = accessor.pdi()
         """
         returns = self._pf.as_returns()
@@ -189,7 +189,7 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(pf)
         >>> entropy = accessor.zheng_entropy()
         """
         weights = self._pf.scale_weights().weights
@@ -210,7 +210,7 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(pf)
         >>> cross_entropy = accessor.cross_entropy()
         """
         weights = self._pf.scale_weights().weights
@@ -234,7 +234,7 @@ class DiversificationAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(pf)
         >>> entropy = accessor.ke_zang_entropy()
         """
         pf_var = self._pf.risk.pf_var(

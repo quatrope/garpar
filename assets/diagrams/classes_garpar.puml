@@ -17,7 +17,7 @@ package Core {
     to_hdf5(stream_or_buff)
     weights_prune(threshold)
   }
-  class "PortfolioPlotter" as garpar.core.plot_acc.PortfolioPlotter {
+  class "PortfolioPlotterAccessor" as garpar.core.plot_acc.PortfolioPlotterAccessor {
     box(returns)
     heatmap(returns)
     hist(returns)
@@ -61,7 +61,7 @@ package Core {
     sample_cov()
     semi_cov()
   }
-  class "DiversificationAccessor" as garpar.core.div_acc.DiversificationAccessor {
+  class "DiversificationMetricsAccessor" as garpar.core.div_acc.DiversificationMetricsAccessor {
     cross_entropy(benchmark_weights)
     ke_zang_entropy()
     mrc()
@@ -119,7 +119,7 @@ package Optimize {
 }
 package datasets {
   class "MultiSector" as garpar.datasets.multisector.MultiSector {
-    makers : _CountingAttr
+    makers : PortfolioMaker
     make_portfolio()
   }
   class "PortfolioMakerABC" as garpar.datasets.ds_base.PortfolioMakerABC {
@@ -143,7 +143,7 @@ package datasets {
     sigma : desvio estándar
     make_stock_price(price, loss, random)
   }
-  class "RissoNormal" as garpar.datasets.risso.RissoNormal {1
+  class "RissoNormal" as garpar.datasets.risso.RissoNormal {
     mu : media
     sigma : desvio estándar
     make_stock_price(price, loss, random)
@@ -155,21 +155,21 @@ package datasets {
   }
 }
 
-garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC --|> garpar.datasets.ds_base.PortfolioMakerABC
-garpar.datasets.multisector.MultiSector --|> garpar.datasets.ds_base.PortfolioMakerABC
-garpar.datasets.risso.RissoLevyStable --|> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
-garpar.datasets.risso.RissoLevyStable --|> garpar.datasets.risso.RissoMixin
-garpar.datasets.risso.RissoNormal --|> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
-garpar.datasets.risso.RissoNormal --|> garpar.datasets.risso.RissoMixin
-garpar.datasets.risso.RissoUniform --|> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
-garpar.datasets.risso.RissoUniform --|> garpar.datasets.risso.RissoMixin
-garpar.optimize.mean_variance.MVOptimizer --|> garpar.optimize.opt_base.MeanVarianceFamilyMixin
-garpar.optimize.mean_variance.MVOptimizer --|> garpar.optimize.opt_base.OptimizerABC
-garpar.optimize.mean_variance.Markowitz --|> garpar.optimize.opt_base.MeanVarianceFamilyMixin
-garpar.optimize.mean_variance.Markowitz --|> garpar.optimize.opt_base.OptimizerABC
+garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC -u-> garpar.datasets.ds_base.PortfolioMakerABC
+garpar.datasets.multisector.MultiSector -u-> garpar.datasets.ds_base.PortfolioMakerABC
+garpar.datasets.risso.RissoLevyStable -u-> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
+garpar.datasets.risso.RissoLevyStable -u-> garpar.datasets.risso.RissoMixin
+garpar.datasets.risso.RissoNormal -u-> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
+garpar.datasets.risso.RissoNormal -u-> garpar.datasets.risso.RissoMixin
+garpar.datasets.risso.RissoUniform -u-> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
+garpar.datasets.risso.RissoUniform -u-> garpar.datasets.risso.RissoMixin
+garpar.optimize.mean_variance.MVOptimizer -u-> garpar.optimize.opt_base.MeanVarianceFamilyMixin
+garpar.optimize.mean_variance.MVOptimizer -u-> garpar.optimize.opt_base.OptimizerABC
+garpar.optimize.mean_variance.Markowitz -u-> garpar.optimize.opt_base.MeanVarianceFamilyMixin
+garpar.optimize.mean_variance.Markowitz -u-> garpar.optimize.opt_base.OptimizerABC
 
-garpar.core.portfolio.Portfolio o-- garpar.core.div_acc.DiversificationAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.plot_acc.PortfolioPlotter
+garpar.core.portfolio.Portfolio o-- garpar.core.div_acc.DiversificationMetricsAccessor
+garpar.core.portfolio.Portfolio o-- garpar.core.plot_acc.PortfolioPlotterAccessor
 garpar.core.portfolio.Portfolio o-- garpar.core.risk_acc.RiskAccessor
 garpar.core.portfolio.Portfolio o-- garpar.core.prices_acc.PricesAccessor
 garpar.core.portfolio.Portfolio o-- garpar.core.covcorr_acc.CovarianceAccessor

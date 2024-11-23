@@ -24,7 +24,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class PortfolioPlotter(accabc.AccessorABC):
+class PortfolioPlotterAccessor(accabc.AccessorABC):
     """Accessor class for plotting portfolio data.
 
     Attributes

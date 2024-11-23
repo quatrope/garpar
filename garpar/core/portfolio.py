@@ -66,7 +66,7 @@ class Portfolio:
     # accessors
     plot = attr.ib(
         init=False,
-        default=attr.Factory(plot_acc.PortfolioPlotter, takes_self=True),
+        default=attr.Factory(plot_acc.PortfolioPlotterAccessor, takes_self=True),
     )
 
     prices = attr.ib(
@@ -91,7 +91,6 @@ class Portfolio:
         init=False,
         default=attr.Factory(covcorr_acc.CorrelationAccessor, takes_self=True),
     )
-
     corr = correlation
 
     risk = attr.ib(
@@ -106,9 +105,8 @@ class Portfolio:
 
     diversification = attr.ib(
         init=False,
-        default=attr.Factory(div_acc.DiversificationAccessor, takes_self=True),
+        default=attr.Factory(div_acc.DiversificationMetricsAccessor, takes_self=True),
     )
-
     div = diversification
 
     def __attrs_post_init__(self):
@@ -621,7 +619,6 @@ class Portfolio:
         return self.copy(weights=scaled_weights)
 
     # CALCULATE ENTROPY =======================================================
-    # TODO Risso
     def refresh_entropy(self, *, entropy="shannon", entropy_kws=None):
         """Refresh entropy values using a specified entropy calculation method.
 
