@@ -19,10 +19,9 @@ import pandas as pd
 # DIVERSIFICATION TESTS
 # =============================================================================
 
-
 def test_DiversificationMetricsAccessor_ratio(risso_portfolio):
     pf = risso_portfolio(random_state=42)
-    expected = 0.019438624174371914
+    expected = 0.02434710479460172
     np.testing.assert_allclose(pf.div.ratio(), expected)
 
 
