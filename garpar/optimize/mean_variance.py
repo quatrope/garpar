@@ -42,46 +42,46 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     risk_free_rate = mabc.hparam(default=None)
     risk_aversion = mabc.hparam(default=None)
 
-    def _get_optimizer(self, pf):
-        expected_returns = pf.ereturns(self.returns, **self.returns_kw)
-        cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
+    def _get_optimizer(self, ss):
+        expected_returns = ss.ereturns(self.returns, **self.returns_kw)
+        cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
         return pypfopt.EfficientFrontier(
             expected_returns=expected_returns,
             cov_matrix=cov_matrix,
             weight_bounds=self.weight_bounds,
         )
 
-    def _coerce_risk_free_rate(self, pf):
+    def _coerce_risk_free_rate(self, ss):
         if self.risk_free_rate is not None:
             return self.risk_free_rate
 
-        expected_returns = list(pf.ereturns())
+        expected_returns = list(ss.ereturns())
         return np.median(expected_returns)
 
-    def _coerce_risk_aversion(self, pf):
+    def _coerce_risk_aversion(self, ss):
         if self.risk_aversion is not None:
             return self.risk_aversion
 
-        expected_returns = list(pf.ereturns())
+        expected_returns = list(ss.ereturns())
         risk_aversion = 1 / np.var(expected_returns)
         return risk_aversion
 
-    def _coerce_target_return(self, pf):
+    def _coerce_target_return(self, ss):
         if self.target_return is not None:
             return self.target_return
 
-        returns = pf.as_returns().to_numpy().flatten()
+        returns = ss.as_returns().to_numpy().flatten()
         returns = returns[(returns != 0) & (~np.isnan(returns))]
         return np.min(np.abs(returns))
 
-    def _coerce_target_volatility(self, pf):
+    def _coerce_target_volatility(self, ss):
         if self.target_risk is not None:
             return self.target_risk
 
-        return np.min(np.std(pf.as_prices(), axis=0))
+        return np.min(np.std(ss.as_prices(), axis=0))
 
-    def _calculate_weights(self, pf):
-        optimizer = self._get_optimizer(pf)
+    def _calculate_weights(self, ss):
+        optimizer = self._get_optimizer(ss)
         method = self.method
 
         optimization_methods = {
@@ -96,57 +96,57 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if method not in optimization_methods:
             raise ValueError(f"Unknown optimization method: {method}")
 
-        return optimization_methods[method](optimizer, pf)
+        return optimization_methods[method](optimizer, ss)
 
-    def _min_volatility(self, optimizer, pf):
+    def _min_volatility(self, optimizer, ss):
         weights_dict = optimizer.min_volatility()
-        weights = [weights_dict[stock] for stock in pf.stocks]
+        weights = [weights_dict[stock] for stock in ss.stocks]
 
         return weights, {"name": "min_volatility"}
 
-    def _max_sharpe(self, optimizer, pf):
-        risk_free_rate = self._coerce_risk_free_rate(pf)
+    def _max_sharpe(self, optimizer, ss):
+        risk_free_rate = self._coerce_risk_free_rate(ss)
 
         weights_dict = optimizer.max_sharpe(risk_free_rate=risk_free_rate)
-        weights = [weights_dict[stock] for stock in pf.stocks]
+        weights = [weights_dict[stock] for stock in ss.stocks]
 
         return weights, {"name": "max_sharpe", "risk_free_rate": risk_free_rate}
 
-    def _max_quadratic_utility(self, optimizer, pf):
-        risk_aversion = self._coerce_risk_aversion(pf)
+    def _max_quadratic_utility(self, optimizer, ss):
+        risk_aversion = self._coerce_risk_aversion(ss)
 
         weights_dict = optimizer.max_quadratic_utility(
             risk_aversion, market_neutral=self.market_neutral
         )
-        weights = [weights_dict[stock] for stock in pf.stocks]
+        weights = [weights_dict[stock] for stock in ss.stocks]
 
         return weights, {"name": "max_quadratic_utility", "risk_aversion": risk_aversion}
 
-    def _efficient_risk(self, optimizer, pf):
-        target_volatility = self._coerce_target_volatility(pf)
+    def _efficient_risk(self, optimizer, ss):
+        target_volatility = self._coerce_target_volatility(ss)
 
         weights_dict = optimizer.efficient_risk(
             target_volatility, market_neutral=self.market_neutral
         )
-        weights = [weights_dict[stock] for stock in pf.stocks]
+        weights = [weights_dict[stock] for stock in ss.stocks]
 
         return weights, {"name": "efficient_risk", "target_volatility": target_volatility}
 
-    def _efficient_return(self, optimizer, pf):
-        target_return = self._coerce_target_return(pf)
+    def _efficient_return(self, optimizer, ss):
+        target_return = self._coerce_target_return(ss)
 
         weights_dict = optimizer.efficient_return(
             target_return, market_neutral=self.market_neutral
         )
-        weights = [weights_dict[stock] for stock in pf.stocks]
+        weights = [weights_dict[stock] for stock in ss.stocks]
 
         return weights, {"name": "efficient_return", "target_return": target_return}
 
-    def _portfolio_performance(self, optimizer, pf):
-        risk_free_rate = self._coerce_risk_free_rate(pf)
+    def _portfolio_performance(self, optimizer, ss):
+        risk_free_rate = self._coerce_risk_free_rate(ss)
 
         weigths_dict = optimizer.portfolio_performance(risk_free_rate)
-        weights = [weigths_dict[stock] for stock in pf.stocks]
+        weights = [weigths_dict[stock] for stock in ss.stocks]
 
         return weights, {"name": "portfolio_performance"}
 
@@ -175,21 +175,21 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     covariance = mabc.hparam(default="sample_cov")
     covariance_kw = mabc.hparam(factory=dict)
 
-    def _get_optimizer(self, pf):
+    def _get_optimizer(self, ss):
         """Get the pypfopt EfficientFrontier optimizer.
 
         Parameters
         ----------
-        pf : Portfolio
-            The portfolio to optimize.
+        ss : StocksSet
+            The stocks set to optimize.
 
         Returns
         -------
         pypfopt.EfficientFrontier
             The configured optimizer.
         """
-        expected_returns = pf.ereturns(self.returns, **self.returns_kw)
-        cov_matrix = pf.covariance(self.covariance, **self.covariance_kw)
+        expected_returns = ss.ereturns(self.returns, **self.returns_kw)
+        cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
         weight_bounds = self.weight_bounds
         optimizer = pypfopt.EfficientFrontier(
             expected_returns=expected_returns,
@@ -201,13 +201,13 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     def _get_market_neutral(self):
         return self.market_neutral
 
-    def _coerce_target_return(self, pf):
+    def _coerce_target_return(self, ss):
         """Coerce the target return.
 
         Parameters
         ----------
-        pf : Portfolio
-            The portfolio to optimize.
+        ss : StocksSet
+            The stocks set to optimize.
 
         Returns
         -------
@@ -215,33 +215,33 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
             The coerced target return.
         """
         if self.target_return is None:
-            returns = pf.as_returns().to_numpy().flatten()
+            returns = ss.as_returns().to_numpy().flatten()
             returns = returns[returns != 0]
             returns = returns[~np.isnan(returns)]
             return np.min(np.abs(returns))
         return self.target_return
 
-    def _calculate_weights(self, pf):
-        """Calculate the optimal weights for the portfolio.
+    def _calculate_weights(self, ss):
+        """Calculate the optimal weights for the stocks set.
 
         Parameters
         ----------
-        pf : Portfolio
-            The portfolio to optimize.
+        ss : StocksSet
+            The stocks set to optimize.
 
         Returns
         -------
         tuple
             A tuple containing the optimal weights and optimizer metadata.
         """
-        optimizer = self._get_optimizer(pf)
-        target_return = self._coerce_target_return(pf)
+        optimizer = self._get_optimizer(ss)
+        target_return = self._coerce_target_return(ss)
         market_neutral = self._get_market_neutral()
 
         weights_dict = optimizer.efficient_return(
             target_return, market_neutral=market_neutral
         )
-        weights = [weights_dict[stock] for stock in pf.stocks]
+        weights = [weights_dict[stock] for stock in ss.stocks]
 
         optimizer_metadata = {
             "name": type(self).__name__,

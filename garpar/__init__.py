@@ -16,7 +16,7 @@ __version__ = "0.1"
 EPSILON = 1e-9
 
 from . import datasets, io, optimize
-from .core import Portfolio
+from .core import StocksSet
 
 
-__all__ = ["Portfolio", "datasets", "io", "optimize", 'EPSILON']
+__all__ = ["StocksSet", "datasets", "io", "optimize", 'EPSILON']

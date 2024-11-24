@@ -32,8 +32,8 @@ class PricesAccessor(accabc.AccessorABC):
     ----------
     _default_kind : str
         The default kind of operation, default is "describe".
-    _pf : attr.ib
-        The portfolio object containing price data and other attributes.
+    _ss : attr.ib
+        The stocks set object containing price data and other attributes.
     _DF_WHITELIST : list of str
         A list of allowable DataFrame methods.
     _GARPAR_WHITELIST : list of str
@@ -59,7 +59,7 @@ class PricesAccessor(accabc.AccessorABC):
 
     _default_kind = "describe"
 
-    _pf = attr.ib()
+    _ss = attr.ib()
 
     _DF_WHITELIST = [
         "corr",
@@ -103,7 +103,7 @@ class PricesAccessor(accabc.AccessorABC):
         """
         if a not in self._WHITELIST:
             raise AttributeError(a)
-        target = self if a in self._GARPAR_WHITELIST else self._pf._prices_df
+        target = self if a in self._GARPAR_WHITELIST else self._ss._prices_df
 
         return getattr(target, a)
 
@@ -116,7 +116,7 @@ class PricesAccessor(accabc.AccessorABC):
             A list of attribute names.
         """
         return super().__dir__() + [
-            e for e in dir(self._pf._prices_df) if e in self._WHITELIST
+            e for e in dir(self._ss._prices_df) if e in self._WHITELIST
         ]
 
     def log(self):
@@ -127,7 +127,7 @@ class PricesAccessor(accabc.AccessorABC):
         DataFrame
             The natural logarithm of the price data.
         """
-        return self._pf._prices_df.apply(np.log)
+        return self._ss._prices_df.apply(np.log)
 
     def log10(self):
         """Apply the base 10 logarithm to the price data.
@@ -137,7 +137,7 @@ class PricesAccessor(accabc.AccessorABC):
         DataFrame
             The base 10 logarithm of the price data.
         """
-        return self._pf._prices_df.apply(np.log10)
+        return self._ss._prices_df.apply(np.log10)
 
     def log2(self):
         """Apply the base 2 logarithm to the price data.
@@ -147,7 +147,7 @@ class PricesAccessor(accabc.AccessorABC):
         DataFrame
             The base 2 logarithm of the price data.
         """
-        return self._pf._prices_df.apply(np.log2)
+        return self._ss._prices_df.apply(np.log2)
 
     def mad(self, skipna=True):
         """Return the mean absolute deviation of the values over a given axis.
@@ -162,7 +162,7 @@ class PricesAccessor(accabc.AccessorABC):
         Series
             The mean absolute deviation of the values.
         """
-        df = self._pf._prices_df
+        df = self._ss._prices_df
         return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)
 
     def mean_tendency_size(self):
@@ -176,7 +176,7 @@ class PricesAccessor(accabc.AccessorABC):
         
         # Convert the entire DataFrame to boolean values
         # True if return is positive, False otherwise
-        wins = self._pf.as_returns() > 0
+        wins = self._ss.as_returns() > 0
         
         # Detect changes in the sequence of wins/losses
         # Shift all values down by one position and compare

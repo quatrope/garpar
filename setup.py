@@ -73,7 +73,7 @@ REQUIREMENTS = [
 #     "matplotlib",
 #     "h5py",
 #     "joblib",
-#     "PyPortfolioOpt",
+#     "PyStocksSetOpt",
 #     "scikit-criteria",
 #     "attrs",
 # ]

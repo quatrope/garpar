@@ -20,17 +20,17 @@ import pytest
 # =============================================================================
 
 
-def test_PortfolioMakerABC_make_portfolio_missing_argument_on_definition():
+def test_StocksSetMakerABC_make_stocks_set_missing_argument_on_definition():
     with pytest.raises(TypeError):
 
-        class PortfolioMaker(datasets.PortfolioMakerABC):
-            def make_portfolio(self):
+        class StocksSetMaker(datasets.StocksSetMakerABC):
+            def make_stocks_set(self):
                 pass
 
 
-def test_PortfolioMakerABC_make_portfolio_missing_not_imp():
-    class PortfolioMaker(datasets.PortfolioMakerABC):
-        def make_portfolio(
+def test_StocksSetMakerABC_make_stocks_set_missing_not_imp():
+    class StocksSetMaker(datasets.StocksSetMakerABC):
+        def make_stocks_set(
             self,
             *,
             window_size=5,
@@ -39,7 +39,7 @@ def test_PortfolioMakerABC_make_portfolio_missing_not_imp():
             price=100,
             weights=None,
         ):
-            return super().make_portfolio(
+            return super().make_stocks_set(
                 window_size=window_size,
                 days=days,
                 stocks=stocks,
@@ -47,76 +47,76 @@ def test_PortfolioMakerABC_make_portfolio_missing_not_imp():
                 weights=weights,
             )
 
-    maker = PortfolioMaker()
+    maker = StocksSetMaker()
     with pytest.raises(NotImplementedError):
-        maker.make_portfolio()
+        maker.make_stocks_set()
 
 
 def test_RandomEntropyPorfolioMakerABC_get_window_loss_probability_not_imp():
-    class PortfolioMaker(datasets.RandomEntropyPortfolioMakerABC):
+    class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return super().get_window_loss_probability(window_size, entropy)
 
         def make_stock_price(self, price, loss, random):
             return price
 
-    maker = PortfolioMaker()
+    maker = StocksSetMaker()
 
     with pytest.raises(NotImplementedError):
-        maker.make_portfolio()
+        maker.make_stocks_set()
 
 
 def test_RandomEntropyPorfolioMakerABC_make_stock_price_not_imp():
-    class PortfolioMaker(datasets.RandomEntropyPortfolioMakerABC):
+    class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
 
         def make_stock_price(self, price, loss, random):
             return super().make_stock_price(price, loss, random)
 
-    maker = PortfolioMaker()
+    maker = StocksSetMaker()
 
     with pytest.raises(NotImplementedError):
-        maker.make_portfolio()
+        maker.make_stocks_set()
 
 
 def test_RandomEntropyPorfolioMakerABC_window_size_le_0():
-    class PortfolioMaker(datasets.RandomEntropyPortfolioMakerABC):
+    class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
 
         def make_stock_price(self, price, loss, random):
             return price
 
-    maker = PortfolioMaker()
+    maker = StocksSetMaker()
 
     with pytest.raises(ValueError):
-        maker.make_portfolio(window_size=0)
+        maker.make_stocks_set(window_size=0)
 
 
 def test_RandomEntropyPorfolioMakerABC_window_days_lt_window_size():
-    class PortfolioMaker(datasets.RandomEntropyPortfolioMakerABC):
+    class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
 
         def make_stock_price(self, price, loss, random):
             return price
 
-    maker = PortfolioMaker()
+    maker = StocksSetMaker()
 
     with pytest.raises(ValueError):
-        maker.make_portfolio(window_size=5, days=4)
+        maker.make_stocks_set(window_size=5, days=4)
 
 
 def test_RandomEntropyPorfolioMakerABC_invalid_number_of_prices():
-    class PortfolioMaker(datasets.RandomEntropyPortfolioMakerABC):
+    class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
 
         def make_stock_price(self, price, loss, random):
             return price
 
-    maker = PortfolioMaker()
+    maker = StocksSetMaker()
 
     with pytest.raises(ValueError):
-        maker.make_portfolio(stocks=2, price=[1])
+        maker.make_stocks_set(stocks=2, price=[1])

@@ -19,8 +19,8 @@ import pandas as pd
 # =============================================================================
 
 
-def test_CovarianceAccessor_sample_cov(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CovarianceAccessor_sample_cov(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -34,12 +34,12 @@ def test_CovarianceAccessor_sample_cov(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.cov.sample_cov(), expected, rtol=1e-05, atol=1e-06
+        ss.cov.sample_cov(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CovarianceAccessor_exp_cov(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CovarianceAccessor_exp_cov(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -53,12 +53,12 @@ def test_CovarianceAccessor_exp_cov(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.cov.exp_cov(), expected, rtol=1e-05, atol=1e-06
+        ss.cov.exp_cov(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CovarianceAccessor_semi_cov(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CovarianceAccessor_semi_cov(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -72,12 +72,12 @@ def test_CovarianceAccessor_semi_cov(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.cov.semi_cov(), expected, rtol=1e-05, atol=1e-06
+        ss.cov.semi_cov(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CovarianceAccessor_ledoit_wolf_cov(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CovarianceAccessor_ledoit_wolf_cov(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -91,12 +91,12 @@ def test_CovarianceAccessor_ledoit_wolf_cov(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.cov.ledoit_wolf_cov(), expected, rtol=1e-05, atol=1e-06
+        ss.cov.ledoit_wolf_cov(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CovarianceAccessor_oracle_approximating_cov(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CovarianceAccessor_oracle_approximating_cov(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -110,7 +110,7 @@ def test_CovarianceAccessor_oracle_approximating_cov(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.cov.oracle_approximating_cov(), expected, rtol=1e-05, atol=1e-06
+        ss.cov.oracle_approximating_cov(), expected, rtol=1e-05, atol=1e-06
     )
 
 
@@ -119,8 +119,8 @@ def test_CovarianceAccessor_oracle_approximating_cov(risso_portfolio):
 # =============================================================================
 
 
-def test_CorrelationAccessor_sample_corr(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CorrelationAccessor_sample_corr(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -134,12 +134,12 @@ def test_CorrelationAccessor_sample_corr(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.corr.sample_corr(), expected, rtol=1e-05, atol=1e-06
+        ss.corr.sample_corr(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CorrelationAccessor_exp_corr(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CorrelationAccessor_exp_corr(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -153,12 +153,12 @@ def test_CorrelationAccessor_exp_corr(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.corr.exp_corr(), expected, rtol=1e-05, atol=1e-06
+        ss.corr.exp_corr(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CorrelationAccessor_semi_corr(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CorrelationAccessor_semi_corr(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -172,12 +172,12 @@ def test_CorrelationAccessor_semi_corr(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.corr.semi_corr(), expected, rtol=1e-05, atol=1e-06
+        ss.corr.semi_corr(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CorrelationAccessor_ledoit_wolf_corr(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CorrelationAccessor_ledoit_wolf_corr(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -191,12 +191,12 @@ def test_CorrelationAccessor_ledoit_wolf_corr(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.corr.ledoit_wolf_corr(), expected, rtol=1e-05, atol=1e-06
+        ss.corr.ledoit_wolf_corr(), expected, rtol=1e-05, atol=1e-06
     )
 
 
-def test_CorrelationAccessor_oracle_approximating_corr(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_CorrelationAccessor_oracle_approximating_corr(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.DataFrame(
         [
@@ -210,5 +210,5 @@ def test_CorrelationAccessor_oracle_approximating_corr(risso_portfolio):
     expected.index.name = "Stocks"
 
     pd.testing.assert_frame_equal(
-        pf.corr.oracle_approximating_corr(), expected, rtol=1e-05, atol=1e-06
+        ss.corr.oracle_approximating_corr(), expected, rtol=1e-05, atol=1e-06
     )

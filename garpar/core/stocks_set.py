@@ -5,7 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Portfolio."""
+"""StocksSet."""
 
 import attr
 from attr import validators as vldt
@@ -49,12 +49,12 @@ def _as_float_array(arr):
 
 
 # =============================================================================
-# PORTFOLIO
+# STOCKS SET
 # =============================================================================
 @attr.s(repr=False, cmp=False)
-class Portfolio:
+class StocksSet:
     """
-    Represents a financial portfolio with utilities for analysis and manipulation.
+    Represents a financial stocks set with utilities for analysis and manipulation.
     """
 
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
@@ -66,7 +66,7 @@ class Portfolio:
     # accessors
     plot = attr.ib(
         init=False,
-        default=attr.Factory(plot_acc.PortfolioPlotterAccessor, takes_self=True),
+        default=attr.Factory(plot_acc.StocksSetPlotterAccessor, takes_self=True),
     )
 
     prices = attr.ib(
@@ -142,14 +142,14 @@ class Portfolio:
         stocks=None,
         **metadata,
     ):
-        """Alternative constructor to create a Portfolio instance from various inputs.
+        """Alternative constructor to create a StocksSet instance from various inputs.
 
         Parameters
         ----------
         prices : pd.DataFrame or array-like
             DataFrame or array-like object containing the prices of the assets.
         weights : array-like, optional
-            Array of asset weights in the portfolio.
+            Array of asset weights in the stocks set.
         entropy : array-like, optional
             Array of entropy values associated with the assets.
         window_size : int or None, optional
@@ -157,12 +157,12 @@ class Portfolio:
         stocks : array-like, optional
             List of stock names.
         **metadata
-            Additional metadata related to the portfolio.
+            Additional metadata related to the stocks set.
 
         Returns
         -------
-        Portfolio
-            A new Portfolio instance.
+        StocksSet
+            A new StocksSet instance.
         """
         prices = (
             prices.copy()
@@ -183,7 +183,7 @@ class Portfolio:
         if stocks is not None:
             prices.columns = stocks
 
-        pf = cls(
+        ss = cls(
             prices_df=prices,
             weights=weights,
             entropy=entropy,
@@ -191,7 +191,7 @@ class Portfolio:
             metadata=metadata,
         )
 
-        return pf
+        return ss
 
     # INTERNALS
     def __len__(self):
@@ -205,12 +205,12 @@ class Portfolio:
         return len(self._prices_df)
 
     def __eq__(self, other):
-        """Check equality with another Portfolio instance.
+        """Check equality with another StocksSet instance.
 
         Parameters
         ----------
-        other : Portfolio
-            Another Portfolio instance to compare with.
+        other : StocksSet
+            Another StocksSet instance to compare with.
 
         Returns
         -------
@@ -227,12 +227,12 @@ class Portfolio:
         )
 
     def __ne__(self, other):
-        """Check inequality with another Portfolio instance.
+        """Check inequality with another StocksSet instance.
 
         Parameters
         ----------
-        other : Portfolio
-            Another Portfolio instance to compare with.
+        other : StocksSet
+            Another StocksSet instance to compare with.
 
         Returns
         -------
@@ -242,7 +242,7 @@ class Portfolio:
         return not self == other
 
     def __getitem__(self, key):
-        """Slices the Portfolio by the given key.
+        """Slices the StocksSet by the given key.
 
         Parameters
         ----------
@@ -251,8 +251,8 @@ class Portfolio:
 
         Returns
         -------
-        Portfolio
-            A new Portfolio instance sliced by the key.
+        StocksSet
+            A new StocksSet instance sliced by the key.
         """
         prices = self._prices_df.__getitem__(key)
         if isinstance(prices, pd.Series):
@@ -307,7 +307,7 @@ class Portfolio:
 
     @property
     def stocks(self):
-        """Return the stocks in the portfolio.
+        """Return the stocks in the stocks set.
 
         Returns
         -------
@@ -318,12 +318,12 @@ class Portfolio:
 
     @property
     def stocks_number(self):
-        """Return the number of stocks in the portfolio.
+        """Return the number of stocks in the stocks set.
 
         Returns
         -------
         int
-            Number of stocks in the portfolio.
+            Number of stocks in the stocks set.
         """
         return len(self._prices_df.columns)
 
@@ -386,7 +386,7 @@ class Portfolio:
         preserve_old_metadata=True,
         **metadata,
     ):
-        """Create a copy of the Portfolio.
+        """Create a copy of the StocksSet.
 
         Parameters
         ----------
@@ -407,8 +407,8 @@ class Portfolio:
 
         Returns
         -------
-        Portfolio
-            A new Portfolio instance with the specified modifications.
+        StocksSet
+            A new StocksSet instance with the specified modifications.
         """
         new_prices_df = (self._prices_df if prices is None else prices).copy()
         new_weights = (self._weights if weights is None else weights).copy()
@@ -420,7 +420,7 @@ class Portfolio:
         new_metadata = self._metadata.to_dict() if preserve_old_metadata else {}
         new_metadata.update(metadata)
 
-        new_pf = self.from_dfkws(
+        new_ss = self.from_dfkws(
             new_prices_df,
             weights=new_weights,
             entropy=new_entropy,
@@ -429,10 +429,10 @@ class Portfolio:
             **new_metadata,
         )
 
-        return new_pf
+        return new_ss
 
     def to_hdf5(self, stream_or_buff, **kwargs):
-        """Save the Portfolio to an HDF5 file.
+        """Save the StocksSet to an HDF5 file.
 
         Parameters
         ----------
@@ -450,12 +450,12 @@ class Portfolio:
         return io.to_hdf5(stream_or_buff, self, **kwargs)
 
     def to_dataframe(self):
-        """Convert the Portfolio object to a pandas DataFrame.
+        """Convert the StocksSet object to a pandas DataFrame.
 
         Returns
         -------
         pd.DataFrame
-            DataFrame representation of the Portfolio object.
+            DataFrame representation of the StocksSet object.
         """
         price_df = self._prices_df.copy(deep=True)
 
@@ -482,7 +482,7 @@ class Portfolio:
         return df
 
     def as_returns(self, **kwargs):
-        """Convert prices to returns using PyPortfolioOpt's expected_returns module.
+        """Convert prices to returns using PyStocksSetOpt's expected_returns module.
 
         Parameters
         ----------
@@ -511,7 +511,7 @@ class Portfolio:
     # PRUNNING ================================================================
 
     def weights_prune(self, threshold=1e-4):
-        """Prune the portfolio based on a weight threshold.
+        """Prune the stocks set based on a weight threshold.
 
         Parameters
         ----------
@@ -520,8 +520,8 @@ class Portfolio:
 
         Returns
         -------
-        Portfolio
-            A pruned Portfolio instance.
+        StocksSet
+            A pruned StocksSet instance.
         """
         # get all data to prune
         prices = self.as_prices()
@@ -538,10 +538,10 @@ class Portfolio:
         pruned_weights = weights[mask].to_numpy()
         pruned_entropy = entropy[mask].to_numpy()
 
-        # pruned pf
+        # pruned ss
         cls = type(self)
 
-        pruned_pf = cls(
+        pruned_ss = cls(
             prices_df=pruned_prices,
             weights=pruned_weights,
             entropy=pruned_entropy,
@@ -549,17 +549,17 @@ class Portfolio:
             metadata=metadata,
         )
 
-        return pruned_pf
+        return pruned_ss
 
     wprune = weights_prune
 
     def delisted_prune(self):
-        """Prunes the portfolio by removing delisted stocks.
+        """Prunes the stocks set by removing delisted stocks.
 
         Returns
         -------
-        Portfolio
-            A pruned Portfolio instance.
+        StocksSet
+            A pruned StocksSet instance.
         """
         # get all data to prune
         prices = self.as_prices()
@@ -577,10 +577,10 @@ class Portfolio:
         pruned_weights = weights[mask].to_numpy()
         pruned_entropy = entropy[mask].to_numpy()
 
-        # pruned pf
+        # pruned ss
         cls = type(self)
 
-        pruned_pf = cls(
+        pruned_ss = cls(
             prices_df=pruned_prices,
             weights=pruned_weights,
             entropy=pruned_entropy,
@@ -588,7 +588,7 @@ class Portfolio:
             metadata=metadata,
         )
 
-        return pruned_pf
+        return pruned_ss
 
     dprune = delisted_prune
 
@@ -604,8 +604,8 @@ class Portfolio:
 
         Returns
         -------
-        Portfolio
-            A Portfolio instance with scaled weights.
+        StocksSet
+            A StocksSet instance with scaled weights.
         """
         """Reajusta los pesos en un rango de [0, 1]"""
         scaler = _SCALERS.get(scaler, scaler)
@@ -631,8 +631,8 @@ class Portfolio:
 
         Returns
         -------
-        Portfolio
-            A Portfolio instance with refreshed entropy values.
+        StocksSet
+            A StocksSet instance with refreshed entropy values.
         """
         entropy_calc = _ENTROPY_CALCULATORS.get(entropy, entropy)
         if not callable(entropy_calc):
@@ -684,7 +684,7 @@ class Portfolio:
         return headers
 
     def _get_dxs_dimensions(self):
-        """Return dimensions information for the Portfolio.
+        """Return dimensions information for the StocksSet.
 
         Returns
         -------
@@ -697,12 +697,12 @@ class Portfolio:
         return dim
 
     def __repr__(self):
-        """Return a string representation of the Portfolio. Mainly for Jupyter notebooks.
+        """Return a string representation of the StocksSet. Mainly for Jupyter notebooks.
 
         Returns
         -------
         str
-            String representation of the Portfolio.
+            String representation of the StocksSet.
         """
         header = self._get_sw_headers()
         dimensions = self._get_dxs_dimensions()
@@ -712,17 +712,17 @@ class Portfolio:
                 original_string = repr(df)
 
         # add dimension
-        string = f"{original_string}\nPortfolio [{dimensions}]"
+        string = f"{original_string}\nStocksSet [{dimensions}]"
 
         return string
 
     def _repr_html_(self):
-        """Return an HTML representation of the Portfolio.
+        """Return an HTML representation of the StocksSet.
 
         Returns
         -------
         str
-            HTML representation of the Portfolio.
+            HTML representation of the StocksSet.
         """
         header = self._get_sw_headers()
         dimensions = self._get_dxs_dimensions()

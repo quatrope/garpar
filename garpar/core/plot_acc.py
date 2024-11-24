@@ -24,15 +24,15 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class PortfolioPlotterAccessor(accabc.AccessorABC):
-    """Accessor class for plotting portfolio data.
+class StocksSetPlotterAccessor(accabc.AccessorABC):
+    """Accessor class for plotting stocks set data.
 
     Attributes
     ----------
     _default_kind : str
         Default kind of plot.
-    _pf : Portfolio
-        Portfolio object containing data to plot.
+    _ss : StocksSet
+        StocksSet object containing data to plot.
 
     Methods
     -------
@@ -60,23 +60,23 @@ class PortfolioPlotterAccessor(accabc.AccessorABC):
 
     _default_kind = "line"
 
-    _pf = attr.ib()
+    _ss = attr.ib()
 
     # INTERNAL ================================================================
 
     def _ddf(self, returns):
         """Retrieve returns for plotting."""
         if returns:
-            return self._pf.as_returns(), "Returns"
-        return self._pf._prices_df, "Price"
+            return self._ss.as_returns(), "Returns"
+        return self._ss._prices_df, "Price"
 
     def _wdf(self):
         """Retrieve weights data for plotting."""
         # proxy to access the dataframe with the weights
-        return self._pf.weights.to_frame(), "Weights"
+        return self._ss.weights.to_frame(), "Weights"
 
     def _edf(self):
-        return self._pf.entropy.to_frame(), "Entropy"
+        return self._ss.entropy.to_frame(), "Entropy"
 
     # PLOTS ===================================================================
 
@@ -101,7 +101,7 @@ class PortfolioPlotterAccessor(accabc.AccessorABC):
         return ax
 
     def heatmap(self, returns=False, **kwargs):
-        """Plot the portfolio matrix as a color-encoded matrix.
+        """Plot the stocks set matrix as a color-encoded matrix.
 
         Parameters
         ----------
@@ -153,7 +153,7 @@ class PortfolioPlotterAccessor(accabc.AccessorABC):
         return ax
 
     def hist(self, returns=False, **kwargs):
-        """Draw one histogram of the portfolio.
+        """Draw one histogram of the stocks set.
 
         A histogram is a representation of the distribution of data.
         This function groups the values of all given Series in the DataFrame
@@ -199,7 +199,7 @@ class PortfolioPlotterAccessor(accabc.AccessorABC):
         return ax
 
     def box(self, returns=False, **kwargs):
-        """Make a box plot of the portfolio.
+        """Make a box plot of the stocks set.
 
         A box plot is a method for graphically depicting groups of numerical
         data through their quartiles.

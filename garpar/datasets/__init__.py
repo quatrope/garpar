@@ -6,9 +6,9 @@
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
 
-"""Different utilities to create or load portfolios."""
+"""Different utilities to create or load stocks sets."""
 
-from .ds_base import PortfolioMakerABC, RandomEntropyPortfolioMakerABC
+from .ds_base import StocksSetMakerABC, RandomEntropyStocksSetMakerABC
 from .data import load_MERVAL
 from .multisector import MultiSector, make_multisector
 from .risso import (
@@ -21,8 +21,8 @@ from .risso import (
 )
 
 __all__ = [
-    "PortfolioMakerABC",
-    "RandomEntropyPortfolioMakerABC",
+    "StocksSetMakerABC",
+    "RandomEntropyStocksSetMakerABC",
     "MultiSector",
     "RissoLevyStable",
     "RissoNormal",

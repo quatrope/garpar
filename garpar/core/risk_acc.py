@@ -25,35 +25,35 @@ from ..utils import accabc
 class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
     """Accessor for various risk metrics.
 
-    The RiskAccessor class provides methods to compute stock and portfolio betas,
-    Treynor ratio, portfolio variance, Sharpe ratio, and Value at Risk (VaR).
+    The RiskAccessor class provides methods to compute stock and stocks set betas,
+    Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk (VaR).
 
     Attributes
     ----------
     _default_kind : str
-        The default kind of risk measure, default is "pf_beta".
-    _pf : attr.ib
-        The portfolio object containing weights, prices, and other attributes.
+        The default kind of risk measure, default is "ss_beta".
+    _ss : attr.ib
+        The StocksSet object containing weights, prices, and other attributes.
 
     Methods
     -------
     stock_beta(market_prices=None, log_returns=False)
-        Computes the beta of individual stocks in the portfolio.
-    portfolio_beta(benchmark_weights=None, log_returns=False)
-        Computes the beta of the entire portfolio.
+        Computes the beta of individual stocks in the stocks_set.
+    stocks_set_beta(benchmark_weights=None, log_returns=False)
+        Computes the beta of the entire stocks_set.
     treynor_ratio(expected_returns='capm', expected_returns_kw=None, negative=True, benchmark_weights=None, log_returns=False)
-        Computes the Treynor ratio of the portfolio.
-    portfolio_variance(covariance='sample_cov', covariance_kw=None)
-        Computes the variance of the portfolio.
+        Computes the Treynor ratio of the stocks_set.
+    stocks_set_variance(covariance='sample_cov', covariance_kw=None)
+        Computes the variance of the stocks_set.
     sharpe_ratio(expected_returns='capm', covariance='sample_cov', expected_returns_kw=None, covariance_kw=None, **kwargs)
-        Computes the Sharpe ratio of the portfolio.
+        Computes the Sharpe ratio of the stocks_set.
     value_at_risk(alpha=0.05)
-        Computes the Value at Risk (VaR) of the portfolio.
+        Computes the Value at Risk (VaR) of the stocks_set.
     """
 
-    _default_kind = "pf_beta"
+    _default_kind = "ss_beta"
 
-    _pf = attr.ib()
+    _ss = attr.ib()
 
     def _returns_df(self, market_prices, log_returns):
         """Prepare the returns DataFrame.
@@ -70,7 +70,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         tuple
             A tuple containing the returns DataFrame and the market column name.
         """
-        prices = self._pf._prices_df
+        prices = self._ss._prices_df
         market_returns = None
 
         returns = expected_returns.returns_from_prices(prices, log_returns)
@@ -101,7 +101,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         market_prices=None,
         log_returns=False,
     ):
-        """Compute the beta of individual stocks in the portfolio.
+        """Compute the beta of individual stocks in the stocks set.
 
         Parameters
         ----------
@@ -117,7 +117,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = RiskAccessor(pf)
+        >>> accessor = RiskAccessor(ss)
         >>> betas = accessor.stock_beta()
         """
         returns, mkt_col = self._returns_df(market_prices, log_returns)
@@ -131,37 +131,37 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         return betas
 
-    def portfolio_beta(self, *, benchmark_weights=None, log_returns=False):
-        """Compute the beta of the entire portfolio.
+    def stocks_set_beta(self, *, benchmark_weights=None, log_returns=False):
+        """Compute the beta of the entire stocks set.
 
         Parameters
         ----------
         benchmark_weights : array-like, optional
-            The weights of the benchmark portfolio, by default None.
+            The weights of the benchmark stocks set, by default None.
         log_returns : bool, optional
             Whether to compute log returns, by default False.
 
         Returns
         -------
         float
-            The beta of the portfolio.
+            The beta of the stocks set.
 
         Examples
         --------
-        >>> accessor = RiskAccessor(pf)
-        >>> beta = accessor.portfolio_beta()
+        >>> accessor = RiskAccessor(ss)
+        >>> beta = accessor.stocks_set_beta()
         """
         benchmark_weights = self.coerce_weights(benchmark_weights)
 
         day_weighted_prices = np.sum(
-            self._pf._prices_df * self._pf._weights, axis=1
+            self._ss._prices_df * self._ss._weights, axis=1
         )
         returns, mkt_col = self._returns_df(
             market_prices=day_weighted_prices, log_returns=log_returns
         )
 
         benchmark_day_weighted_prices = np.sum(
-            self._pf._prices_df * benchmark_weights, axis=1
+            self._ss._prices_df * benchmark_weights, axis=1
         )
         benchmark_returns, benchmark_mkt_col = self._returns_df(
             market_prices=benchmark_day_weighted_prices,
@@ -175,7 +175,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         return return_cov / benchmark_cov
 
-    pf_beta = portfolio_beta
+    ss_beta = stocks_set_beta
 
     def treynor_ratio(
         self,
@@ -186,7 +186,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         benchmark_weights=None,
         log_returns=False,
     ):
-        """Compute the Treynor ratio of the portfolio.
+        """Compute the Treynor ratio of the stocks set.
 
         Parameters
         ----------
@@ -197,33 +197,33 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         negative : bool, optional
             Whether to return the negative of the Treynor ratio, by default True.
         benchmark_weights : array-like, optional
-            The weights of the benchmark portfolio, by default None.
+            The weights of the benchmark stocks set, by default None.
         log_returns : bool, optional
             Whether to compute log returns, by default False.
 
         Returns
         -------
         float
-            The Treynor ratio of the portfolio.
+            The Treynor ratio of the stocks set.
 
         Examples
         --------
-        >>> accessor = RiskAccessor(pf)
+        >>> accessor = RiskAccessor(ss)
         >>> ratio = accessor.treynor_ratio()
         """
-        pf_return = self._pf.utilities.pf_return(
+        ss_return = self._ss.utilities.ss_return(
             expected_returns=expected_returns,
             expected_returns_kw=expected_returns_kw,
             negative=negative,
         )
-        pf_beta = self.pf_beta(
+        ss_beta = self.ss_beta(
             benchmark_weights=benchmark_weights, log_returns=log_returns
         )
-        return pf_return / pf_beta
+        return ss_return / ss_beta
 
-    def portfolio_variance(self, covariance="sample_cov", covariance_kw=None):
+    def stocks_set_variance(self, covariance="sample_cov", covariance_kw=None):
         """
-        Compute the variance of the portfolio.
+        Compute the variance of the stocks set.
 
         Parameters
         ----------
@@ -235,19 +235,19 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         float
-            The variance of the portfolio.
+            The variance of the stocks set.
 
         Examples
         --------
-        >>> accessor = RiskAccessor(pf)
-        >>> var = accessor.portfolio_variance()
+        >>> accessor = RiskAccessor(ss)
+        >>> var = accessor.stocks_set_variance()
         """
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
-        return objective_functions.portfolio_variance(
-            self._pf._weights, cov_matrix=cov_matrix
+        return objective_functions.stocks_set_variance(
+            self._ss._weights, cov_matrix=cov_matrix
         )
 
-    pf_var = portfolio_variance
+    ss_var = stocks_set_variance
 
     def sharpe_ratio(
         self,
@@ -259,7 +259,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         **kwargs,
     ):
         """
-        Compute the Sharpe ratio of the portfolio.
+        Compute the Sharpe ratio of the stocks set.
 
         Parameters
         ----------
@@ -277,11 +277,11 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         float
-            The Sharpe ratio of the portfolio.
+            The Sharpe ratio of the stocks set.
 
         Examples
         --------
-        >>> accessor = RiskAccessor(pf)
+        >>> accessor = RiskAccessor(ss)
         >>> ratio = accessor.sharpe_ratio()
         """
         expected_returns = self.coerce_expected_returns(
@@ -289,7 +289,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         )
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
         return objective_functions.sharpe_ratio(
-            self._pf._weights,
+            self._ss._weights,
             expected_returns=expected_returns,
             cov_matrix=cov_matrix,
             **kwargs,
@@ -326,7 +326,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
     def value_at_risk(self, *, alpha=0.05):
         """
-        Compute the Value at Risk (VaR) of the portfolio.
+        Compute the Value at Risk (VaR) of the stocks set.
 
         Parameters
         ----------
@@ -336,14 +336,14 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         Series
-            The Value at Risk (VaR) for each stock in the portfolio.
+            The Value at Risk (VaR) for each stock in the stocks set.
 
         Examples
         --------
-        >>> accessor = RiskAccessor(pf)
+        >>> accessor = RiskAccessor(ss)
         >>> var = accessor.value_at_risk(alpha=0.05)
         """
-        returns = self._pf.as_returns()
+        returns = self._ss.as_returns()
 
         var = returns.apply(self._stock_returns_VaR, axis="rows", alpha=alpha)
         var.name = "VaR"

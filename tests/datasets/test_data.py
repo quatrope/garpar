@@ -33,6 +33,6 @@ import pytest
     ],
 )
 def test_load_MERVAL(imputation, mean, std):
-    pf = datasets.load_MERVAL(imputation)
-    np.testing.assert_almost_equal(pf.prices.mean().mean(), mean, decimal=13)
-    np.testing.assert_almost_equal(pf.prices.std().mean(), std, decimal=13)
+    ss = datasets.load_MERVAL(imputation)
+    np.testing.assert_almost_equal(ss.prices.mean().mean(), mean, decimal=13)
+    np.testing.assert_almost_equal(ss.prices.std().mean(), std, decimal=13)

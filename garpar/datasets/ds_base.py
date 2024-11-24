@@ -5,7 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Base Portfolio Maker."""
+"""Base StocksSet Maker."""
 
 # =============================================================================
 # IMPORTS
@@ -19,7 +19,7 @@ import numpy as np
 
 import pandas as pd
 
-from ..core.portfolio import Portfolio
+from ..core.stocks_set import StocksSet
 from ..utils import mabc
 
 # =============================================================================
@@ -27,22 +27,22 @@ from ..utils import mabc
 # =============================================================================
 
 
-class PortfolioMakerABC(mabc.ModelABC):
+class StocksSetMakerABC(mabc.ModelABC):
     """
-    Abstract base class for defining a portfolio maker.
+    Abstract base class for defining a stocks set maker.
 
     Attributes
     ----------
     _MKPORT_SIGNATURE : set of str
-        Expected signature for the make_portfolio method.
+        Expected signature for the make_stocks_set method.
 
     Methods
     -------
     __init_subclass__()
-        Checks the signature of make_portfolio method against _MKPORT_SIGNATURE.
+        Checks the signature of make_stocks_set method against _MKPORT_SIGNATURE.
 
-    make_portfolio(*, window_size=5, days=365, stocks=10, price=100, weights=None)
-        Abstract method to create a portfolio.
+    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100, weights=None)
+        Abstract method to create a stocks set.
     """
 
     _MKPORT_SIGNATURE = {
@@ -55,23 +55,23 @@ class PortfolioMakerABC(mabc.ModelABC):
     }
 
     def __init_subclass__(cls):
-        """Ensure that the make_portfolio method in subclasses conforms to _MKPORT_SIGNATURE.
+        """Ensure that the make_stocks_set method in subclasses conforms to _MKPORT_SIGNATURE.
 
         Raises
         ------
         TypeError
-            If make_portfolio method signature does not match _MKPORT_SIGNATURE.
+            If make_stocks_set method signature does not match _MKPORT_SIGNATURE.
         """
-        mpsig = inspect.signature(cls.make_portfolio)
+        mpsig = inspect.signature(cls.make_stocks_set)
         missing_args = cls._MKPORT_SIGNATURE.difference(mpsig.parameters)
         if missing_args:
             missing_args_str = ", ".join(missing_args)
-            msg = f"Missing arguments {missing_args_str!r} in make_portfolio"
+            msg = f"Missing arguments {missing_args_str!r} in make_stocks_set"
             raise TypeError(msg)
         return super().__init_subclass__()
 
     @mabc.abstractmethod
-    def make_portfolio(
+    def make_stocks_set(
         self,
         *,
         window_size=5,
@@ -80,16 +80,16 @@ class PortfolioMakerABC(mabc.ModelABC):
         price=100,
         weights=None,
     ):
-        """Abstract method to create a portfolio.
+        """Abstract method to create a stocks set.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for portfolio creation (default is 5).
+            Window size for stocks set creation (default is 5).
         days : int, optional
-            Number of days for portfolio evaluation (default is 365).
+            Number of days for stocks set evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the portfolio (default is 10).
+            Number of stocks in the stocks set (default is 10).
         price : float, optional
             Initial price for stocks (default is 100).
         weights : array-like or None, optional
@@ -108,13 +108,13 @@ class PortfolioMakerABC(mabc.ModelABC):
 # =============================================================================
 
 
-class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
-    """Abstract base class for creating random entropy-based portfolios.
+class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
+    """Abstract base class for creating random entropy-based stocks sets.
 
     Attributes
     ----------
     entropy : float, default=0.5
-        Entropy parameter for portfolio creation.
+        Entropy parameter for stocks set creation.
     random_state : numpy.random.Generator, default=None
         Random number generator. If None, uses numpy's default generator.
     n_jobs : int or None, default=None
@@ -136,13 +136,13 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         Generate a sequence of losses based on the given loss probability.
     _make_stock(days, loss_probability, stock_idx, initial_price, random)
         Generate a DataFrame for a single stock with random prices based on loss sequence.
-    make_portfolio(*, window_size=5, days=365, stocks=10, price=100, weights=None)
-        Create a portfolio of stocks with random prices and specified parameters.
+    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100, weights=None)
+        Create a stocks set of stocks with random prices and specified parameters.
 
     Notes
     -----
-    This class extends PortfolioMakerABC and provides methods to generate random
-    portfolios based on entropy and loss probabilities.
+    This class extends StocksSetMakerABC and provides methods to generate random
+    stocks sets based on entropy and loss probabilities.
     """
 
     # HYPERS ================================================================
@@ -162,9 +162,9 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         Parameters
         ----------
         window_size : int
-            Window size for portfolio creation.
+            Window size for stocks set creation.
         entropy : float
-            Entropy parameter for portfolio creation.
+            Entropy parameter for stocks set creation.
 
         Returns
         -------
@@ -342,7 +342,7 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
 
     # API =====================================================================
 
-    def make_portfolio(
+    def make_stocks_set(
         self,
         *,
         window_size=5,
@@ -351,16 +351,16 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
         price=100,
         weights=None,
     ):
-        """Create a portfolio of stocks with random prices and specified parameters.
+        """Create a stocks set of stocks with random prices and specified parameters.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for portfolio creation (default is 5).
+            Window size for stocks set creation (default is 5).
         days : int, optional
-            Number of days for portfolio evaluation (default is 365).
+            Number of days for stocks set evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the portfolio (default is 10).
+            Number of stocks in the stocks set (default is 10).
         price : int, float, or array-like, optional
             Initial price or prices of stocks (default is 100).
         weights : array-like or None, optional
@@ -368,8 +368,8 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
 
         Returns
         -------
-        Portfolio
-            Portfolio object representing the generated portfolio.
+        StocksSet
+            StocksSet object representing the generated stocks set.
         """
         if window_size <= 0 or days < window_size:
             raise ValueError("'window_size' must be > 0")
@@ -402,7 +402,7 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
 
         stock_df = pd.concat(stocks, axis=1)
 
-        return Portfolio.from_dfkws(
+        return StocksSet.from_dfkws(
             stock_df,
             weights=weights,
             entropy=self.entropy,

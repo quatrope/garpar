@@ -20,14 +20,14 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class ExpectedReturnsAccessor(accabc.AccessorABC):
-    """Accessor class for computing expected returns of a portfolio.
+    """Accessor class for computing expected returns of a stocks set.
 
     Attributes
     ----------
     _default_kind : str
         Default method for computing expected returns.
-    _pf : Portfolio
-        Portfolio object containing prices data.
+    _ss : StocksSet
+        StocksSet object containing prices data.
 
     Methods
     -------
@@ -41,7 +41,7 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
 
     _default_kind = "capm"
 
-    _pf = attr.ib()
+    _ss = attr.ib()
 
     def capm(self, **kwargs):
         """Compute expected returns using the CAPM (Capital Asset Pricing Model) method.
@@ -57,7 +57,7 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
             Series containing computed expected returns with name "CAPM".
         """
         returns = expected_returns.capm_return(
-            prices=self._pf._prices_df, returns_data=False, **kwargs
+            prices=self._ss._prices_df, returns_data=False, **kwargs
         )
         returns.name = "CAPM"
         return returns
@@ -76,7 +76,7 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
             Series containing computed expected returns with name "MAH".
         """
         returns = expected_returns.mean_historical_return(
-            prices=self._pf._prices_df, returns_data=False, **kwargs
+            prices=self._ss._prices_df, returns_data=False, **kwargs
         )
         returns.name = "MAH"
         return returns
@@ -95,7 +95,7 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
             Series containing computed expected returns with name "EMAH".
         """
         returns = expected_returns.ema_historical_return(
-            prices=self._pf._prices_df, returns_data=False, **kwargs
+            prices=self._ss._prices_df, returns_data=False, **kwargs
         )
         returns.name = "EMAH"
         return returns

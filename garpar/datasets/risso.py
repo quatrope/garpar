@@ -5,7 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Risso Portfolio Maker."""
+"""Risso StocksSet Maker."""
 
 # =============================================================================
 # IMPORTS
@@ -17,7 +17,7 @@ import numpy as np
 
 import scipy.stats
 
-from .ds_base import RandomEntropyPortfolioMakerABC
+from .ds_base import RandomEntropyStocksSetMakerABC
 from ..utils import mabc
 from .. import EPSILON
 
@@ -73,7 +73,7 @@ class RissoMixin:
     """
     Implementation of a portfolio maker based on entropy calculation by Risso.
 
-    This class extends RandomEntropyPortfolioMakerABC and implements methods
+    This class extends RandomEntropyStocksSetMakerABC and implements methods
     for calculating candidate entropies and selecting loss probabilities based
     on a given window size and target entropy.
 
@@ -171,7 +171,7 @@ class RissoMixin:
 # =============================================================================
 # NORMAL
 # =============================================================================
-class RissoUniform(RissoMixin, RandomEntropyPortfolioMakerABC):
+class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     """
     Implementation of a portfolio maker using a uniform distribution for
     price changes.
@@ -262,12 +262,12 @@ def make_risso_uniform(
     verbose : int, optional
         Verbosity level. Default is 0.
     **kwargs
-        Additional keyword arguments passed to the make_portfolio method
+        Additional keyword arguments passed to the make_stocks_set method
         of RissoUniform.
 
     Returns
     -------
-    Portfolio
+    StocksSet
         Generated portfolio instance.
 
     Notes
@@ -284,16 +284,16 @@ def make_risso_uniform(
         n_jobs=n_jobs,
         verbose=verbose,
     )
-    port = maker.make_portfolio(**kwargs)
-    return port
+
+    return maker.make_stocks_set(**kwargs)
 
 
 # =============================================================================
 # NORMAL
 # =============================================================================
-class RissoNormal(RissoMixin, RandomEntropyPortfolioMakerABC):
+class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     """
-    Portfolio maker implementing a stochastic model with normal
+    StocksSet maker implementing a stochastic model with normal
     distribution for daily returns.
 
     Parameters
@@ -367,7 +367,7 @@ def make_risso_normal(
     verbose=0,
     **kwargs,
 ):
-    """Create a portfolio using RissoNormal portfolio maker.
+    """Create a stocks set using RissoNormal stocks set maker.
 
     Parameters
     ----------
@@ -377,7 +377,7 @@ def make_risso_normal(
         Standard deviation of the normal distribution for daily returns.
         Default is 0.2.
     entropy : float, optional
-        Entropy parameter controlling the randomness in portfolio creation.
+        Entropy parameter controlling the randomness in stocks set creation.
         Default is 0.5.
     random_state : {None, int, numpy.random.Generator}, optional
         Seed or Generator for the random number generator. Default is None.
@@ -386,19 +386,19 @@ def make_risso_normal(
     verbose : int, optional
         Verbosity level. Default is 0.
     **kwargs
-        Additional keyword arguments passed to the make_portfolio method
+        Additional keyword arguments passed to the make_stocks_set method
         of RissoNormal.
 
     Returns
     -------
-    Portfolio
-        Generated portfolio instance.
+    StocksSet
+        Generated stocks set instance.
 
     Notes
     -----
-    This function initializes a RissoNormal portfolio maker with specified
-    parameters, generates a portfolio using those parameters, and returns
-    the resulting portfolio object.
+    This function initializes a RissoNormal stocks set maker with specified
+    parameters, generates a stocks set using those parameters, and returns
+    the resulting stocks set object.
     """
     maker = RissoNormal(
         mu=mu,
@@ -408,8 +408,8 @@ def make_risso_normal(
         n_jobs=n_jobs,
         verbose=verbose,
     )
-    port = maker.make_portfolio(**kwargs)
-    return port
+
+    return maker.make_stocks_set(**kwargs)
 
 
 # =============================================================================
@@ -456,9 +456,9 @@ class _LStableCache:
         return cache.pop(0)
 
 
-class RissoLevyStable(RissoMixin, RandomEntropyPortfolioMakerABC):
+class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
     """
-    Portfolio maker implementing a stochastic model with Levy stable
+    StocksSet maker implementing a stochastic model with Levy stable
     distribution for daily returns.
 
     Parameters
@@ -474,7 +474,7 @@ class RissoLevyStable(RissoMixin, RandomEntropyPortfolioMakerABC):
         Scale parameter (spread) of the Levy stable distribution.
         Default is 0.005.
     entropy : float, optional
-        Entropy parameter controlling the randomness in portfolio creation.
+        Entropy parameter controlling the randomness in stocks set creation.
         Default is 0.5.
     random_state : {None, int, numpy.random.Generator}, optional
         Seed or Generator for the random number generator. Default is None.
@@ -485,7 +485,7 @@ class RissoLevyStable(RissoMixin, RandomEntropyPortfolioMakerABC):
 
     Notes
     -----
-    This class extends RissoABC and implements a portfolio maker using Levy
+    This class extends RissoABC and implements a stocks set maker using Levy
     stable distribution model for daily returns. The make_stock_price
     method generates stock prices based on the Levy stable distribution
     parameters (alpha, beta, mu, sigma).
@@ -560,7 +560,7 @@ def make_risso_levy_stable(
     verbose=0,
     **kwargs,
 ):
-    """Create a portfolio using the RissoLevyStable portfolio maker.
+    """Create a stocks set using the RissoLevyStable stocks set maker.
 
     Parameters
     ----------
@@ -575,7 +575,7 @@ def make_risso_levy_stable(
         Scale parameter (spread) of the Levy stable distribution.
         Default is 0.005.
     entropy : float, optional
-        Entropy parameter controlling the randomness in portfolio creation.
+        Entropy parameter controlling the randomness in stocks set creation.
         Default is 0.5.
     random_state : {None, int, numpy.random.Generator}, optional
         Seed or Generator for the random number generator. Default is None.
@@ -586,14 +586,14 @@ def make_risso_levy_stable(
 
     Returns
     -------
-    Portfolio
-        Portfolio object representing the created portfolio.
+    StocksSet
+        StocksSet object representing the created stocks set.
 
     Notes
     -----
-    This function initializes a RissoLevyStable portfolio maker with the
-    provided parameters and creates a portfolio using the
-    make_portfolio method.
+    This function initializes a RissoLevyStable stocks set maker with the
+    provided parameters and creates a stocks set using the
+    make_stocks_set method.
     """
     maker = RissoLevyStable(
         alpha=alpha,
@@ -605,5 +605,5 @@ def make_risso_levy_stable(
         n_jobs=n_jobs,
         verbose=verbose,
     )
-    port = maker.make_portfolio(**kwargs)
-    return port
+
+    return maker.make_stocks_set(**kwargs)

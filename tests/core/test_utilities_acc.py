@@ -17,25 +17,25 @@ import numpy as np
 # =============================================================================
 
 
-def test_UtilitiesAccessor_ex_ante_tracking_error(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+def test_UtilitiesAccessor_ex_ante_tracking_error(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
     expected = 0.008737194
-    np.testing.assert_allclose(pf.utilities.ex_ante_tracking_error(), expected)
+    np.testing.assert_allclose(ss.utilities.ex_ante_tracking_error(), expected)
 
 
-def test_UtilitiesAccessor_ex_post_tracking_error(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+def test_UtilitiesAccessor_ex_post_tracking_error(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
     expected = 0.026393705
-    np.testing.assert_allclose(pf.utilities.ex_post_tracking_error(), expected)
+    np.testing.assert_allclose(ss.utilities.ex_post_tracking_error(), expected)
 
 
-def test_UtilitiesAccessor_portfolio_return(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+def test_UtilitiesAccessor_sotcks_set_return(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
     expected = -0.518791583
-    np.testing.assert_allclose(pf.utilities.portfolio_return(), expected)
+    np.testing.assert_allclose(ss.utilities.sotcks_set_return(), expected)
 
 
-def test_UtilitiesAccessor_quadratic_utility(risso_portfolio):
-    pf = risso_portfolio(random_state=42)
+def test_UtilitiesAccessor_quadratic_utility(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
     expected = -0.516094918
-    np.testing.assert_allclose(pf.utilities.quadratic_utility(), expected)
+    np.testing.assert_allclose(ss.utilities.quadratic_utility(), expected)

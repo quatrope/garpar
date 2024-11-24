@@ -11,7 +11,7 @@
 # =============================================================================
 
 
-from garpar import Portfolio, datasets
+from garpar import StocksSet, datasets
 
 import pandas as pd
 
@@ -31,7 +31,7 @@ def test_make_multisector():
         stocks=2,
     )
 
-    expected = Portfolio.from_dfkws(
+    expected = StocksSet.from_dfkws(
         [
             [100.0, 100.0],
             [103.99299697386559, 100.15141604581204],
@@ -51,7 +51,7 @@ def test_make_multisector_to_few_maker():
         datasets.make_multisector(datasets.RissoUniform())
 
 
-def test_make_multisector_maker_is_not_instance_of_PortfolioMakerABC():
+def test_make_multisector_maker_is_not_instance_of_StocksSetMakerABC():
     with pytest.raises(TypeError):
         datasets.make_multisector(datasets.RissoUniform(), None)
 

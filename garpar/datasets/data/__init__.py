@@ -12,7 +12,7 @@ import pathlib
 
 import pandas as pd
 
-from ...core import Portfolio
+from ...core import StocksSet
 
 DATA_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
@@ -38,7 +38,7 @@ def load_MERVAL(imputation="ffill", first=None, last=None):
     if last is not None:
         df = df[df.index <= last]
 
-    port = Portfolio.from_dfkws(
+    port = StocksSet.from_dfkws(
         df,
         weights=None,
         title="Merval",

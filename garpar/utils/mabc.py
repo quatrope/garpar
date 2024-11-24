@@ -102,14 +102,14 @@ class ModelABC(metaclass=ABCMeta):
 
         It ensures that every inherited class is decorated by `attr.s()` and
         assigns as class configuration the parameters defined in the class
-        variable `__portfolio_maker_cls_config__`.
+        variable `__stocks_set_maker_cls_config__`.
 
         In other words it is slightly equivalent to:
 
         .. code-block:: python
 
-            @attr.s(**PortfolioMakerABC.__portfolio_maker_cls_config__)
-            class Decomposer(PortfolioMakerABC):
+            @attr.s(**StocksSetMakerABC.__stocks_set_maker_cls_config__)
+            class Decomposer(StocksSetMakerABC):
                 pass
 
         Parameters
@@ -124,9 +124,8 @@ class ModelABC(metaclass=ABCMeta):
 
         """
         model_config = getattr(cls, MODEL_CONFIG)
-        acls = attr.s(maybe_cls=cls, **model_config)
 
-        return acls
+        return attr.s(maybe_cls=cls, **model_config)
 
     def __repr__(self):
         """

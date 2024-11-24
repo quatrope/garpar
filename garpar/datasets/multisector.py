@@ -11,28 +11,28 @@ import numpy as np
 
 import pandas as pd
 
-from .ds_base import PortfolioMakerABC
-from ..core.portfolio import Portfolio
+from .ds_base import StocksSetMakerABC
+from ..core.stocks_set import StocksSet
 from ..utils import Bunch, mabc, unique_names
 
 
-class MultiSector(PortfolioMakerABC):
-    """Portfolio maker for creating a multi-sector portfolio.
+class MultiSector(StocksSetMakerABC):
+    """StocksSet maker for creating a multi-sector stocks set.
 
     Attributes
     ----------
     makers : tuple
-        Tuple of (maker_name, PortfolioMakerABC) pairs representing different sector makers.
+        Tuple of (maker_name, StocksSetMakerABC) pairs representing different sector makers.
 
     Methods
     -------
-    make_portfolio(*, window_size=5, days=365, stocks=10, price=100, weights=None)
-        Creates a multi-sector portfolio based on specified parameters.
+    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100, weights=None)
+        Creates a multi-sector stocks set based on specified parameters.
 
     Notes
     -----
-    This class extends PortfolioMakerABC and allows for creating a portfolio with
-    multiple sectors, each handled by a different PortfolioMakerABC instance.
+    This class extends StocksSetMakerABC and allows for creating a stocks set with
+    multiple sectors, each handled by a different StocksSetMakerABC instance.
     """
 
     makers = mabc.hparam(converter=lambda v: tuple(dict(v).items()))
@@ -51,13 +51,13 @@ class MultiSector(PortfolioMakerABC):
         Raises
         ------
         ValueError
-            If there are fewer than 2 makers provided or any maker is not an instance of PortfolioMakerABC.
+            If there are fewer than 2 makers provided or any maker is not an instance of StocksSetMakerABC.
         """
         if len(value) < 2:
             raise ValueError("You must provide at least 2 makers")
         for maker_name, maker in value:
-            if not isinstance(maker, PortfolioMakerABC):
-                cls_name = PortfolioMakerABC.__name__
+            if not isinstance(maker, StocksSetMakerABC):
+                cls_name = StocksSetMakerABC.__name__
                 msg = f"Maker '{maker_name}' is not instance of '{cls_name}'"
                 raise TypeError(msg)
 
@@ -90,19 +90,19 @@ class MultiSector(PortfolioMakerABC):
         prices = np.asarray(prices, dtype=float)
         return np.array_split(prices, makers_len)
 
-    def make_portfolio(
+    def make_stocks_set(
         self, *, window_size=5, days=365, stocks=10, price=100, weights=None
     ):
-        """Create a multi-sector portfolio based on specified parameters.
+        """Create a multi-sector stocks set based on specified parameters.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for portfolio creation (default is 5).
+            Window size for stocks set creation (default is 5).
         days : int, optional
-            Number of days for portfolio evaluation (default is 365).
+            Number of days for stocks set evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the portfolio (default is 10).
+            Number of stocks in the stocks set (default is 10).
         price : int, float, or array-like, optional
             Initial price or prices of stocks (default is 100).
         weights : array-like or None, optional
@@ -110,8 +110,8 @@ class MultiSector(PortfolioMakerABC):
 
         Returns
         -------
-        Portfolio
-            Portfolio object representing the generated multi-sector portfolio.
+        StocksSet
+            StocksSet object representing the generated multi-sector stocks set.
         """
         makers_len = len(self.makers)
         if stocks < makers_len:
@@ -124,7 +124,7 @@ class MultiSector(PortfolioMakerABC):
         metadata = {}
         for (maker_name, maker), maker_prices in zip(self.makers, prices):
             stocks_number = len(maker_prices)
-            pf = maker.make_portfolio(
+            ss = maker.make_stocks_set(
                 window_size=window_size,
                 days=days,
                 stocks=stocks_number,
@@ -132,16 +132,16 @@ class MultiSector(PortfolioMakerABC):
                 weights=None,
             )
 
-            df = pf._prices_df.add_prefix(f"{maker_name}_")
+            df = ss._prices_df.add_prefix(f"{maker_name}_")
             stocks_dfs.append(df)
 
-            entropy.extend(pf.entropy)
+            entropy.extend(ss.entropy)
 
             metadata[maker_name] = Bunch(
                 maker_name,
                 {
                     "stocks": df.columns.to_numpy(),
-                    "og_metadata": pf.metadata,
+                    "og_metadata": ss.metadata,
                     "stocks_number": stocks_number,
                 },
             )
@@ -149,8 +149,8 @@ class MultiSector(PortfolioMakerABC):
         # join all the dfs in one
         stock_df = pd.concat(stocks_dfs, axis="columns")
 
-        # create the portfolio
-        return Portfolio.from_dfkws(
+        # create the stocks set
+        return StocksSet.from_dfkws(
             stock_df,
             weights=weights,
             window_size=window_size,
@@ -160,24 +160,24 @@ class MultiSector(PortfolioMakerABC):
 
 
 def make_multisector(*makers, **kwargs):
-    """Create a multi-sector portfolio using specified sector makers.
+    """Create a multi-sector stocks set using specified sector makers.
 
     Parameters
     ----------
     *makers : variable-length arguments
-        Instances of PortfolioMakerABC representing sector makers.
+        Instances of StocksSetMakerABC representing sector makers.
     **kwargs : keyword arguments
-        Additional parameters passed to MultiSector.make_portfolio.
+        Additional parameters passed to MultiSector.make_stocks_set.
 
     Returns
     -------
-    Portfolio
-        Multi-sector portfolio object generated by MultiSector.make_portfolio.
+    StocksSet
+        Multi-sector stocks set object generated by MultiSector.make_stocks_set.
 
     Notes
     -----
-    This function creates a multi-sector portfolio by initializing a MultiSector
-    object with unique names for each sector maker and then calling make_portfolio
+    This function creates a multi-sector stocks set by initializing a MultiSector
+    object with unique names for each sector maker and then calling make_stocks_set
     with specified parameters.
 
     Example
@@ -199,7 +199,7 @@ def make_multisector(*makers, **kwargs):
     names = [type(maker).__name__.lower() for maker in makers]
     named_makers = unique_names(names=names, elements=makers)
 
-    pf_maker = MultiSector(named_makers)
-    port = pf_maker.make_portfolio(**kwargs)
+    ss_maker = MultiSector(named_makers)
+    port = ss_maker.make_stocks_set(**kwargs)
 
     return port

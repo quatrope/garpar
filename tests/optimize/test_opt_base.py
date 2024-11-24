@@ -11,7 +11,7 @@
 # =============================================================================
 
 
-from garpar import Portfolio
+from garpar import StocksSet
 
 from garpar.optimize.opt_base import OptimizerABC, MeanVarianceFamilyMixin
 
@@ -27,15 +27,15 @@ import pytest
 # =============================================================================
 
 
-def test_OptimizerABC__calculate_weights_not_implementhed(risso_portfolio):
-    pf = risso_portfolio(random_state=42, stocks=2)
+def test_OptimizerABC__calculate_weights_not_implementhed(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42, stocks=2)
 
     class FooOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
-        def _calculate_weights(self, pf):
-            return super()._calculate_weights(pf)
+        def _calculate_weights(self, ss):
+            return super()._calculate_weights(ss)
 
     with pytest.raises(NotImplementedError):
-        FooOptimizer().optimize(pf)
+        FooOptimizer().optimize(ss)
 
 
 def test_optimizerabc_family_not_string():

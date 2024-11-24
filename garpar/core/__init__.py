@@ -7,4 +7,4 @@
 
 """Core utilities."""
 
-from .portfolio import GARPAR_METADATA_KEY, Portfolio
+from .stocks_set import GARPAR_METADATA_KEY, StocksSet

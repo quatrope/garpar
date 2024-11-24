@@ -32,7 +32,7 @@ package Optimize {
   class "OptimizerABC" as garpar.optimize.opt_base.OptimizerABC {
     family : object
     get_optimizer_family()
-    optimize(pf)
+    optimize(ss)
   }
 }
 

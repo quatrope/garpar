@@ -63,7 +63,7 @@ class CoercerMixin:
         """
         if isinstance(expected_returns, str):
             kw = {} if kw is None else kw
-            expected_returns = self._pf.ereturns(expected_returns.lower(), **kw)
+            expected_returns = self._ss.ereturns(expected_returns.lower(), **kw)
         return np.asarray(expected_returns) if asarray else expected_returns
 
     def coerce_weights(self, weights, asarray=True):
@@ -71,7 +71,7 @@ class CoercerMixin:
 
         Parameters
         ----------
-        weights : None, Portfolio, or array-like
+        weights : None, StocksSet, or array-like
             The weights specification or values. If None, equal weights are assigned.
         asarray : bool, optional
             Whether to return the result as a numpy array, by default True.
@@ -87,14 +87,14 @@ class CoercerMixin:
         >>> weights = mixin.coerce_weights(None)
         """
         if weights is None:
-            cols = len(self._pf.stocks)
+            cols = len(self._ss.stocks)
             weights = np.full(cols, 1.0 / cols, dtype=float)
-        elif isinstance(weights, type(self._pf)):
+        elif isinstance(weights, type(self._ss)):
             bench_weights = weights.weights
 
-            stocks = self._pf.stocks
+            stocks = self._ss.stocks
             # creamos un lugar donde poner los precios en el mismo orden que
-            # en el pf original
+            # en el ss original
             weights = pd.Series(
                 np.zeros(len(stocks), dtype=float), index=stocks
             )
@@ -128,5 +128,5 @@ class CoercerMixin:
         """
         if isinstance(cov_matrix, str):
             kw = {} if kw is None else kw
-            cov_matrix = self._pf.covariance(cov_matrix.lower(), **kw)
+            cov_matrix = self._ss.covariance(cov_matrix.lower(), **kw)
         return np.asarray(cov_matrix) if asarray else cov_matrix

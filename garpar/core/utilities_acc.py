@@ -24,31 +24,31 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
     """Accessor for various utility and performance metrics.
 
     The UtilitiesAccessor class provides methods to compute ex-ante tracking error,
-    ex-post tracking error, portfolio return, and quadratic utility for a given
-    portfolio.
+    ex-post tracking error, stocks set return, and quadratic utility for a given
+    stocks set.
 
     Attributes
     ----------
     _default_kind : str
-        The default kind of performance measure, default is "pf_return".
-    _pf : attr.ib
-        The portfolio object containing weights and other attributes.
+        The default kind of performance measure, default is "ss_return".
+    _ss : attr.ib
+        The StocksSet object containing weights and other attributes.
 
     Methods
     -------
     ex_ante_tracking_error(covariance='sample_cov', covariance_kw=None, benchmark_weights=None):
-        Computes the ex-ante tracking error of the portfolio.
+        Computes the ex-ante tracking error of the stocks set.
     ex_post_tracking_error(historic_returns='capm', benchmark_returns='capm', historic_returns_kw=None, benchmark_returns_kw=None):
-        Computes the ex-post tracking error of the portfolio.
-    portfolio_return(expected_returns='capm', expected_returns_kw=None, negative=True):
-        Computes the expected return of the portfolio.
+        Computes the ex-post tracking error of the stocks set.
+    stocks_set_return(expected_returns='capm', expected_returns_kw=None, negative=True):
+        Computes the expected return of the stocks set.
     quadratic_utility(expected_returns='capm', covariance='sample_cov', risk_aversion=0.5, expected_returns_kw=None, covariance_kw=None, **kwargs):
-        Computes the quadratic utility of the portfolio.
+        Computes the quadratic utility of the stocks set.
     """
 
-    _default_kind = "pf_return"
+    _default_kind = "ss_return"
 
-    _pf = attr.ib()
+    _ss = attr.ib()
 
     def ex_ante_tracking_error(
         self,
@@ -57,7 +57,7 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         covariance_kw=None,
         benchmark_weights=None,
     ):
-        """Compute the ex-ante tracking error of the portfolio.
+        """Compute the ex-ante tracking error of the stocks set.
 
         Parameters
         ----------
@@ -66,23 +66,23 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method, by default None.
         benchmark_weights : array-like, optional
-            The weights of the benchmark portfolio, by default None.
+            The weights of the benchmark stocks set, by default None.
 
         Returns
         -------
         float
-            The ex-ante tracking error of the portfolio.
+            The ex-ante tracking error of the stocks set.
 
         Examples
         --------
-        >>> accessor = UtilitiesAccessor(pf)
+        >>> accessor = UtilitiesAccessor(ss)
         >>> error = accessor.ex_ante_tracking_error()
         """
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
         benchmark_weights = self.coerce_weights(benchmark_weights)
 
         return objective_functions.ex_ante_tracking_error(
-            self._pf._weights,
+            self._ss._weights,
             cov_matrix=cov_matrix,
             benchmark_weights=benchmark_weights,
         )
@@ -95,7 +95,7 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         historic_returns_kw=None,
         benchmark_returns_kw=None,
     ):
-        """Compute the ex-post tracking error of the portfolio.
+        """Compute the ex-post tracking error of the stocks set.
 
         Parameters
         ----------
@@ -111,11 +111,11 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         float
-            The ex-post tracking error of the portfolio.
+            The ex-post tracking error of the stocks set.
 
         Examples
         --------
-        >>> accessor = UtilitiesAccessor(pf)
+        >>> accessor = UtilitiesAccessor(ss)
         >>> error = accessor.ex_post_tracking_error()
         """
         historic_returns = self.coerce_expected_returns(
@@ -125,19 +125,19 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
             benchmark_returns, benchmark_returns_kw
         )
         return objective_functions.ex_post_tracking_error(
-            self._pf._weights,
+            self._ss._weights,
             historic_returns=historic_returns,
             benchmark_returns=benchmark_returns,
         )
 
-    def portfolio_return(
+    def stocks_set_return(
         self,
         *,
         expected_returns="capm",
         expected_returns_kw=None,
         negative=True,
     ):
-        """Compute the expected return of the portfolio.
+        """Compute the expected return of the stocks set.
 
         Parameters
         ----------
@@ -151,23 +151,23 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         float
-            The expected return of the portfolio.
+            The expected return of the stocks set.
 
         Examples
         --------
-        >>> accessor = UtilitiesAccessor(pf)
-        >>> ret = accessor.portfolio_return()
+        >>> accessor = UtilitiesAccessor(ss)
+        >>> ret = accessor.stocks_set_return()
         """
         expected_returns = self.coerce_expected_returns(
             expected_returns, expected_returns_kw
         )
-        return objective_functions.portfolio_return(
-            self._pf._weights,
+        return objective_functions.stocks_set_return(
+            self._ss._weights,
             expected_returns=expected_returns,
             negative=negative,
         )
 
-    pf_return = portfolio_return
+    ss_return = stocks_set_return
 
     def quadratic_utility(
         self,
@@ -179,7 +179,7 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         covariance_kw=None,
         **kwargs,
     ):
-        """Compute the quadratic utility of the portfolio.
+        """Compute the quadratic utility of the stocks set.
 
         Parameters
         ----------
@@ -199,11 +199,11 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         float
-            The quadratic utility of the portfolio.
+            The quadratic utility of the stocks set.
 
         Examples
         --------
-        >>> accessor = UtilitiesAccessor(pf)
+        >>> accessor = UtilitiesAccessor(ss)
         >>> utility = accessor.quadratic_utility()
         """
         expected_returns = self.coerce_expected_returns(
@@ -212,7 +212,7 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
 
         return objective_functions.quadratic_utility(
-            self._pf._weights,
+            self._ss._weights,
             expected_returns=expected_returns,
             cov_matrix=cov_matrix,
             risk_aversion=risk_aversion,

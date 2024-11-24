@@ -2,7 +2,7 @@
 set namespaceSeparator none
 package Core{
 
-  class "Portfolio" as garpar.core.portfolio.Portfolio {
+  class "StocksSet" as garpar.core.portfolio.StocksSet {
     entropy
     stocks
     weights
@@ -18,7 +18,7 @@ package Core{
     to_hdf5(stream_or_buff)
     weights_prune(threshold)
   }
-  class "PortfolioPlotterAccessor" as garpar.core.plot_acc.PortfolioPlotterAccessor {
+  class "StocksSetPlotterAccessor" as garpar.core.plot_acc.StocksSetPlotterAccessor {
     box(returns)
     heatmap(returns)
     hist(returns)
@@ -38,8 +38,8 @@ package Core{
     mean_tendency_size()
   }
   class "RiskAccessor" as garpar.core.risk_acc.RiskAccessor {
-    pf_beta
-    pf_var
+    ss_beta
+    ss_var
     var
     portfolio_beta()
     portfolio_variance(covariance, covariance_kw)
@@ -76,7 +76,7 @@ package Core{
     mah()
   }
   class "UtilitiesAccessor" as garpar.core.utilities_acc.UtilitiesAccessor {
-    pf_return
+    ss_return
     qutility
     ex_ante_tracking_error()
     ex_post_tracking_error()
@@ -85,13 +85,13 @@ package Core{
   }
 }
 
-garpar.core.portfolio.Portfolio o-- garpar.core.div_acc.DiversificationMetricsAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.plot_acc.PortfolioPlotterAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.risk_acc.RiskAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.prices_acc.PricesAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.covcorr_acc.CovarianceAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.covcorr_acc.CorrelationAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.ereturns_acc.ExpectedReturnsAccessor
-garpar.core.portfolio.Portfolio o-- garpar.core.utilities_acc.UtilitiesAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.div_acc.DiversificationMetricsAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.plot_acc.StocksSetPlotterAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.risk_acc.RiskAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.prices_acc.PricesAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.covcorr_acc.CovarianceAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.covcorr_acc.CorrelationAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.ereturns_acc.ExpectedReturnsAccessor
+garpar.core.portfolio.StocksSet o-- garpar.core.utilities_acc.UtilitiesAccessor
 
 @enduml

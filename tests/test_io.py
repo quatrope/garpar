@@ -12,7 +12,7 @@
 
 from io import BytesIO
 
-from garpar import Portfolio, io
+from garpar import StocksSet, io
 
 import pandas as pd
 
@@ -21,8 +21,8 @@ import pandas as pd
 # =============================================================================
 
 
-def test_Portfolio_to_hdf5_read_hdf5():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_to_hdf5_read_hdf5():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -35,8 +35,8 @@ def test_Portfolio_to_hdf5_read_hdf5():
     )
 
     buff = BytesIO()
-    io.to_hdf5(buff, pf)
+    io.to_hdf5(buff, ss)
     buff.seek(0)
     result = io.read_hdf5(buff)
 
-    assert pf == result
+    assert ss == result

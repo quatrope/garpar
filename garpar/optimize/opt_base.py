@@ -16,7 +16,7 @@ _Unknow = object()
 
 class OptimizerABC(mabc.ModelABC):
     """
-    Abstract base class for portfolio optimizers.
+    Abstract base class for stocks set optimizers.
 
     Attributes
     ----------
@@ -25,8 +25,8 @@ class OptimizerABC(mabc.ModelABC):
 
     Methods
     -------
-    optimize(pf)
-        Optimize the given portfolio.
+    optimize(ss)
+        Optimize the given stocks set.
     get_optimizer_family()
         Get the family of the optimizer.
     """
@@ -40,25 +40,25 @@ class OptimizerABC(mabc.ModelABC):
             raise TypeError(f"'{cls_name}.family' must be redefined as string")
 
     @mabc.abstractmethod
-    def _calculate_weights(self, pf):
-        """Boilerplate method to calculate portfolio weights."""
+    def _calculate_weights(self, ss):
+        """Boilerplate method to calculate stocks set weights."""
         raise NotImplementedError()
 
-    def optimize(self, pf):
-        """Optimize the given portfolio.
+    def optimize(self, ss):
+        """Optimize the given stocks set.
 
         Parameters
         ----------
-        pf : Portfolio
-            The portfolio to optimize.
+        ss : StocksSet
+            The stocks set to optimize.
 
         Returns
         -------
-        Portfolio
-            A new portfolio with optimized weights.
+        StocksSet
+            A new stocks set with optimized weights.
         """
-        weights, metadata = self._calculate_weights(pf)
-        return pf.copy(weights=weights, optimizer=metadata)
+        weights, metadata = self._calculate_weights(ss)
+        return ss.copy(weights=weights, optimizer=metadata)
 
     @classmethod
     def get_optimizer_family(cls):

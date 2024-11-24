@@ -25,14 +25,14 @@ from ..utils import accabc
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
-    """A class to calculate various diversification metrics for a portfolio.
+    """A class to calculate various diversification metrics for a stocks set.
 
     Attributes
     ----------
     _default_kind : str
         Default kind of diversification metric.
-    _pf : Portfolio
-        The portfolio object.
+    _ss : StocksSet
+        The stocks set object.
 
     Methods
     -------
@@ -42,7 +42,7 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Calculate the marginal risk contribution.
     pdi(n_components=None, whiten=False, svd_solver="auto", tol=0.0, iterated_power="auto",
         n_oversamples=10, power_iteration_normalizer="auto", random_state=None)
-        Calculate the portfolio diversification index.
+        Calculate the stocks set diversification index.
     zheng_entropy()
         Calculate Zheng's entropy.
     cross_entropy(benchmark_weights=None)
@@ -53,7 +53,7 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
     _default_kind = "ratio"
 
-    _pf = attr.ib()
+    _ss = attr.ib()
 
     def ratio(self, *, covariance="sample_cov", covariance_kw=None):
         """Calculate the diversification ratio.
@@ -72,16 +72,16 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationMetricsAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(ss)
         >>> ratio = accessor.ratio()
         """
-        weights = self._pf.scale_weights().weights
-        ret_std = self._pf.as_returns().std()
-        pf_variance = self._pf.risk.pf_var(
+        weights = self._ss.scale_weights().weights
+        ret_std = self._ss.as_returns().std()
+        ss_variance = self._ss.risk.ss_var(
             covariance=covariance, covariance_kw=covariance_kw
         )
 
-        return np.sum(weights * ret_std) / np.sqrt(pf_variance)
+        return np.sum(weights * ret_std) / np.sqrt(ss_variance)
 
     def mrc(self, *, covariance="sample_cov", covariance_kw=None):
         """Calculate the marginal risk contribution.
@@ -100,20 +100,20 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationMetricsAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(ss)
         >>> mrc = accessor.mrc()
         """
-        weights = self._pf.scale_weights().weights
+        weights = self._ss.scale_weights().weights
 
         cov_matrix = self.coerce_covariance_matrix(
             covariance, covariance_kw, asarray=False
         )
 
-        pf_variance = self._pf.risk.pf_var(
+        ss_variance = self._ss.risk.ss_var(
             covariance=cov_matrix, covariance_kw=None
         )
 
-        result = np.sum(cov_matrix * weights, axis=1) / np.sqrt(pf_variance)
+        result = np.sum(cov_matrix * weights, axis=1) / np.sqrt(ss_variance)
         result.name = "MRC"
         return result
 
@@ -129,7 +129,7 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         power_iteration_normalizer="auto",
         random_state=None,
     ):
-        """Calculate the portfolio diversification index.
+        """Calculate the stocks set diversification index.
 
         Parameters
         ----------
@@ -153,14 +153,14 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         float
-            The portfolio diversification index.
+            The stocks set diversification index.
 
         Examples
         --------
-        >>> accessor = DiversificationMetricsAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(ss)
         >>> pdi = accessor.pdi()
         """
-        returns = self._pf.as_returns()
+        returns = self._ss.as_returns()
 
         pca = PCA(
             n_components=n_components,
@@ -189,10 +189,10 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationMetricsAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(ss)
         >>> entropy = accessor.zheng_entropy()
         """
-        weights = self._pf.scale_weights().weights
+        weights = self._ss.scale_weights().weights
         return -np.sum(weights * np.log(weights))
 
     def cross_entropy(self, benchmark_weights=None):
@@ -210,10 +210,10 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationMetricsAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(ss)
         >>> cross_entropy = accessor.cross_entropy()
         """
-        weights = self._pf.scale_weights().weights
+        weights = self._ss.scale_weights().weights
         benchmark_weights = self.coerce_weights(benchmark_weights)
         return np.sum(benchmark_weights * np.log(benchmark_weights / weights))
 
@@ -234,19 +234,19 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
 
         Examples
         --------
-        >>> accessor = DiversificationMetricsAccessor(pf)
+        >>> accessor = DiversificationMetricsAccessor(ss)
         >>> entropy = accessor.ke_zang_entropy()
         """
-        pf_var = self._pf.risk.pf_var(
+        ss_var = self._ss.risk.ss_var(
             covariance=covariance, covariance_kw=covariance_kw
         )
         entropy = self.zheng_entropy()
 
-        return pf_var + entropy
+        return ss_var + entropy
 
     # def delta(self, *, diffentropy_kw=None):
-    #     weights = self._pf.scale_weights().weights
-    #     returns = self._pf.as_returns()
+    #     weights = self._ss.scale_weights().weights
+    #     returns = self._ss.as_returns()
 
     #     diffentropy_kw = {} if diffentropy_kw is None else diffentropy_kw
     #     X_diff_entropy = scipy.stats.differential_entropy(returns)

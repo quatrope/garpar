@@ -11,7 +11,7 @@
 # =============================================================================
 
 
-from garpar import Portfolio, datasets
+from garpar import StocksSet, datasets
 
 import numpy as np
 
@@ -41,7 +41,7 @@ def test_make_risso_uniform():
     result = datasets.make_risso_uniform(
         random_state=42, window_size=2, days=3, stocks=2
     )
-    expected = Portfolio.from_dfkws(
+    expected = StocksSet.from_dfkws(
         pd.DataFrame(
             [
                 [100.000000, 100.000000],
@@ -72,7 +72,7 @@ def test_make_risso_normal():
     result = datasets.make_risso_normal(
         random_state=42, window_size=2, days=3, stocks=2
     )
-    expected = Portfolio.from_dfkws(
+    expected = StocksSet.from_dfkws(
         pd.DataFrame(
             [
                 [100.0, 100.0],
@@ -103,7 +103,7 @@ def test_make_risso_levy_stable():
     result = datasets.make_risso_levy_stable(
         random_state=42, window_size=2, days=3, stocks=2
     )
-    expected = Portfolio.from_dfkws(
+    expected = StocksSet.from_dfkws(
         pd.DataFrame(
             [
                 [100.0, 100.0],

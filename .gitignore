@@ -108,6 +108,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+draft
 draft/*.h5
 draft/*.hdf
 draft/*.pkl

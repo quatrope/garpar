@@ -9,7 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""Utilities to dump and load portfolios into hdf5.
+"""Utilities to dump and load stocks sets into hdf5.
 
 Based on: https://stackoverflow.com/a/30773118
 
@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 
 from . import __version__ as VERSION
-from .core import GARPAR_METADATA_KEY, Portfolio
+from .core import GARPAR_METADATA_KEY, StocksSet
 
 # =============================================================================
 # CONSTANTS
@@ -81,19 +81,19 @@ def _df_to_sarray(df):
 # =============================================================================
 
 
-def to_hdf5(path_or_stream, pf, group="portfolio", **kwargs):
+def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
     """HDF5 file writer.
 
-    It is responsible for storing a portfolio in HDF5 format.
+    It is responsible for storing a stocks set in HDF5 format.
 
     Parameters
     ----------
     path_or_stream : str or file-like.
-        Path or file like objet to the h5 to store the portfolio.
-    portfolio : garpar.portfolio.PortFolio
-        The portfolio to store.
-    group : str (default="portfolio")
-        The name of the group where the portfolio will be stored.
+        Path or file like objet to the h5 to store the stocks set.
+    ss : garpar.stocks_set.StocksSet
+        The stocks set to store.
+    group : str (default="stocks set")
+        The name of the group where the stocks set will be stored.
     kwargs :
         Extra arguments to the function ``h5py.File.create_dataset``.
 
@@ -108,12 +108,12 @@ def to_hdf5(path_or_stream, pf, group="portfolio", **kwargs):
 
     with h5py.File(path_or_stream, "a") as fp:
         # the data
-        prices = _df_to_sarray(pf.as_prices())
-        weights = pf.weights.to_numpy()
-        entropy = pf.entropy.to_numpy()
+        prices = _df_to_sarray(ss.as_prices())
+        weights = ss.weights.to_numpy()
+        entropy = ss.entropy.to_numpy()
         grp_attrs = {
-            _WINDOW_SIZE_KEY: pf.window_size,
-            GARPAR_METADATA_KEY: json.dumps(pf.metadata.to_dict()),
+            _WINDOW_SIZE_KEY: ss.window_size,
+            GARPAR_METADATA_KEY: json.dumps(ss.metadata.to_dict()),
         }
 
         # store
@@ -127,7 +127,7 @@ def to_hdf5(path_or_stream, pf, group="portfolio", **kwargs):
         fp.attrs.update(h5_metadata)
 
 
-def read_hdf5(path_or_stream, group="portfolio"):
+def read_hdf5(path_or_stream, group="stocks set"):
     """HDF5 file reader."""
     with h5py.File(path_or_stream, "r") as fp:
         grp = fp[group]
@@ -144,7 +144,7 @@ def read_hdf5(path_or_stream, group="portfolio"):
         window_size = grp.attrs[_WINDOW_SIZE_KEY]
         metadata = json.loads(grp.attrs[GARPAR_METADATA_KEY])
 
-    pf = Portfolio(
+    ss = StocksSet(
         prices,
         weights=weights,
         entropy=entropy,
@@ -152,4 +152,4 @@ def read_hdf5(path_or_stream, group="portfolio"):
         metadata=metadata,
     )
 
-    return pf
+    return ss

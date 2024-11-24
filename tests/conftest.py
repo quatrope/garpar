@@ -46,27 +46,27 @@ METHODS = [
 
 
 @pytest.fixture(scope="session")
-def risso_portfolio():
+def risso_stocks_set():
     def make(*, distribution="normal", random_state=None, **kwargs):
         maker = DISTRIBUTIONS[distribution]
         random_state = np.random.default_rng(random_state)
         kwargs.setdefault("days", 5)
         kwargs.setdefault("stocks", 10)
 
-        pf = maker(random_state=random_state, **kwargs)
+        ss = maker(random_state=random_state, **kwargs)
 
-        weights = random_state.random(size=len(pf.weights))
-        pf = pf.copy(weights=weights)
+        weights = random_state.random(size=len(ss.weights))
+        ss = ss.copy(weights=weights)
 
-        return pf
+        return ss
 
     return make
 
 
 @pytest.fixture(scope="session")
-def risso_portfolio_values(risso_portfolio):
+def risso_stocks_set_values(risso_stocks_set):
     def make(*, distribution="normal", **kwargs):
-        portfolio = risso_portfolio(distribution=distribution, **kwargs)
+        portfolio = risso_stocks_set(distribution=distribution, **kwargs)
         return portfolio._df, portfolio._weights
 
     return make

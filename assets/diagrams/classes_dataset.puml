@@ -3,13 +3,13 @@ set namespaceSeparator none
 
 package datasets {
   class "MultiSector" as garpar.datasets.multisector.MultiSector {
-    makers : PortfolioMaker
+    makers : StocksSetMaker
     make_portfolio()
   }
-  class "PortfolioMakerABC" as garpar.datasets.ds_base.PortfolioMakerABC {
+  class "StocksSetMakerABC" as garpar.datasets.ds_base.StocksSetMakerABC {
     {abstract}make_portfolio()
   }
-  class "RandomEntropyPortfolioMakerABC" as garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC {
+  class "RandomEntropyStocksSetMakerABC" as garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC {
     entropy : float
     random_state : int
     {abstract}get_window_loss_probability(window_size, entropy)
@@ -39,13 +39,13 @@ package datasets {
   }
 }
 
-garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC -u-> garpar.datasets.ds_base.PortfolioMakerABC
-garpar.datasets.multisector.MultiSector -u-> garpar.datasets.ds_base.PortfolioMakerABC
-garpar.datasets.risso.RissoLevyStable -u-> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
+garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC -u-> garpar.datasets.ds_base.StocksSetMakerABC
+garpar.datasets.multisector.MultiSector -u-> garpar.datasets.ds_base.StocksSetMakerABC
+garpar.datasets.risso.RissoLevyStable -u-> garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC
 garpar.datasets.risso.RissoLevyStable -u-> garpar.datasets.risso.RissoMixin
-garpar.datasets.risso.RissoNormal -u-> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
+garpar.datasets.risso.RissoNormal -u-> garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC
 garpar.datasets.risso.RissoNormal -u-> garpar.datasets.risso.RissoMixin
-garpar.datasets.risso.RissoUniform -u-> garpar.datasets.ds_base.RandomEntropyPortfolioMakerABC
+garpar.datasets.risso.RissoUniform -u-> garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC
 garpar.datasets.risso.RissoUniform -u-> garpar.datasets.risso.RissoMixin
 
 @enduml

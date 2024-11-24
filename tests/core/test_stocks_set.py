@@ -12,7 +12,7 @@
 
 from io import BytesIO
 
-from garpar.core.portfolio import Portfolio
+from garpar.core.stocks_set import StocksSet
 from garpar.io import read_hdf5
 
 import numpy as np
@@ -27,67 +27,67 @@ import pytest
 # =============================================================================
 
 
-def test_Portfolio_creation():
+def test_StocksSet_creation():
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
     weights = [1]
     entropy = [0.5]
     window_size = None
     metadata = {"foo": "faa"}
 
-    manual_pf = Portfolio(
+    manual_ss = StocksSet(
         prices_df=df.copy(),
         weights=weights,
         entropy=entropy,
         window_size=window_size,
         metadata=metadata,
     )
-    mk_pf = Portfolio.from_dfkws(
+    mk_ss = StocksSet.from_dfkws(
         prices=df.copy(), weights=1, entropy=0.5, window_size=None, **metadata
     )
 
-    assert manual_pf == mk_pf
-    assert repr(mk_pf.metadata) == "<metadata {'foo'}>"
+    assert manual_ss == mk_ss
+    assert repr(mk_ss.metadata) == "<metadata {'foo'}>"
 
 
-def test_Portfolio_len():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_len():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
     )
 
-    assert len(pf) == 5
+    assert len(ss) == 5
 
 
-def test_Portfolio_copy_eq_ne():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_copy_eq_ne():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
     )
-    copy = pf.copy()
+    copy = ss.copy()
 
-    assert pf == copy
-    assert pf is not copy
+    assert ss == copy
+    assert ss is not copy
 
-    other = Portfolio.from_dfkws(
+    other = StocksSet.from_dfkws(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.25,
         window_size=5,
     )
 
-    assert pf != other
+    assert ss != other
 
 
-def test_Portfolio_bad_weights():
+def test_StocksSet_bad_weights():
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
 
     with pytest.raises(ValueError):
-        Portfolio.from_dfkws(df, weights=[1, 2, 3])
+        StocksSet.from_dfkws(df, weights=[1, 2, 3])
 
 
-def test_Portfolio_slice():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_slice():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
@@ -95,7 +95,7 @@ def test_Portfolio_slice():
         window_size=5,
     )
 
-    expected = Portfolio.from_dfkws(
+    expected = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {"stock1": [10, 20, 30, 40, 50]},
         ),
@@ -103,12 +103,12 @@ def test_Portfolio_slice():
         window_size=5,
     )
 
-    result = pf["stock1"]
+    result = ss["stock1"]
     assert expected == result
 
 
-def test_Portfolio_as_returns():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_as_returns():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5]},
         ),
@@ -123,12 +123,12 @@ def test_Portfolio_as_returns():
     expected.columns.name = "Stocks"
     expected.index.name = "Days"
 
-    result = pf.as_returns()
+    result = ss.as_returns()
     pd.testing.assert_frame_equal(result, expected)
 
 
-def test_Portfolio_as_prices():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_as_prices():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5]},
         ),
@@ -143,12 +143,12 @@ def test_Portfolio_as_prices():
     expected.columns.name = "Stocks"
     expected.index.name = "Days"
 
-    result = pf.as_prices()
+    result = ss.as_prices()
     pd.testing.assert_frame_equal(result, expected)
 
 
-def test_Portfolio_repr():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_repr():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
@@ -162,16 +162,16 @@ def test_Portfolio_repr():
         "2                         3\n"
         "3                         4\n"
         "4                         5\n"
-        "Portfolio [5 days x 1 stocks - W.Size 5]"
+        "StocksSet [5 days x 1 stocks - W.Size 5]"
     )
 
-    result = repr(pf)
+    result = repr(ss)
 
     assert result == expected
 
 
-def test_Portfolio_to_dataframe():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_to_dataframe():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
@@ -189,13 +189,13 @@ def test_Portfolio_to_dataframe():
     )
     expected_attrs = {"__garpar_metadata__": {"foo": "zaraza"}}
 
-    result = pf.to_dataframe()
+    result = ss.to_dataframe()
     pd.testing.assert_frame_equal(result, expected)
     assert result.attrs == expected_attrs
 
 
-def test_Portfolio_to_hdf5():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_to_hdf5():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
@@ -204,15 +204,15 @@ def test_Portfolio_to_hdf5():
     )
 
     buff = BytesIO()
-    pf.to_hdf5(buff)
+    ss.to_hdf5(buff)
     buff.seek(0)
     result = read_hdf5(buff)
 
-    assert pf == result
+    assert ss == result
 
 
-def test_Portfolio_weights_prune():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_weights_prune():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -225,12 +225,12 @@ def test_Portfolio_weights_prune():
         window_size=5,
     )
 
-    ppf = pf.wprune()
-    np.testing.assert_array_equal(ppf.stocks, ["stock0", "stock1"])
+    pss = ss.wprune()
+    np.testing.assert_array_equal(pss.stocks, ["stock0", "stock1"])
 
 
-def test_Portfolio_delisted_prune():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_delisted_prune():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -243,13 +243,13 @@ def test_Portfolio_delisted_prune():
         window_size=5,
     )
 
-    ppf = pf.dprune()
+    pss = ss.dprune()
 
-    np.testing.assert_array_equal(ppf.stocks, ["stock0", "stock2"])
+    np.testing.assert_array_equal(pss.stocks, ["stock0", "stock2"])
 
 
-def test_Portfolio_scale_weights():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_scale_weights():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -262,14 +262,14 @@ def test_Portfolio_scale_weights():
         window_size=5,
     )
 
-    swpf = pf.scale_weights()
+    swss = ss.scale_weights()
 
-    np.testing.assert_array_equal(swpf.weights, [0.1, 0.75, 0.15])
-    np.testing.assert_array_equal(swpf.weights.sum(), 1.0)
+    np.testing.assert_array_equal(swss.weights, [0.1, 0.75, 0.15])
+    np.testing.assert_array_equal(swss.weights.sum(), 1.0)
 
 
-def test_Portfolio_scale_weights_bad_scaler():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_scale_weights_bad_scaler():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -283,11 +283,11 @@ def test_Portfolio_scale_weights_bad_scaler():
     )
 
     with pytest.raises(ValueError):
-        pf.scale_weights(scaler=None)
+        ss.scale_weights(scaler=None)
 
 
-def test_Portfolio_refresh_entropy():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_refresh_entropy():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -300,14 +300,14 @@ def test_Portfolio_refresh_entropy():
         window_size=None,
     )
 
-    swpf = pf.refresh_entropy()
+    swss = ss.refresh_entropy()
     np.testing.assert_allclose(
-        swpf.entropy.values, [1.48975, 1.48975, 1.48975], atol=1e-6
+        swss.entropy.values, [1.48975, 1.48975, 1.48975], atol=1e-6
     )
 
 
-def test_Portfolio_refresh_entropy_bad_entropy():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_refresh_entropy_bad_entropy():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -321,11 +321,11 @@ def test_Portfolio_refresh_entropy_bad_entropy():
     )
 
     with pytest.raises(ValueError):
-        pf.refresh_entropy(entropy=None)
+        ss.refresh_entropy(entropy=None)
 
 
-def test_Portfolio_repr_html():
-    pf = Portfolio.from_dfkws(
+def test_StocksSet_repr_html():
+    ss = StocksSet.from_dfkws(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
@@ -385,6 +385,6 @@ def test_Portfolio_repr_html():
         "</div>"
     )
 
-    result = pf._repr_html_()
+    result = ss._repr_html_()
 
     assert result == expected
