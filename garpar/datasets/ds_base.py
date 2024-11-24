@@ -153,7 +153,7 @@ class RandomEntropyPortfolioMakerABC(PortfolioMakerABC):
     n_jobs = mabc.hparam(default=None)
     verbose = mabc.hparam(default=0)
 
-    # Abstract=================================================================
+    # ABSTRACT =================================================================
 
     @mabc.abstractmethod
     def get_window_loss_probability(self, window_size, entropy):
