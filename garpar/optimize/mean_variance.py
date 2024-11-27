@@ -18,8 +18,89 @@ import numpy as np
 import pypfopt
 
 # =============================================================================
-# OPTIMIZER
+# MVOptimizer
 # =============================================================================
+
+# METHODS =====================================================================
+
+
+def _mv_min_volatility(instance, optimizer, ss):
+    weights_dict = optimizer.min_volatility()
+    weights = [weights_dict[stock] for stock in ss.stocks]
+
+    return weights, {"name": "min_volatility"}
+
+
+def _mv_max_sharpe(instance, optimizer, ss):
+    risk_free_rate = instance._coerce_risk_free_rate(ss)
+
+    weights_dict = optimizer.max_sharpe(risk_free_rate=risk_free_rate)
+    weights = [weights_dict[stock] for stock in ss.stocks]
+
+    return weights, {"name": "max_sharpe", "risk_free_rate": risk_free_rate}
+
+
+def _mv_max_quadratic_utility(instance, optimizer, ss):
+    risk_aversion = instance._coerce_risk_aversion(ss)
+
+    weights_dict = optimizer.max_quadratic_utility(
+        risk_aversion, market_neutral=instance.market_neutral
+    )
+    weights = [weights_dict[stock] for stock in ss.stocks]
+
+    return weights, {
+        "name": "max_quadratic_utility",
+        "risk_aversion": risk_aversion,
+    }
+
+
+def _mv_efficient_risk(instance, optimizer, ss):
+    target_volatility = instance._coerce_target_volatility(ss)
+
+    weights_dict = optimizer.efficient_risk(
+        target_volatility, market_neutral=instance.market_neutral
+    )
+    weights = [weights_dict[stock] for stock in ss.stocks]
+
+    return weights, {
+        "name": "efficient_risk",
+        "target_volatility": target_volatility,
+    }
+
+
+def _mv_efficient_return(instance, optimizer, ss):
+    target_return = instance._coerce_target_return(ss)
+
+    weights_dict = optimizer.efficient_return(
+        target_return, market_neutral=instance.market_neutral
+    )
+    weights = [weights_dict[stock] for stock in ss.stocks]
+
+    return weights, {
+        "name": "efficient_return",
+        "target_return": target_return,
+    }
+
+
+def _mv_portfolio_performance(instance, optimizer, ss):
+    risk_free_rate = instance._coerce_risk_free_rate(ss)
+
+    weigths_dict = optimizer.portfolio_performance(risk_free_rate)
+    weights = [weigths_dict[stock] for stock in ss.stocks]
+
+    return weights, {"name": "portfolio_performance"}
+
+
+# REGISTER ====================================================================
+
+MV_OPTIMIZATION_METHODS = {
+    "min_volatility": _mv_min_volatility,
+    "max_sharpe": _mv_max_sharpe,
+    "max_quadratic_utility": _mv_max_quadratic_utility,
+    "efficient_risk": _mv_efficient_risk,
+    "efficient_return": _mv_efficient_return,
+    "portfolio_performance": _mv_portfolio_performance,
+}
 
 
 @attr.define(repr=False)
@@ -41,6 +122,12 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     target_risk = mabc.hparam(default=None)
     risk_free_rate = mabc.hparam(default=None)
     risk_aversion = mabc.hparam(default=None)
+
+    @method.validator
+    def _check_method(self, attribute, value):
+        method_func = MV_OPTIMIZATION_METHODS.get(value, value)
+        if not callable(method_func):
+            raise ValueError("'method' don't look like a method")
 
     def _get_optimizer(self, ss):
         expected_returns = ss.ereturns(self.returns, **self.returns_kw)
@@ -82,75 +169,13 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
     def _calculate_weights(self, ss):
         optimizer = self._get_optimizer(ss)
-        method = self.method
-
-        optimization_methods = {
-            "min_volatility": self._min_volatility,
-            "max_sharpe": self._max_sharpe,
-            "max_quadratic_utility": self._max_quadratic_utility,
-            "efficient_risk": self._efficient_risk,
-            "efficient_return": self._efficient_return,
-            "portfolio_performance": self._portfolio_performance,
-        }
-
-        if method not in optimization_methods:
-            raise ValueError(f"Unknown optimization method: {method}")
-
-        return optimization_methods[method](optimizer, ss)
-
-    def _min_volatility(self, optimizer, ss):
-        weights_dict = optimizer.min_volatility()
-        weights = [weights_dict[stock] for stock in ss.stocks]
-
-        return weights, {"name": "min_volatility"}
-
-    def _max_sharpe(self, optimizer, ss):
-        risk_free_rate = self._coerce_risk_free_rate(ss)
-
-        weights_dict = optimizer.max_sharpe(risk_free_rate=risk_free_rate)
-        weights = [weights_dict[stock] for stock in ss.stocks]
-
-        return weights, {"name": "max_sharpe", "risk_free_rate": risk_free_rate}
-
-    def _max_quadratic_utility(self, optimizer, ss):
-        risk_aversion = self._coerce_risk_aversion(ss)
-
-        weights_dict = optimizer.max_quadratic_utility(
-            risk_aversion, market_neutral=self.market_neutral
-        )
-        weights = [weights_dict[stock] for stock in ss.stocks]
-
-        return weights, {"name": "max_quadratic_utility", "risk_aversion": risk_aversion}
-
-    def _efficient_risk(self, optimizer, ss):
-        target_volatility = self._coerce_target_volatility(ss)
-
-        weights_dict = optimizer.efficient_risk(
-            target_volatility, market_neutral=self.market_neutral
-        )
-        weights = [weights_dict[stock] for stock in ss.stocks]
-
-        return weights, {"name": "efficient_risk", "target_volatility": target_volatility}
-
-    def _efficient_return(self, optimizer, ss):
-        target_return = self._coerce_target_return(ss)
-
-        weights_dict = optimizer.efficient_return(
-            target_return, market_neutral=self.market_neutral
-        )
-        weights = [weights_dict[stock] for stock in ss.stocks]
-
-        return weights, {"name": "efficient_return", "target_return": target_return}
-
-    def _portfolio_performance(self, optimizer, ss):
-        risk_free_rate = self._coerce_risk_free_rate(ss)
-
-        weigths_dict = optimizer.portfolio_performance(risk_free_rate)
-        weights = [weigths_dict[stock] for stock in ss.stocks]
-
-        return weights, {"name": "portfolio_performance"}
+        method_func = MV_OPTIMIZATION_METHODS.get(self.method, self.method)
+        return method_func(instance=self, otimizer=optimizer, ss=ss)
 
 
+# =============================================================================
+# MARKOWITZ
+# =============================================================================
 @attr.define(repr=False)
 class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     """Classic Markowitz model.
@@ -197,7 +222,7 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
             weight_bounds=weight_bounds,
         )
         return optimizer
-    
+
     def _get_market_neutral(self):
         return self.market_neutral
 
