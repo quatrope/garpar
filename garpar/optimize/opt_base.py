@@ -71,6 +71,7 @@ class OptimizerABC(mabc.ModelABC):
         """
         return cls.family
 
+
 class MeanVarianceFamilyMixin:
     """Mixin class for mean-variance family optimizers."""
 

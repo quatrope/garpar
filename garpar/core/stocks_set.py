@@ -66,7 +66,9 @@ class StocksSet:
     # accessors
     plot = attr.ib(
         init=False,
-        default=attr.Factory(plot_acc.StocksSetPlotterAccessor, takes_self=True),
+        default=attr.Factory(
+            plot_acc.StocksSetPlotterAccessor, takes_self=True
+        ),
     )
 
     prices = attr.ib(
@@ -105,7 +107,9 @@ class StocksSet:
 
     diversification = attr.ib(
         init=False,
-        default=attr.Factory(div_acc.DiversificationMetricsAccessor, takes_self=True),
+        default=attr.Factory(
+            div_acc.DiversificationMetricsAccessor, takes_self=True
+        ),
     )
     div = diversification
 

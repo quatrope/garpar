@@ -19,4 +19,4 @@ from . import datasets, io, optimize
 from .core import StocksSet
 
 
-__all__ = ["StocksSet", "datasets", "io", "optimize", 'EPSILON']
+__all__ = ["StocksSet", "datasets", "io", "optimize", "EPSILON"]

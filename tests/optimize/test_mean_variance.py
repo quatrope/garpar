@@ -29,25 +29,31 @@ import pytest
 # TESTS MV
 # =============================================================================
 
+
 def test_MVOptimizer_default_initialization():
     optimizer = MVOptimizer()
     assert optimizer.method == "max_sharpe"
     assert optimizer.weight_bounds == (0, 1)
     assert optimizer.market_neutral is False
 
+
 def test_MVOptimizer_custom_initialization():
     optimizer = MVOptimizer(method="min_volatility", weight_bounds=(-1, 1))
     assert optimizer.method == "min_volatility"
     assert optimizer.weight_bounds == (-1, 1)
 
+
 @pytest.mark.parametrize("method", pytest.METHODS)
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
-def test_MVOptimizer_calculate_weights_method_coerced(risso_stocks_set, method, price_distribution):
+def test_MVOptimizer_calculate_weights_method_coerced(
+    risso_stocks_set, method, price_distribution
+):
     ss = risso_stocks_set(random_state=42, distribution=price_distribution)
     optimizer = MVOptimizer(method=method)
     weights, meta = optimizer._calculate_weights(ss)
     assert len(weights) == len(ss.stocks)
     assert meta["name"] == method
+
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_min_volatility(risso_stocks_set, price_distribution):
@@ -57,6 +63,7 @@ def test_MVOptimizer_min_volatility(risso_stocks_set, price_distribution):
     assert len(weights) == len(ss.stocks)
     assert meta["name"] == "min_volatility"
 
+
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_invalid_method(risso_stocks_set, price_distribution):
     ss = risso_stocks_set(random_state=42, distribution=price_distribution)
@@ -64,19 +71,24 @@ def test_MVOptimizer_invalid_method(risso_stocks_set, price_distribution):
     with pytest.raises(ValueError):
         optimizer._calculate_weights(ss)
 
+
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_get_optimizer(risso_stocks_set, price_distribution):
     ss = risso_stocks_set(random_state=42, distribution=price_distribution)
     optimizer = MVOptimizer()
-    assert type(optimizer._get_optimizer(ss)) == pypfopt.efficient_frontier.EfficientFrontier
+    assert (
+        type(optimizer._get_optimizer(ss))
+        == pypfopt.efficient_frontier.EfficientFrontier
+    )
+
 
 @pytest.mark.parametrize(
     "volatiliy, price_distribution",
     [
-        (0.03313144315467211, pytest.DISTRIBUTIONS['levy-stable']),
-        (0.8509377578214843, pytest.DISTRIBUTIONS['normal']),
-        (13.383798092382262, pytest.DISTRIBUTIONS['uniform'])
-    ]
+        (0.03313144315467211, pytest.DISTRIBUTIONS["levy-stable"]),
+        (0.8509377578214843, pytest.DISTRIBUTIONS["normal"]),
+        (13.383798092382262, pytest.DISTRIBUTIONS["uniform"]),
+    ],
 )
 def test_MVOptimizer_coerce_volatility(volatiliy, price_distribution):
     ss = price_distribution(random_state=43)
@@ -84,9 +96,11 @@ def test_MVOptimizer_coerce_volatility(volatiliy, price_distribution):
     coerced_volatility = optimizer._coerce_target_volatility(ss)
     np.testing.assert_almost_equal(coerced_volatility, volatiliy, decimal=9)
 
+
 # =============================================================================
 # MARKOWITZ TEST
 # =============================================================================
+
 
 def test_Markowitz_optimize():
     ss = StocksSet.from_dfkws(

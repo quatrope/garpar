@@ -45,6 +45,7 @@ def _computeMarks(prices, **kwargs):
 
     return marks
 
+
 def shannon(prices, window_size=None, **kwargs):
     """Calculate the Shannon entropy of the given prices.
 
@@ -104,7 +105,7 @@ def risso(prices, window_size=None, **kwargs):
 
         # Sacamos todas las secuencias de window_size dias
         sequences = [
-            tuple(asset_marks[i: i+window_size])
+            tuple(asset_marks[i : i + window_size])
             for i in range(len(asset_marks) - window_size + 1)
         ]
 
@@ -119,24 +120,33 @@ def risso(prices, window_size=None, **kwargs):
         N_0 = len(sequence_counts)
 
         # (Veces que aparece)/(Total secuencias) para sacar probabilidad de esa secuencia
-        probabilities = np.array(list(sequence_counts.values())) / total_sequences
+        probabilities = (
+            np.array(list(sequence_counts.values())) / total_sequences
+        )
 
         # H(l) per se
-        entropy = -np.sum(probabilities * np.log2(probabilities)) / np.log2(N_0) if N_0 > 1 else 0
+        entropy = (
+            -np.sum(probabilities * np.log2(probabilities)) / np.log2(N_0)
+            if N_0 > 1
+            else 0
+        )
 
         entropies.append(entropy)
 
     return entropies
 
-def HOne (weights):
+
+def HOne(weights):
     weights = np.asarray(weights)
     return 1 - np.sum(weights**2)
 
-def HInf (weights):
+
+def HInf(weights):
     weights = np.asarray(weights)
     return 1 - np.max(weights)
 
-def yagerOne (weights):
+
+def yagerOne(weights):
     """
     Computes Yager's entropy for a fuzzy set.
 
@@ -151,10 +161,11 @@ def yagerOne (weights):
     n = len(weights)
     weights = np.asarray(weights)
 
-    return (sum((weights - 1/n) ** p)) ** (1/p)
+    return (sum((weights - 1 / n) ** p)) ** (1 / p)
 
-def yagerInf (weigths):
+
+def yagerInf(weigths):
     weigths = np.asarray(weigths)
     n = len(weigths)
 
-    return np.max(weigths) - 1/n
+    return np.max(weigths) - 1 / n

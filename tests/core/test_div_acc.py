@@ -19,6 +19,7 @@ import pandas as pd
 # DIVERSIFICATION TESTS
 # =============================================================================
 
+
 def test_DiversificationMetricsAccessor_ratio(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
     expected = 0.02434710479460172
@@ -54,7 +55,7 @@ def test_DiversificationMetricsAccessor_zheng_entropy(risso_stocks_set):
 
 def test_DiversificationMetricsAccessor_cross_entropy(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = 0.
+    expected = 0.0
     np.testing.assert_allclose(ss.div.cross_entropy(), expected)
 
 

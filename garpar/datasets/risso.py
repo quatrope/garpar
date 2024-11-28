@@ -119,7 +119,9 @@ class RissoMixin:
         # con logaritmo y el logaritmo de cero no puede calcularse
         epsilon = EPSILON if eps is None else eps
 
-        loss_probability = np.linspace(epsilon, 1.0 - epsilon, num=window_size + 1)
+        loss_probability = np.linspace(
+            epsilon, 1.0 - epsilon, num=window_size + 1
+        )
 
         # Calcula entropy
         first_part = loss_probability * np.log2(loss_probability)
@@ -161,7 +163,9 @@ class RissoMixin:
         Loss probability
         0.3333333333333333
         """
-        h_candidates, loss_probabilities = self.generate_loss_probabilities(window_size, eps)
+        h_candidates, loss_probabilities = self.generate_loss_probabilities(
+            window_size, eps
+        )
         idx = argnearest(h_candidates, entropy)
         loss_probability = loss_probabilities[idx]
 
