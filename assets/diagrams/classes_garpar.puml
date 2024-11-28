@@ -1,7 +1,7 @@
 @startuml classes_garpar
 set namespaceSeparator none
 package Core {
-  class "StocksSet" as garpar.core.portfolio.StocksSet {
+  class "StocksSet" as garpar.core.stocks_set.StocksSet {
     entropy
     stocks
     weights
@@ -40,8 +40,8 @@ package Core {
     ss_beta
     ss_var
     var
-    portfolio_beta()
-    portfolio_variance(covariance, covariance_kw)
+    stocks_set_beta()
+    stocks_set_variance(covariance, covariance_kw)
     sharpe_ratio()
     stock_beta(market_prices, log_returns)
     treynor_ratio()
@@ -79,7 +79,7 @@ package Core {
     qutility
     ex_ante_tracking_error()
     ex_post_tracking_error()
-    portfolio_return()
+    stocks_set_return()
     quadratic_utility()
   }
 }
@@ -120,16 +120,16 @@ package Optimize {
 package datasets {
   class "MultiSector" as garpar.datasets.multisector.MultiSector {
     makers : StocksSetMaker
-    make_portfolio()
+    make_stocks_set()
   }
   class "StocksSetMakerABC" as garpar.datasets.ds_base.StocksSetMakerABC {
-    {abstract}make_portfolio()
+    {abstract}make_stocks_set()
   }
   class "RandomEntropyStocksSetMakerABC" as garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC {
     entropy : float
     random_state : int
     {abstract}get_window_loss_probability(window_size, entropy)
-    make_portfolio()
+    make_stocks_set()
     {abstract}make_stock_price(price, loss, random)
   }
   class "RissoMixin" as garpar.datasets.risso.RissoMixin {
@@ -168,13 +168,13 @@ garpar.optimize.mean_variance.MVOptimizer -u-> garpar.optimize.opt_base.Optimize
 garpar.optimize.mean_variance.Markowitz -u-> garpar.optimize.opt_base.MeanVarianceFamilyMixin
 garpar.optimize.mean_variance.Markowitz -u-> garpar.optimize.opt_base.OptimizerABC
 
-garpar.core.portfolio.StocksSet o-- garpar.core.div_acc.DiversificationMetricsAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.plot_acc.StocksSetPlotterAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.risk_acc.RiskAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.prices_acc.PricesAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.covcorr_acc.CovarianceAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.covcorr_acc.CorrelationAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.ereturns_acc.ExpectedReturnsAccessor
-garpar.core.portfolio.StocksSet o-- garpar.core.utilities_acc.UtilitiesAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.div_acc.DiversificationMetricsAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.plot_acc.StocksSetPlotterAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.risk_acc.RiskAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.prices_acc.PricesAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.covcorr_acc.CovarianceAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.covcorr_acc.CorrelationAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.ereturns_acc.ExpectedReturnsAccessor
+garpar.core.stocks_set.StocksSet o-- garpar.core.utilities_acc.UtilitiesAccessor
 
 @enduml

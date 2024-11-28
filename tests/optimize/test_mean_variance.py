@@ -80,7 +80,7 @@ def test_MVOptimizer_get_optimizer(risso_stocks_set, price_distribution):
 )
 def test_MVOptimizer_coerce_volatility(volatiliy, price_distribution):
     ss = price_distribution(random_state=43)
-    optimizer = MVOptimizer(method="max-sharpe")
+    optimizer = MVOptimizer(method="max_sharpe")
     coerced_volatility = optimizer._coerce_target_volatility(ss)
     np.testing.assert_almost_equal(coerced_volatility, volatiliy, decimal=9)
 

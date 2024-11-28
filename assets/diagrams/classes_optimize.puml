@@ -3,28 +3,18 @@ set namespaceSeparator none
 
 package Optimize {
   class "MVOptimizer" as garpar.optimize.mean_variance.MVOptimizer {
-    covariance : _CountingAttr
-    covariance_kw : _CountingAttr
-    market_neutral : _CountingAttr
-    method : _CountingAttr
-    returns : _CountingAttr
-    returns_kw : _CountingAttr
-    risk_aversion : _CountingAttr
-    risk_free_rate : _CountingAttr
-    target_return : _CountingAttr
-    target_risk : _CountingAttr
-    weight_bounds : _CountingAttr
+    market_neutral: Bool
+    method: String
+    risk_free_rate: [Float]
+    target_return: Float
+    target_risk: Float
+    weight_bounds: (Float, Float)
   }
   class "Markowitz" as garpar.optimize.mean_variance.Markowitz {
-    covariance : _CountingAttr
-    covariance_kw : _CountingAttr
-    market_neutral : _CountingAttr
-    method : _CountingAttr
-    returns : _CountingAttr
-    returns_kw : _CountingAttr
-    target_return : _CountingAttr
-    target_risk : _CountingAttr
-    weight_bounds : _CountingAttr
+    market_neutral: Bool
+    target_return: Float
+    target_risk: Float
+    weight_bounds: (Float, Float)
   }
   class "MeanVarianceFamilyMixin" as garpar.optimize.opt_base.MeanVarianceFamilyMixin {
     family : str

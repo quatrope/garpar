@@ -4,16 +4,16 @@ set namespaceSeparator none
 package datasets {
   class "MultiSector" as garpar.datasets.multisector.MultiSector {
     makers : StocksSetMaker
-    make_portfolio()
+    make_stocks_set()
   }
   class "StocksSetMakerABC" as garpar.datasets.ds_base.StocksSetMakerABC {
-    {abstract}make_portfolio()
+    {abstract}make_stocks_set()
   }
   class "RandomEntropyStocksSetMakerABC" as garpar.datasets.ds_base.RandomEntropyStocksSetMakerABC {
     entropy : float
     random_state : int
     {abstract}get_window_loss_probability(window_size, entropy)
-    make_portfolio()
+    make_stocks_set()
     {abstract}make_stock_price(price, loss, random)
   }
   class "RissoMixin" as garpar.datasets.risso.RissoMixin {

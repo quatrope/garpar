@@ -164,8 +164,6 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     target_return = mabc.hparam(default=None)
     target_risk = mabc.hparam(default=None)
 
-    method = mabc.hparam(default="max_sharpe")
-
     weight_bounds = mabc.hparam(default=(0, 1))
     market_neutral = mabc.hparam(default=False)
 
@@ -191,13 +189,12 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         expected_returns = ss.ereturns(self.returns, **self.returns_kw)
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
         weight_bounds = self.weight_bounds
-        optimizer = pypfopt.EfficientFrontier(
+        return pypfopt.EfficientFrontier(
             expected_returns=expected_returns,
             cov_matrix=cov_matrix,
             weight_bounds=weight_bounds,
         )
-        return optimizer
-    
+
     def _get_market_neutral(self):
         return self.market_neutral
 
