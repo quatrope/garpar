@@ -64,19 +64,6 @@ def max_scaler(arr):
     array-like
         The scaled array where each element is divided by the maximum value of
         the input array.
-
-    Notes
-    -----
-    This function uses the `numpy.max` function to find the maximum value in
-    the input array. The input array is then divided element-wise by the
-    maximum value, resulting in a scaled array.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> arr = np.array([1, 2, 3, 4, 5])
-    >>> max_scaler(arr)
-    array([0.2 , 0.4 , 0.6 , 0.8 , 1.  ])
     """
     arr = np.asarray(arr)
     amax = np.max(arr)
@@ -98,20 +85,6 @@ def standar_scaler(arr):
     array-like
         The standardized array where each element is the result of subtracting
         the mean and dividing by the standard deviation of the input array.
-
-    Notes
-    -----
-    This function uses the `numpy.mean` and `numpy.std` functions to calculate
-    the mean and standard deviation of the input array. The input array is then
-    subtracted by the mean and divided element-wise by the standard deviation,
-    resulting in a standardized array.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> arr = np.array([1, 2, 3, 4, 5])
-    >>> standard_scaler(arr)
-    array([-1.41421356, -0.70710678,  0.        ,  0.70710678,  1.41421356])
     """
     arr = np.asarray(arr)
     mu, sigma = np.mean(arr), np.std(arr)
