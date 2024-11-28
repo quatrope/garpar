@@ -87,31 +87,6 @@ def standar_scaler(arr):
     """
     Standardize an array by subtracting the mean and dividing by the standard
     deviation.
-
-    Parameters
-    ----------
-    arr : array-like
-        The input array to be standardized.
-
-    Returns
-    -------
-    array-like
-        The standardized array where each element is the result of subtracting
-        the mean and dividing by the standard deviation of the input array.
-
-    Notes
-    -----
-    This function uses the `numpy.mean` and `numpy.std` functions to calculate
-    the mean and standard deviation of the input array. The input array is then
-    subtracted by the mean and divided element-wise by the standard deviation,
-    resulting in a standardized array.
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> arr = np.array([1, 2, 3, 4, 5])
-    >>> standard_scaler(arr)
-    array([-1.41421356, -0.70710678,  0.        ,  0.70710678,  1.41421356])
     """
     arr = np.asarray(arr)
     mu, sigma = np.mean(arr), np.std(arr)
