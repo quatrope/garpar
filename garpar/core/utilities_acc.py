@@ -161,7 +161,7 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         expected_returns = self.coerce_expected_returns(
             expected_returns, expected_returns_kw
         )
-        return objective_functions.stocks_set_return(
+        return objective_functions.portfolio_return(
             self._ss._weights,
             expected_returns=expected_returns,
             negative=negative,

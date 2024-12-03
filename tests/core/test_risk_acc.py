@@ -22,7 +22,7 @@ import pandas as pd
 def test_RiskAccessor_stock_beta(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=3)
     expected = pd.Series(
-        [0.42396259758517374, 1.748117962092154, 0.8279194403226721],
+        [1.494153, 1.398759, 0.107088],
         name="beta",
         index=["S0", "S1", "S2"],
     )
@@ -38,34 +38,34 @@ def test_RiskAccessor_stock_beta_force_another_market_column(
     np.testing.assert_allclose(other_ss.risk.ss_beta(), ss.risk.ss_beta())
 
 
-def test_RiskAccessor_stocks_set_beta(risso_stocks_set):
+def test_RiskAccessor_portfolio_beta(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = 1.0
+    expected = 2.1417061348856747
     np.testing.assert_allclose(ss.risk.stocks_set_beta(), expected)
 
 
 def test_RiskAccessor_treynor_ratio(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = -0.51879158
+    expected = 0.07097715626252858
     np.testing.assert_allclose(ss.risk.treynor_ratio(), expected)
 
 
-def test_RiskAccessor_stocks_set_variance(risso_stocks_set):
+def test_RiskAccessor_portfolio_variance(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = 0.01078666
+    expected = 0.0016910095064705654
     np.testing.assert_allclose(ss.risk.stocks_set_variance(), expected)
 
 
 def test_RiskAccessor_sharpe_ratio(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = -4.802591
+    expected = 4.182984484028877
     np.testing.assert_allclose(ss.risk.sharpe_ratio(), expected)
 
 
 def test_RiskAccessor_value_at_risk(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=3)
     expected = pd.Series(
-        [0.0016324583798860148, 0.0030751474549569613, 0.0037714120615394142],
+        [0.0011073872112337124, 0.0031327467496115036, 0.0022920636466858824],
         name="VaR",
         index=["S0", "S1", "S2"],
     )

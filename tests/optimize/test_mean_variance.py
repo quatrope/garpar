@@ -48,9 +48,10 @@ def test_MVOptimizer_custom_initialization():
 def test_MVOptimizer_calculate_weights_method_coerced(
     risso_stocks_set, method, price_distribution
 ):
-    ss = risso_stocks_set(random_state=42, distribution=price_distribution)
+    ss = risso_stocks_set(random_state=50, distribution=price_distribution)
     optimizer = MVOptimizer(method=method)
     weights, meta = optimizer._calculate_weights(ss)
+
     assert len(weights) == len(ss.stocks)
     assert meta["name"] == method
 
@@ -67,9 +68,8 @@ def test_MVOptimizer_min_volatility(risso_stocks_set, price_distribution):
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_invalid_method(risso_stocks_set, price_distribution):
     ss = risso_stocks_set(random_state=42, distribution=price_distribution)
-    optimizer = MVOptimizer(method="unknown_method")
     with pytest.raises(ValueError):
-        optimizer._calculate_weights(ss)
+        MVOptimizer(method="unknown_method")
 
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)

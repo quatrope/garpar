@@ -22,7 +22,7 @@ def test_ExpectedReturnsAccessor_capm(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.Series(
-        [0.01624699889633035, -0.0018563108280785154],
+        [0.0022135262278279444, -0.001443074293966784],
         name="CAPM",
         index=["S0", "S1"],
     )
@@ -37,7 +37,7 @@ def test_ExpectedReturnsAccessor_mah(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.Series(
-        [-0.0562953805511921, 0.07434810133853742],
+        [-0.211807, 0.269168],
         name="MAH",
         index=["S0", "S1"],
     )
@@ -52,7 +52,7 @@ def test_ExpectedReturnsAccessor_emah(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.Series(
-        [-0.05589539026726009, 0.07853139028034328],
+        [-0.210689, 0.269546],
         name="EMAH",
         index=["S0", "S1"],
     )

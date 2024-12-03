@@ -58,3 +58,58 @@ def test_proportion_risso_window_size_None():
 
     with pytest.raises(ValueError):
         entropy.risso(prices, window_size=-1)
+
+
+@pytest.mark.parametrize(
+    "window_size, expected_entropy",
+    [
+        (3, [0.9994236129750128, 0.9967406675632541, 0.9984993168833038]),
+        (5, [0.9953467238552131, 0.9900566703717419, 0.9903318205285124]),
+        (7, [0.976574880029047, 0.9639653056779999, 0.976287579514779]),
+    ],
+)
+def test_proportion_risso(risso_stocks_set, window_size, expected_entropy):
+    ss = risso_stocks_set(random_state=42, days=365, stocks=3)
+
+    np.testing.assert_allclose(
+        entropy.risso(ss.as_prices(), window_size=window_size), expected_entropy
+    )
+
+
+def test_proportion_window_size_greater(risso_stocks_set):
+    ss = risso_stocks_set(days=5)
+
+    with pytest.raises(ValueError):
+        entropy.risso(ss.as_prices(), window_size=10)
+
+
+def test_yager_h1(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
+
+    np.testing.assert_almost_equal(
+        entropy.HOne(ss.weights), -3.3923344857821336
+    )
+
+
+def test_yager_hinf(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
+
+    np.testing.assert_almost_equal(
+        entropy.HInf(ss.weights), 0.024377648363244075
+    )
+
+
+def test_yager_one(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
+
+    np.testing.assert_almost_equal(
+        entropy.yagerOne(ss.weights), 4.964303714641588
+    )
+
+
+def test_yager_inf(risso_stocks_set):
+    ss = risso_stocks_set(random_state=42)
+
+    np.testing.assert_almost_equal(
+        entropy.yagerInf(ss.weights), 0.875622351636756
+    )
