@@ -17,14 +17,13 @@ from setuptools import find_packages, setup
 # CONSTANTS
 # =============================================================================
 
-# TODO Separar en dev y release
 REQUIREMENTS = [
     "attrs==23.2.0",
     "build==1.2.1",
     "clarabel==0.8.1",
     "contourpy==1.2.1",
     "custom-inherit==2.4.1",
-    "cvxpy==1.5.1",
+    "cvxpy==1.6.0",
     "cycler==0.12.1",
     "Deprecated==1.2.14",
     "ecos==2.0.13",
@@ -39,7 +38,7 @@ REQUIREMENTS = [
     "methodtools==0.4.7",
     "numpy==1.26.4",
     "osqp==0.6.7",
-    "packaging==24.0",
+    "packaging==24.1",
     "pandas==2.2.2",
     "pillow==10.3.0",
     "PuLP==2.8.0",
@@ -63,20 +62,6 @@ REQUIREMENTS = [
     "wrapt==1.16.0",
     "zipp==3.19.0",
 ]
-
-# TODO ordenar
-# REQUIREMENTS = [
-#     "numpy",
-#     "pandas",
-#     "scipy",
-#     "seaborn",
-#     "matplotlib",
-#     "h5py",
-#     "joblib",
-#     "PyStocksSetOpt",
-#     "scikit-criteria",
-#     "attrs",
-# ]
 
 with open("README.md", "r") as fp:
     LONG_DESCRIPTION = fp.read()

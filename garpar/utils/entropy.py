@@ -91,10 +91,8 @@ def risso(prices, window_size=None, **kwargs):
     -------
     None
     """
-    if not window_size or window_size < 1:
-        raise ValueError("'window_size' must be >= 1")
-    if window_size < prices.shape[1]:
-        raise ValueError("'window_size' must be lower than the total days")
+    if not window_size or window_size < 1 or window_size > prices.shape[0]:
+        raise ValueError("'window_size' must be >= 1 and lower than the total amount of days")
 
     marks = _computeMarks(prices, **kwargs)
 
