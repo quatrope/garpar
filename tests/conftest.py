@@ -20,6 +20,8 @@ import garpar as gp
 
 import numpy as np
 
+import matplotlib
+
 import pytest
 
 # =============================================================================
@@ -73,6 +75,8 @@ def risso_stocks_set_values(risso_stocks_set):
 # =============================================================================
 # CONFIGURATIONS
 # =============================================================================
+
+matplotlib.use("agg")
 
 
 def pytest_configure():
