@@ -243,7 +243,7 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         >>> var = accessor.stocks_set_variance()
         """
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
-        return objective_functions.stocks_set_variance(
+        return objective_functions.portfolio_variance(
             self._ss._weights, cov_matrix=cov_matrix
         )
 

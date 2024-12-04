@@ -52,7 +52,7 @@ def risso_stocks_set():
         random_state = np.random.default_rng(random_state)
         kwargs.setdefault("days", 5)
         kwargs.setdefault("stocks", 10)
-        weights = random_state.random(size=len(ss.weights))
+        weights = random_state.random(size=kwargs["stocks"])
 
         ss = maker(random_state=random_state, weights=weights, **kwargs)
 

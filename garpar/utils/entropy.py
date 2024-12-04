@@ -101,28 +101,23 @@ def risso(prices, window_size=None, **kwargs):
     for i in range(prices.shape[1]):
         asset_marks = marks[:, i]
 
-        # Sacamos todas las secuencias de window_size dias
         sequences = [
             tuple(asset_marks[i : i + window_size])
             for i in range(len(asset_marks) - window_size + 1)
         ]
 
-        # Calculo las frecuencias que aparecen al menos una vez
         sequence_counts = {}
         for seq in sequences:
             sequence_counts[seq] = sequence_counts.get(seq, 0) + 1
 
         total_sequences = len(sequences)
 
-        # N_0 cantidad de secuencias con frecuencia > 0
         N_0 = len(sequence_counts)
 
-        # (Veces que aparece)/(Total secuencias) para sacar probabilidad de esa secuencia
         probabilities = (
             np.array(list(sequence_counts.values())) / total_sequences
         )
 
-        # H(l) per se
         entropy = (
             -np.sum(probabilities * np.log2(probabilities)) / np.log2(N_0)
             if N_0 > 1
@@ -159,7 +154,7 @@ def yagerOne(weights):
     n = len(weights)
     weights = np.asarray(weights)
 
-    return (sum((weights - 1 / n) ** p)) ** (1 / p)
+    return sum(weights - 1 / n)
 
 
 def yagerInf(weigths):

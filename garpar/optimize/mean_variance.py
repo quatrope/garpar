@@ -127,7 +127,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     def _check_method(self, attribute, value):
         method_func = MV_OPTIMIZATION_METHODS.get(value, value)
         if not callable(method_func):
-            raise ValueError("'method' don't look like a method")
+            raise ValueError("'method' doesn't look like a method")
 
     def _get_optimizer(self, ss):
         expected_returns = ss.ereturns(self.returns, **self.returns_kw)
@@ -170,7 +170,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     def _calculate_weights(self, ss):
         optimizer = self._get_optimizer(ss)
         method_func = MV_OPTIMIZATION_METHODS.get(self.method, self.method)
-        return method_func(instance=self, otimizer=optimizer, ss=ss)
+        return method_func(instance=self, optimizer=optimizer, ss=ss)
 
 
 # =============================================================================
