@@ -10,6 +10,8 @@
 -------------------------------------------
 ## Pasos para correr el proyecto
 
+Primero se debera tener instalado cmake, cualquier otro problema de dependencias fuera de los de python estan contemplados por el usuario que instala Garpar
+
 `git clone git@github.com:quatrope/garpar.git`
 
 Luego de clonar el repositorio:
