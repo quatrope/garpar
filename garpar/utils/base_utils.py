@@ -111,7 +111,7 @@ class Bunch(Mapping):
     def __dir__(self):
         """x.__dir__() <==> dir(x)."""
         return super().__dir__() + list(self._data)
-    
+
     def to_dict(self):
         """
         Convert the Bunch object to a dictionary.
@@ -187,6 +187,7 @@ class AccessorABC(abc.ABC):
 # =============================================================================
 # TEMPORAL HEADER
 # =============================================================================
+
 
 @contextlib.contextmanager
 def df_temporal_header(df, header, name=None):

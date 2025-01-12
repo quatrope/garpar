@@ -11,11 +11,10 @@ import attr
 
 import numpy as np
 
-# import scipy.stats
-
 from sklearn.decomposition import PCA
 
 from . import _mixins
+
 from ..utils import accabc
 
 # =============================================================================
