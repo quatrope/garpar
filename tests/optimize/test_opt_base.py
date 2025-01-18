@@ -10,14 +10,7 @@
 # IMPORTS
 # =============================================================================
 
-
-from garpar import StocksSet
-
-from garpar.optimize.opt_base import OptimizerABC, MeanVarianceFamilyMixin
-
-import numpy as np
-
-import pandas as pd
+from garpar.optimize.opt_base import MeanVarianceFamilyMixin, OptimizerABC
 
 import pytest
 
@@ -42,7 +35,9 @@ def test_optimizerabc_family_not_string():
     """Test that an error is raised if 'family' is not a string."""
 
     with pytest.raises(
-        TypeError, match="'InvalidOptimizer.family' must be redefined as string"
+        TypeError,
+        # fmt: off
+        match="'InvalidOptimizer.family' must be redefined as string"
     ):
 
         class InvalidOptimizer(OptimizerABC):

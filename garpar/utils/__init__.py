@@ -15,7 +15,7 @@
 # IMPORTS
 # =============================================================================
 
-from . import entropy, mabc, scalers, accabc
+from . import accabc, entropy, mabc, scalers
 from .base_utils import Bunch, df_temporal_header, unique_names
 
 # =============================================================================

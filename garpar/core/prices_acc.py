@@ -11,8 +11,6 @@ import attr
 
 import numpy as np
 
-import pandas as pd
-
 from ..utils import accabc
 
 # =============================================================================
@@ -39,7 +37,8 @@ class PricesAccessor(accabc.AccessorABC):
     _GARPAR_WHITELIST : list of str
         A list of allowable custom methods.
     _WHITELIST : list of str
-        A combined list of allowable methods from _DF_WHITELIST and _GARPAR_WHITELIST.
+        A combined list of allowable methods from _DF_WHITELIST and
+        _GARPAR_WHITELIST.
 
     Methods
     -------

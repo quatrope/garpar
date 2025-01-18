@@ -13,7 +13,7 @@
 from io import BytesIO
 
 from garpar.core.stocks_set import StocksSet
-from garpar.io import read_hdf5
+from garpar.garpar_io import read_hdf5
 
 import numpy as np
 

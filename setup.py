@@ -82,10 +82,12 @@ with open(GARPAR_INIT_PATH, "r") as f:
 setup(
     name="garpar",
     version=VERSION,
-    description="Generation and Analysis of Artificial and Real Portfolio Returns",
+    description="""Generation and Analysis of Artificial and Real
+                   Portfolio Returns""",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    author="Diego N Gimenez Irusta, Nadia Luczywo, Juan B Cabral & Trinchi Chalela",
+    author="""Diego N Gimenez Irusta, Nadia Luczywo, Juan B Cabral &
+              Trinchi Chalela""",
     author_email="diego.gimenez@unc.edu.ar",
     url="https://github.com/quatrope/garpar",
     license="The MIT License",

@@ -39,9 +39,11 @@ class StocksSetMakerABC(mabc.ModelABC):
     Methods
     -------
     __init_subclass__()
-        Checks the signature of make_stocks_set method against _MKPORT_SIGNATURE.
+        Checks the signature of make_stocks_set method against
+        _MKPORT_SIGNATURE.
 
-    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100, weights=None)
+    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100,
+                    weights=None)
         Abstract method to create a stocks set.
     """
 
@@ -55,12 +57,14 @@ class StocksSetMakerABC(mabc.ModelABC):
     }
 
     def __init_subclass__(cls):
-        """Ensure that the make_stocks_set method in subclasses conforms to _MKPORT_SIGNATURE.
+        """Ensure that the make_stocks_set method in subclasses conforms to
+        _MKPORT_SIGNATURE.
 
         Raises
         ------
         TypeError
-            If make_stocks_set method signature does not match _MKPORT_SIGNATURE.
+            If make_stocks_set method signature does not match
+            _MKPORT_SIGNATURE.
         """
         mpsig = inspect.signature(cls.make_stocks_set)
         missing_args = cls._MKPORT_SIGNATURE.difference(mpsig.parameters)
@@ -121,28 +125,6 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         Number of jobs to run in parallel. If None, 1 job is run.
     verbose : int, default=0
         Verbosity level.
-
-    Methods
-    -------
-    get_window_loss_probability(window_size, entropy)
-        Abstract method to calculate the loss probability for a given window size and entropy.
-    make_stock_price(price, loss, random)
-        Abstract method to calculate the stock price based on initial price, loss, and random generator.
-    _coerce_price(stocks, prices)
-        Coerces the initial prices into an array of float values.
-    _make_stocks_seeds(stocks)
-        Generate seeds for random number generation for each stock.
-    _make_loss_sequence(days, loss_probability, random)
-        Generate a sequence of losses based on the given loss probability.
-    _make_stock(days, loss_probability, stock_idx, initial_price, random)
-        Generate a DataFrame for a single stock with random prices based on loss sequence.
-    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100, weights=None)
-        Create a stocks set of stocks with random prices and specified parameters.
-
-    Notes
-    -----
-    This class extends StocksSetMakerABC and provides methods to generate random
-    stocks sets based on entropy and loss probabilities.
     """
 
     # HYPERS ================================================================
@@ -153,11 +135,12 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
     n_jobs = mabc.hparam(default=None)
     verbose = mabc.hparam(default=0)
 
-    # ABSTRACT =================================================================
+    # ABSTRACT ==============================================================
 
     @mabc.abstractmethod
     def get_window_loss_probability(self, window_size, entropy):
-        """Abstract method to calculate the loss probability for a given window size and entropy.
+        """Abstract method to calculate the loss probability for a given window
+        size and entropy.
 
         Parameters
         ----------
@@ -180,7 +163,8 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
 
     @mabc.abstractmethod
     def make_stock_price(self, price, loss, random):
-        """Abstract method to calculate the stock price based on initial price, loss, and random generator.
+        """Abstract method to calculate the stock price based on initial price,
+        loss, and random generator.
 
         Parameters
         ----------
@@ -270,7 +254,8 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         Returns
         -------
         numpy.ndarray
-            Boolean array indicating loss (True) or no loss (False) on each day.
+            Boolean array indicating loss (True) or no loss (False) on each
+            day.
         """
         win_probability = 1.0 - loss_probability
 
@@ -300,7 +285,8 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         initial_price,
         random,
     ):
-        """Generate a DataFrame for a single stock with random prices based on loss sequence.
+        """Generate a DataFrame for a single stock with random prices based on
+        loss sequence.
 
         Parameters
         ----------
@@ -321,7 +307,9 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
             DataFrame containing the stock prices for each day.
         """
         # determinamos que dia se pierde y que dia se gana
-        loss_sequence = self._make_loss_sequence(days, loss_probability, random)
+        # fmt: off
+        loss_sequence = self._make_loss_sequence(days, loss_probability,
+                                                 random)
 
         # fijamos el primer precio como el precio orginal
         current_price = initial_price
@@ -351,7 +339,8 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         price=100,
         weights=None,
     ):
-        """Create a stocks set of stocks with random prices and specified parameters.
+        """Create a stocks set of stocks with random prices and specified
+        parameters.
 
         Parameters
         ----------

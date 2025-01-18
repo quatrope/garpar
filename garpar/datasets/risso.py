@@ -18,8 +18,8 @@ import numpy as np
 import scipy.stats
 
 from .ds_base import RandomEntropyStocksSetMakerABC
+from .. import __EPSILON__
 from ..utils import mabc
-from .. import EPSILON
 
 
 # =============================================================================
@@ -87,15 +87,6 @@ class RissoMixin:
         Number of parallel jobs to run. Default is None.
     verbose : int, optional
         Verbosity level. Default is 0.
-
-    Methods
-    -------
-    generate_loss_probabilities(window_size)
-        Calculate candidate entropies and corresponding loss probabilities.
-
-    get_window_loss_probability(window_size, entropy)
-        Get the loss probability that corresponds to the nearest candidate
-        entropy value to the target entropy.
     """
 
     def generate_loss_probabilities(self, window_size, eps=None):
@@ -117,7 +108,7 @@ class RissoMixin:
         """
         # Se corrigen probabilidades porque el cálculo de la entropía trabaja
         # con logaritmo y el logaritmo de cero no puede calcularse
-        epsilon = EPSILON if eps is None else eps
+        epsilon = __EPSILON__ if eps is None else eps
 
         loss_probability = np.linspace(
             epsilon, 1.0 - epsilon, num=window_size + 1
@@ -125,7 +116,9 @@ class RissoMixin:
 
         # Calcula entropy
         first_part = loss_probability * np.log2(loss_probability)
-        second_part = (1.0 - loss_probability) * np.log2(1.0 - loss_probability)
+        # fmt: off
+        second_part = ((1.0 - loss_probability) *
+                       np.log2(1.0 - loss_probability))
 
         modificated_entropy = -1.0 * (first_part + second_part)
         return modificated_entropy, loss_probability
@@ -151,7 +144,8 @@ class RissoMixin:
         Example
         --------
         If we run this function with window_size=3 and entropy=.99
-        >>> # Example with a sliding window size of 3 and target entropy of 0.99
+        >>> # Example with a sliding window size of 3 and target entropy
+            # of 0.99
         >>> get_window_loss_probability(window_size=3, entropy=0.99)
         We get the following data
         Candidates
@@ -173,8 +167,10 @@ class RissoMixin:
 
 
 # =============================================================================
-# NORMAL
+# UNIFORM
 # =============================================================================
+
+
 class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     """
     Implementation of a portfolio maker using a uniform distribution for
@@ -192,13 +188,6 @@ class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     high : float, optional
         Upper bound of the uniform distribution for daily returns.
         Default is 5.0.
-
-    Methods
-    -------
-    make_stock_price(price, loss, random)
-        Calculate the new stock price based on the current price, loss flag,
-        and a random
-        number generator following a uniform distribution.
 
     Notes
     -----
@@ -295,6 +284,8 @@ def make_risso_uniform(
 # =============================================================================
 # NORMAL
 # =============================================================================
+
+
 class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     """
     StocksSet maker implementing a stochastic model with normal

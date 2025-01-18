@@ -39,7 +39,8 @@ class CovarianceAccessor(accabc.AccessorABC):
     semi_cov(**kwargs)
         Compute the semi-covariance matrix.
     ledoit_wolf_cov(shrinkage_target="constant_variance", **kwargs)
-        Compute the Ledoit-Wolf covariance matrix with optional shrinkage target.
+        Compute the Ledoit-Wolf covariance matrix with optional shrinkage
+        target.
     oracle_approximating_cov(**kwargs)
         Compute the Oracle-approximating covariance matrix.
     """
@@ -88,7 +89,8 @@ class CovarianceAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `risk_models.semicovariance`.
+            Additional keyword arguments passed to
+            `risk_models.semicovariance`.
 
         Returns
         -------
@@ -100,14 +102,17 @@ class CovarianceAccessor(accabc.AccessorABC):
         )
 
     def ledoit_wolf_cov(self, shrinkage_target="constant_variance", **kwargs):
-        """Compute the Ledoit-Wolf covariance matrix with optional shrinkage target.
+        """Compute the Ledoit-Wolf covariance matrix with optional
+        shrinkage target.
 
         Parameters
         ----------
         shrinkage_target : str, optional
-            Shrinkage target for Ledoit-Wolf covariance estimation, default is "constant_variance".
+            Shrinkage target for Ledoit-Wolf covariance estimation, default is
+            "constant_variance".
         **kwargs
-            Additional keyword arguments passed to `risk_models.CovarianceShrinkage.ledoit_wolf`.
+            Additional keyword arguments passed to
+            `risk_models.CovarianceShrinkage.ledoit_wolf`.
 
         Returns
         -------
@@ -125,7 +130,8 @@ class CovarianceAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `risk_models.CovarianceShrinkage.oracle_approximating`.
+            Additional keyword arguments passed to
+            `risk_models.CovarianceShrinkage.oracle_approximating`.
 
         Returns
         -------
@@ -173,7 +179,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.sample_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.sample_cov`.
 
         Returns
         -------
@@ -189,7 +196,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.exp_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.exp_cov`.
 
         Returns
         -------
@@ -205,7 +213,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.semi_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.semi_cov`.
 
         Returns
         -------
@@ -221,7 +230,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.ledoit_wolf_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.ledoit_wolf_cov`.
 
         Returns
         -------
@@ -237,7 +247,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.oracle_approximating_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.oracle_approximating_cov`.
 
         Returns
         -------

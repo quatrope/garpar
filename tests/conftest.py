@@ -18,9 +18,9 @@
 
 import garpar as gp
 
-import numpy as np
-
 import matplotlib
+
+import numpy as np
 
 import pytest
 

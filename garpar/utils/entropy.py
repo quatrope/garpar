@@ -7,15 +7,13 @@
 
 """Entropy."""
 
-from collections import Counter
+import warnings
 
 import numpy as np
 
 import pypfopt
 
 from scipy import stats
-
-import warnings
 
 
 def _computeMarks(prices, **kwargs):
@@ -93,7 +91,8 @@ def risso(prices, window_size=None, **kwargs):
     """
     if not window_size or window_size < 1 or window_size > prices.shape[0]:
         raise ValueError(
-            "'window_size' must be >= 1 and lower than the total amount of days"
+            """'window_size' must be >= 1 and lower than the total amount
+                of days"""
         )
 
     marks = _computeMarks(prices, **kwargs)
@@ -104,7 +103,8 @@ def risso(prices, window_size=None, **kwargs):
         asset_marks = marks[:, i]
 
         sequences = [
-            tuple(asset_marks[i : i + window_size])
+            # fmt: off
+            tuple(asset_marks[i: i + window_size])
             for i in range(len(asset_marks) - window_size + 1)
         ]
 

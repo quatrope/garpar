@@ -8,8 +8,8 @@
 
 """Different utilities to create or load stocks sets."""
 
-from .ds_base import StocksSetMakerABC, RandomEntropyStocksSetMakerABC
 from .data import load_MERVAL
+from .ds_base import RandomEntropyStocksSetMakerABC, StocksSetMakerABC
 from .multisector import MultiSector, make_multisector
 from .risso import (
     RissoLevyStable,

@@ -14,7 +14,6 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 from . import _mixins
-
 from ..utils import accabc
 
 # =============================================================================
@@ -39,8 +38,9 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Calculate the diversification ratio.
     mrc(covariance="sample_cov", covariance_kw=None)
         Calculate the marginal risk contribution.
-    pdi(n_components=None, whiten=False, svd_solver="auto", tol=0.0, iterated_power="auto",
-        n_oversamples=10, power_iteration_normalizer="auto", random_state=None)
+    pdi(n_components=None, whiten=False, svd_solver="auto", tol=0.0,
+        iterated_power="auto", n_oversamples=10,
+        power_iteration_normalizer="auto", random_state=None)
         Calculate the stocks set diversification index.
     zheng_entropy()
         Calculate Zheng's entropy.
@@ -60,7 +60,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default "sample_cov".
+            The method to compute the covariance matrix,
+            by default "sample_cov".
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method.
 
@@ -88,7 +89,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default "sample_cov".
+            The method to compute the covariance matrix,
+            by default "sample_cov".
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method.
 
@@ -147,7 +149,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         power_iteration_normalizer : str, optional
             Normalizer for power iterations, by default "auto".
         random_state : int, RandomState instance or None, optional
-            Seed or random number generator for reproducibility, by default None.
+            Seed or random number generator for reproducibility,
+            by default None.
 
         Returns
         -------
@@ -222,7 +225,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default "sample_cov".
+            The method to compute the covariance matrix,
+            by default "sample_cov".
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method.
 
@@ -242,22 +246,3 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         entropy = self.zheng_entropy()
 
         return ss_var + entropy
-
-    # def delta(self, *, diffentropy_kw=None):
-    #     weights = self._ss.scale_weights().weights
-    #     returns = self._ss.as_returns()
-
-    #     diffentropy_kw = {} if diffentropy_kw is None else diffentropy_kw
-    #     X_diff_entropy = scipy.stats.differential_entropy(returns)
-
-    #     exp_wH = np.exp(np.sum(weights * X_diff_entropy))
-
-    #     wX_diff_entropy = scipy.stats.differential_entropy(
-    #         np.sum(weights * returns)
-    #     )
-
-    #     exp_HwX = np.exp(wX_diff_entropy)
-
-    #     ddi = (exp_wH - exp_HwX) / exp_wH
-
-    #     return ddi

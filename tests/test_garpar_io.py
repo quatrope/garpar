@@ -12,7 +12,7 @@
 
 from io import BytesIO
 
-from garpar import StocksSet, io
+from garpar import StocksSet, garpar_io
 
 import pandas as pd
 
@@ -35,8 +35,8 @@ def test_StocksSet_to_hdf5_read_hdf5():
     )
 
     buff = BytesIO()
-    io.to_hdf5(buff, ss)
+    garpar_io.to_hdf5(buff, ss)
     buff.seek(0)
-    result = io.read_hdf5(buff)
+    result = garpar_io.read_hdf5(buff)
 
     assert ss == result

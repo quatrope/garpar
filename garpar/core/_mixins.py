@@ -15,8 +15,8 @@ import pandas as pd
 class CoercerMixin:
     """A mixin class that contains utility methods for various accessors.
 
-    This class provides methods to coerce expected returns, weights, and covariance
-    matrices into desired formats.
+    This class provides methods to coerce expected returns, weights, and
+    covariance matrices into desired formats.
 
     Attributes
     ----------
@@ -59,11 +59,14 @@ class CoercerMixin:
         Examples
         --------
         >>> mixin = CoercerMixin()
-        >>> er = mixin.coerce_expected_returns("capm", kw={"risk_free_rate": 0.02})
+        >>> er = mixin.coerce_expected_returns("capm",
+                                               kw={"risk_free_rate": 0.02})
         """
         if isinstance(expected_returns, str):
             kw = {} if kw is None else kw
-            expected_returns = self._ss.ereturns(expected_returns.lower(), **kw)
+            # fmt: off
+            expected_returns = self._ss.ereturns(expected_returns.lower(),
+                                                 **kw)
         return np.asarray(expected_returns) if asarray else expected_returns
 
     def coerce_weights(self, weights, asarray=True):
@@ -72,7 +75,8 @@ class CoercerMixin:
         Parameters
         ----------
         weights : None, StocksSet, or array-like
-            The weights specification or values. If None, equal weights are assigned.
+            The weights specification or values. If None, equal weights are
+            assigned.
         asarray : bool, optional
             Whether to return the result as a numpy array, by default True.
 
@@ -124,7 +128,8 @@ class CoercerMixin:
         Examples
         --------
         >>> mixin = CoercerMixin()
-        >>> cov = mixin.coerce_covariance_matrix("sample_cov", kw={"min_periods": 1})
+        >>> cov = mixin.coerce_covariance_matrix("sample_cov",
+                                                 kw={"min_periods": 1})
         """
         if isinstance(cov_matrix, str):
             kw = {} if kw is None else kw

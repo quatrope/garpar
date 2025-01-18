@@ -23,9 +23,9 @@ from ..utils import accabc
 class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
     """Accessor for various utility and performance metrics.
 
-    The UtilitiesAccessor class provides methods to compute ex-ante tracking error,
-    ex-post tracking error, stocks set return, and quadratic utility for a given
-    stocks set.
+    The UtilitiesAccessor class provides methods to compute ex-ante tracking
+    error, ex-post tracking error, stocks set return, and quadratic utility
+    for a given stocks set.
 
     Attributes
     ----------
@@ -33,17 +33,6 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         The default kind of performance measure, default is "ss_return".
     _ss : attr.ib
         The StocksSet object containing weights and other attributes.
-
-    Methods
-    -------
-    ex_ante_tracking_error(covariance='sample_cov', covariance_kw=None, benchmark_weights=None):
-        Computes the ex-ante tracking error of the stocks set.
-    ex_post_tracking_error(historic_returns='capm', benchmark_returns='capm', historic_returns_kw=None, benchmark_returns_kw=None):
-        Computes the ex-post tracking error of the stocks set.
-    stocks_set_return(expected_returns='capm', expected_returns_kw=None, negative=True):
-        Computes the expected return of the stocks set.
-    quadratic_utility(expected_returns='capm', covariance='sample_cov', risk_aversion=0.5, expected_returns_kw=None, covariance_kw=None, **kwargs):
-        Computes the quadratic utility of the stocks set.
     """
 
     _default_kind = "ss_return"
@@ -62,9 +51,11 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default 'sample_cov'.
+            The method to compute the covariance matrix,
+            by default 'sample_cov'.
         covariance_kw : dict, optional
-            Additional keyword arguments for the covariance method, by default None.
+            Additional keyword arguments for the covariance method,
+            by default None.
         benchmark_weights : array-like, optional
             The weights of the benchmark stocks set, by default None.
 
@@ -104,9 +95,11 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         benchmark_returns : str, optional
             The method to compute the benchmark returns, by default 'capm'.
         historic_returns_kw : dict, optional
-            Additional keyword arguments for the historic returns method, by default None.
+            Additional keyword arguments for the historic returns method,
+            by default None.
         benchmark_returns_kw : dict, optional
-            Additional keyword arguments for the benchmark returns method, by default None.
+            Additional keyword arguments for the benchmark returns method,
+            by default None.
 
         Returns
         -------
@@ -144,9 +137,11 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         expected_returns : str, optional
             The method to compute the expected returns, by default 'capm'.
         expected_returns_kw : dict, optional
-            Additional keyword arguments for the expected returns method, by default None.
+            Additional keyword arguments for the expected returns method,
+            by default None.
         negative : bool, optional
-            Whether to return the negative of the expected return, by default True.
+            Whether to return the negative of the expected return,
+            by default True.
 
         Returns
         -------
@@ -186,13 +181,16 @@ class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         expected_returns : str, optional
             The method to compute the expected returns, by default 'capm'.
         covariance : str, optional
-            The method to compute the covariance matrix, by default 'sample_cov'.
+            The method to compute the covariance matrix,
+            by default 'sample_cov'.
         risk_aversion : float, optional
             The risk aversion coefficient, by default 0.5.
         expected_returns_kw : dict, optional
-            Additional keyword arguments for the expected returns method, by default None.
+            Additional keyword arguments for the expected returns method,
+            by default None.
         covariance_kw : dict, optional
-            Additional keyword arguments for the covariance method, by default None.
+            Additional keyword arguments for the covariance method,
+            by default None.
         **kwargs
             Additional keyword arguments.
 

@@ -25,8 +25,9 @@ from ..utils import accabc
 class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
     """Accessor for various risk metrics.
 
-    The RiskAccessor class provides methods to compute stock and stocks set betas,
-    Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk (VaR).
+    The RiskAccessor class provides methods to compute stock and stocks set
+    betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at
+    Risk (VaR).
 
     Attributes
     ----------
@@ -41,11 +42,13 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Computes the beta of individual stocks in the stocks_set.
     stocks_set_beta(benchmark_weights=None, log_returns=False)
         Computes the beta of the entire stocks_set.
-    treynor_ratio(expected_returns='capm', expected_returns_kw=None, negative=True, benchmark_weights=None, log_returns=False)
+    treynor_ratio(expected_returns='capm', expected_returns_kw=None,
+                  negative=True, benchmark_weights=None, log_returns=False)
         Computes the Treynor ratio of the stocks_set.
     stocks_set_variance(covariance='sample_cov', covariance_kw=None)
         Computes the variance of the stocks_set.
-    sharpe_ratio(expected_returns='capm', covariance='sample_cov', expected_returns_kw=None, covariance_kw=None, **kwargs)
+    sharpe_ratio(expected_returns='capm', covariance='sample_cov',
+                 expected_returns_kw=None, covariance_kw=None, **kwargs)
         Computes the Sharpe ratio of the stocks_set.
     value_at_risk(alpha=0.05)
         Computes the Value at Risk (VaR) of the stocks_set.
@@ -68,7 +71,8 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         tuple
-            A tuple containing the returns DataFrame and the market column name.
+            A tuple containing the returns DataFrame and the market
+            column name.
         """
         prices = self._ss._prices_df
         market_returns = None
@@ -193,9 +197,11 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         expected_returns : str, optional
             The method to compute the expected returns, by default 'capm'.
         expected_returns_kw : dict, optional
-            Additional keyword arguments for the expected returns method, by default None.
+            Additional keyword arguments for the expected returns method,
+            by default None.
         negative : bool, optional
-            Whether to return the negative of the Treynor ratio, by default True.
+            Whether to return the negative of the Treynor ratio,
+            by default True.
         benchmark_weights : array-like, optional
             The weights of the benchmark stocks set, by default None.
         log_returns : bool, optional
@@ -228,9 +234,11 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default 'sample_cov'.
+            The method to compute the covariance matrix,
+            by default 'sample_cov'.
         covariance_kw : dict, optional
-            Additional keyword arguments for the covariance method, by default None.
+            Additional keyword arguments for the covariance method,
+            by default None.
 
         Returns
         -------
@@ -264,13 +272,17 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         expected_returns : str, optional
-            The method to compute the expected returns, by default 'capm'.
+            The method to compute the expected returns,
+            by default 'capm'.
         covariance : str, optional
-            The method to compute the covariance matrix, by default 'sample_cov'.
+            The method to compute the covariance matrix,
+            by default 'sample_cov'.
         expected_returns_kw : dict, optional
-            Additional keyword arguments for the expected returns method, by default None.
+            Additional keyword arguments for the expected returns method,
+            by default None.
         covariance_kw : dict, optional
-            Additional keyword arguments for the covariance method, by default None.
+            Additional keyword arguments for the covariance method,
+            by default None.
         **kwargs
             Additional keyword arguments.
 

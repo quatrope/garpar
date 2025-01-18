@@ -12,16 +12,13 @@
 
 
 from garpar import StocksSet
-
 from garpar.optimize.mean_variance import MVOptimizer, Markowitz
-
-import pypfopt
-
-from garpar import datasets
 
 import numpy as np
 
 import pandas as pd
+
+import pypfopt
 
 import pytest
 
@@ -67,7 +64,7 @@ def test_MVOptimizer_min_volatility(risso_stocks_set, price_distribution):
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_invalid_method(risso_stocks_set, price_distribution):
-    ss = risso_stocks_set(random_state=42, distribution=price_distribution)
+    risso_stocks_set(random_state=42, distribution=price_distribution)
     with pytest.raises(ValueError):
         MVOptimizer(method="unknown_method")
 

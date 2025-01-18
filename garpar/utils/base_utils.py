@@ -21,7 +21,6 @@ import contextlib
 import copy
 from collections import Counter
 from collections.abc import Mapping
-import inspect
 
 
 # =============================================================================

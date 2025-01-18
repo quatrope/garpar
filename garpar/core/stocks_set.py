@@ -56,13 +56,16 @@ def _as_float_array(arr):
 @attr.s(repr=False, cmp=False)
 class StocksSet:
     """
-    Represents a financial stocks set with utilities for analysis and manipulation.
+    Represents a financial stocks set with utilities for analysis and
+    manipulation.
     """
 
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=_as_float_array)
     _entropy = attr.ib(converter=_as_float_array)
-    _window_size = attr.ib(converter=lambda v: (None if pd.isna(v) else int(v)))
+    # fmt: off
+    _window_size = attr.ib(converter=lambda v: (None if pd.isna(v)
+                                                else int(v)))
     _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
 
     # accessors
@@ -121,7 +124,8 @@ class StocksSet:
         Raises
         ------
         ValueError
-            If the number of weights or entropy values does not match the number of stocks.
+            If the number of weights or entropy values does not match the
+            number of stocks.
         """
         stocks_number = self.stocks_number
 
@@ -148,7 +152,8 @@ class StocksSet:
         stocks=None,
         **metadata,
     ):
-        """Alternative constructor to create a StocksSet instance from various inputs.
+        """Alternative constructor to create a StocksSet instance from various
+        inputs.
 
         Parameters
         ----------
@@ -423,7 +428,8 @@ class StocksSet:
             self._window_size if window_size is None else window_size
         )
 
-        new_metadata = self._metadata.to_dict() if preserve_old_metadata else {}
+        new_metadata = (self._metadata.to_dict() if preserve_old_metadata
+                        else {})
         new_metadata.update(metadata)
 
         new_ss = self.from_dfkws(
@@ -451,9 +457,9 @@ class StocksSet:
         -------
         None
         """
-        from .. import io
+        from .. import garpar_io
 
-        return io.to_hdf5(stream_or_buff, self, **kwargs)
+        return garpar_io.to_hdf5(stream_or_buff, self, **kwargs)
 
     def to_dataframe(self):
         """Convert the StocksSet object to a pandas DataFrame.
@@ -488,7 +494,8 @@ class StocksSet:
         return df
 
     def as_returns(self, **kwargs):
-        """Convert prices to returns using PyStocksSetOpt's expected_returns module.
+        """Convert prices to returns using PyStocksSetOpt's expected_returns
+        module.
 
         Parameters
         ----------
@@ -703,7 +710,8 @@ class StocksSet:
         return dim
 
     def __repr__(self):
-        """Return a string representation of the StocksSet. Mainly for Jupyter notebooks.
+        """Return a string representation of the StocksSet. Mainly for Jupyter
+        notebooks.
 
         Returns
         -------

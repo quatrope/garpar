@@ -9,13 +9,13 @@
 
 import attr
 
-from .opt_base import OptimizerABC, MeanVarianceFamilyMixin
-
-from ..utils import mabc
-
 import numpy as np
 
 import pypfopt
+
+from .opt_base import MeanVarianceFamilyMixin, OptimizerABC
+from ..utils import mabc
+
 
 # =============================================================================
 # MVOptimizer

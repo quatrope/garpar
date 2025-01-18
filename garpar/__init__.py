@@ -13,10 +13,10 @@
 
 __version__ = "1.0"
 
-EPSILON = 1e-9
+__EPSILON__ = 1e-9
 
-from . import datasets, io, optimize
+from . import datasets, garpar_io, optimize
 from .core import StocksSet
 
 
-__all__ = ["StocksSet", "datasets", "io", "optimize", "EPSILON"]
+__all__ = ["StocksSet", "datasets", "garpar_io", "optimize", "__EPSILON__"]
