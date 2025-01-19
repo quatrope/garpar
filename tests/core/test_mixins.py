@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test _mixins module."""
 
 # =============================================================================
 # IMPORTS

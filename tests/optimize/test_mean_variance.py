@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test mean variance module."""
 
 # =============================================================================
 # IMPORTS
@@ -28,6 +29,7 @@ import pytest
 
 
 def test_MVOptimizer_default_initialization():
+    """Test MVOptimizer default initialization."""
     optimizer = MVOptimizer()
     assert optimizer.method == "max_sharpe"
     assert optimizer.weight_bounds == (0, 1)
@@ -35,6 +37,7 @@ def test_MVOptimizer_default_initialization():
 
 
 def test_MVOptimizer_custom_initialization():
+    """Test MVOptimizer custom initialization."""
     optimizer = MVOptimizer(method="min_volatility", weight_bounds=(-1, 1))
     assert optimizer.method == "min_volatility"
     assert optimizer.weight_bounds == (-1, 1)
@@ -45,6 +48,7 @@ def test_MVOptimizer_custom_initialization():
 def test_MVOptimizer_calculate_weights_method_coerced(
     risso_stocks_set, method, price_distribution
 ):
+    """Test MVOptimizer calculate weights method coerced."""
     ss = risso_stocks_set(random_state=50, distribution=price_distribution)
     optimizer = MVOptimizer(method=method)
     weights, meta = optimizer._calculate_weights(ss)
@@ -55,6 +59,7 @@ def test_MVOptimizer_calculate_weights_method_coerced(
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_min_volatility(risso_stocks_set, price_distribution):
+    """Test MVOptimizer min volatility model."""
     ss = risso_stocks_set(random_state=42, distribution=price_distribution)
     optimizer = MVOptimizer(method="min_volatility")
     weights, meta = optimizer._calculate_weights(ss)
@@ -64,6 +69,7 @@ def test_MVOptimizer_min_volatility(risso_stocks_set, price_distribution):
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_invalid_method(risso_stocks_set, price_distribution):
+    """Test MVOptimizer invalid model."""
     risso_stocks_set(random_state=42, distribution=price_distribution)
     with pytest.raises(ValueError):
         MVOptimizer(method="unknown_method")
@@ -71,6 +77,7 @@ def test_MVOptimizer_invalid_method(risso_stocks_set, price_distribution):
 
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_MVOptimizer_get_optimizer(risso_stocks_set, price_distribution):
+    """Test MVOptimizer get optimizer."""
     ss = risso_stocks_set(random_state=42, distribution=price_distribution)
     optimizer = MVOptimizer()
     assert (
@@ -88,6 +95,7 @@ def test_MVOptimizer_get_optimizer(risso_stocks_set, price_distribution):
     ],
 )
 def test_MVOptimizer_coerce_volatility(volatiliy, price_distribution):
+    """Test MVOptimizer coerce volatility."""
     ss = price_distribution(random_state=43)
     optimizer = MVOptimizer(method="max_sharpe")
     coerced_volatility = optimizer._coerce_target_volatility(ss)
@@ -100,6 +108,7 @@ def test_MVOptimizer_coerce_volatility(volatiliy, price_distribution):
 
 
 def test_Markowitz_optimize():
+    """Test Markowitz optimizer."""
     ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
@@ -132,6 +141,7 @@ def test_Markowitz_optimize():
 
 
 def test_Markowitz_optimize_default_target_return():
+    """Test Markowitz optimize default target return."""
     ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {

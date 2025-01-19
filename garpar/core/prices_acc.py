@@ -165,6 +165,7 @@ class PricesAccessor(accabc.AccessorABC):
         return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)
 
     def mean_tendency_size(self):
+        """Compute the mean tendency size."""
 
         def count_consecutive(stock_groups):
             # Calculate the size of each consecutive group

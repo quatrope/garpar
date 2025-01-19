@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test PricesAccessor module."""
 
 # =============================================================================
 # IMPORTS
@@ -26,6 +27,7 @@ import pytest
 
 @pytest.mark.parametrize("metric", prices_acc.PricesAccessor._DF_WHITELIST)
 def test_PricesAccessor_df_whitelist(risso_stocks_set, metric):
+    """Test PricesAccessor df_whitelist."""
     ss = risso_stocks_set(random_state=42, stocks=2)
     result_call = ss.prices(metric)
     result_getattr = getattr(ss.prices, metric)()
@@ -42,12 +44,14 @@ def test_PricesAccessor_df_whitelist(risso_stocks_set, metric):
 
 
 def test_PricesAccessor_invalid_metric(risso_stocks_set):
+    """Test PricesAccessor invalid metric."""
     ss = risso_stocks_set(random_state=42, stocks=2)
     with pytest.raises(AttributeError):
         ss.prices.getattr.zaraza()
 
 
 def test_PricesAccessor_log(risso_stocks_set):
+    """Test PricesAccessor log."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     result_call = ss.prices("log")
@@ -59,6 +63,7 @@ def test_PricesAccessor_log(risso_stocks_set):
 
 
 def test_PricesAccessor_log10(risso_stocks_set):
+    """Test PricesAccessor log10."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     result_call = ss.prices("log10")
@@ -70,6 +75,7 @@ def test_PricesAccessor_log10(risso_stocks_set):
 
 
 def test_PricesAccessor_log2(risso_stocks_set):
+    """Test PricesAccessor log2."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     result_call = ss.prices("log2")
@@ -81,6 +87,7 @@ def test_PricesAccessor_log2(risso_stocks_set):
 
 
 def test_PricesAccessor_mad(risso_stocks_set):
+    """Test PricesAccessor mad."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     result_call = ss.prices("mad")
@@ -90,6 +97,7 @@ def test_PricesAccessor_mad(risso_stocks_set):
 
 
 def test_PricesAccessor_dir(risso_stocks_set):
+    """Test PricesAccessor dir."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     white_list = set(prices_acc.PricesAccessor._DF_WHITELIST)

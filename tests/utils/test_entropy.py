@@ -5,6 +5,8 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test entropy related functions."""
+
 
 # =============================================================================
 # IMPORTS
@@ -22,6 +24,7 @@ import pytest
 
 
 def test_proportion_shannon():
+    """Test propotion Shannon."""
     arr = [
         [0.0454, 0.5558, 0.952, 0.0855],
         [0.3182, 0.4122, 0.8509, 0.9355],
@@ -35,6 +38,7 @@ def test_proportion_shannon():
 
 
 def test_proportion_shannon_with_window_warning():
+    """Test propotion Shannon with window warning."""
     prices = [
         [0.0454, 0.5558, 0.952, 0.0855],
         [0.3182, 0.4122, 0.8509, 0.9355],
@@ -50,6 +54,7 @@ def test_proportion_shannon_with_window_warning():
 
 
 def test_proportion_risso_window_size_None():
+    """Test proportion of Risso for None window size."""
     prices = [
         [0.0454, 0.5558, 0.952, 0.0855],
         [0.3182, 0.4122, 0.8509, 0.9355],
@@ -69,6 +74,7 @@ def test_proportion_risso_window_size_None():
     ],
 )
 def test_proportion_risso(risso_stocks_set, window_size, expected_entropy):
+    """Test propotion Risso."""
     ss = risso_stocks_set(random_state=42, days=365, stocks=3)
 
     np.testing.assert_allclose(
@@ -79,6 +85,7 @@ def test_proportion_risso(risso_stocks_set, window_size, expected_entropy):
 
 
 def test_proportion_window_size_greater(risso_stocks_set):
+    """Test propotion for a window size greater than days."""
     ss = risso_stocks_set(days=5)
 
     with pytest.raises(ValueError):
@@ -86,6 +93,7 @@ def test_proportion_window_size_greater(risso_stocks_set):
 
 
 def test_yager_h1(risso_stocks_set):
+    """Test yager entropy h1."""
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
@@ -94,6 +102,7 @@ def test_yager_h1(risso_stocks_set):
 
 
 def test_yager_hinf(risso_stocks_set):
+    """Test yager entropy for h->inf."""
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
@@ -102,6 +111,7 @@ def test_yager_hinf(risso_stocks_set):
 
 
 def test_yager_one(risso_stocks_set):
+    """Test yager composition."""
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
@@ -110,6 +120,7 @@ def test_yager_one(risso_stocks_set):
 
 
 def test_yager_inf(risso_stocks_set):
+    """Test yager inf composition."""
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(

@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test data module."""
 
 # =============================================================================
 # IMPORTS
@@ -34,6 +35,7 @@ import pytest
     ],
 )
 def test_load_MERVAL(imputation, mean, std):
+    """Test load MERVAL."""
     ss = datasets.load_MERVAL(imputation)
     np.testing.assert_almost_equal(ss.prices.mean().mean(), mean, decimal=13)
     np.testing.assert_almost_equal(ss.prices.std().mean(), std, decimal=13)

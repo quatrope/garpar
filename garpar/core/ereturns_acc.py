@@ -86,20 +86,25 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
         return returns
 
     def emah(self, **kwargs):
-        """Compute expected returns using the exponential moving average historical method.
+        """Compute expected returns using the emah method.
+
+        Compute expected returns using the
+        exponential moving average historical method.
 
         Parameters
         ----------
         **kwargs : keyword arguments
-            Additional keyword arguments passed to `expected_returns.ema_historical_return`.
-            For example, you might pass parameters like `span`, `min_periods`, etc., which control
+            Additional keyword arguments passed to
+            `expected_returns.ema_historical_return`. For example, you might
+            pass parameters like `span`, `min_periods`, etc., which control
             the behavior of the exponential moving average calculation.
 
         Returns
         -------
         pandas.Series
-            A pandas Series containing the computed expected returns using the exponential moving average
-            historical method, with the name "EMAH".
+            A pandas Series containing the computed expected returns using the
+            exponential moving average historical method, with the name
+            "EMAH".
         """
         returns = expected_returns.ema_historical_return(
             prices=self._ss._prices_df, returns_data=False, **kwargs

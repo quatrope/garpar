@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test Datasets base module."""
 
 # =============================================================================
 # IMPORTS
@@ -21,6 +22,7 @@ import pytest
 
 
 def test_StocksSetMakerABC_make_stocks_set_missing_argument_on_definition():
+    """Test StockstSetMakerABC make_stocks_set missing on def."""
     with pytest.raises(TypeError):
 
         class StocksSetMaker(datasets.StocksSetMakerABC):
@@ -29,6 +31,8 @@ def test_StocksSetMakerABC_make_stocks_set_missing_argument_on_definition():
 
 
 def test_StocksSetMakerABC_make_stocks_set_missing_not_imp():
+    """Test StockstSetMakerABC make_stocks_set missing implementation."""
+
     class StocksSetMaker(datasets.StocksSetMakerABC):
         def make_stocks_set(
             self,
@@ -53,6 +57,8 @@ def test_StocksSetMakerABC_make_stocks_set_missing_not_imp():
 
 
 def test_RandomEntropyPorfolioMakerABC_get_window_loss_probability_not_imp():
+    """Test StockstSetMakerABC make_stocks_set get_window_loss no imp."""
+
     class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return super().get_window_loss_probability(window_size, entropy)
@@ -67,6 +73,8 @@ def test_RandomEntropyPorfolioMakerABC_get_window_loss_probability_not_imp():
 
 
 def test_RandomEntropyPorfolioMakerABC_make_stock_price_not_imp():
+    """Test StockstSetMakerABC make_stock_price not implemented."""
+
     class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
@@ -81,6 +89,8 @@ def test_RandomEntropyPorfolioMakerABC_make_stock_price_not_imp():
 
 
 def test_RandomEntropyPorfolioMakerABC_window_size_le_0():
+    """Test StockstSetMakerABC windows size less than 0."""
+
     class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
@@ -95,6 +105,8 @@ def test_RandomEntropyPorfolioMakerABC_window_size_le_0():
 
 
 def test_RandomEntropyPorfolioMakerABC_window_days_lt_window_size():
+    """Test RandomEntropyPorfolioMakerABC window days less than window size."""
+
     class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2
@@ -109,6 +121,8 @@ def test_RandomEntropyPorfolioMakerABC_window_days_lt_window_size():
 
 
 def test_RandomEntropyPorfolioMakerABC_invalid_number_of_prices():
+    """Test RandomEntropyPorfolioMakerABC invalid number of prices."""
+
     class StocksSetMaker(datasets.RandomEntropyStocksSetMakerABC):
         def get_window_loss_probability(self, window_size, entropy):
             return 0.2

@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test garpar IO module."""
 
 # =============================================================================
 # IMPORTS
@@ -22,6 +23,7 @@ import pandas as pd
 
 
 def test_StocksSet_to_hdf5_read_hdf5():
+    """Test StocksSet to hdf5 and read hdf5."""
     ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {

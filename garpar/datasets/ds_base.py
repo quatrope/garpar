@@ -57,8 +57,10 @@ class StocksSetMakerABC(mabc.ModelABC):
     }
 
     def __init_subclass__(cls):
-        """Ensure that the make_stocks_set method in subclasses conforms to
-        _MKPORT_SIGNATURE.
+        """Ensure that the make_stocks_set method in subclasses fits criteria.
+
+        Ensure that the make_stocks_set method in subclasses
+        conforms to _MKPORT_SIGNATURE.
 
         Raises
         ------
@@ -139,8 +141,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
 
     @mabc.abstractmethod
     def get_window_loss_probability(self, window_size, entropy):
-        """Abstract method to calculate the loss probability for a given window
-        size and entropy.
+        """Abstract method to calculate the loss probability by window size.
 
         Parameters
         ----------
@@ -163,8 +164,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
 
     @mabc.abstractmethod
     def make_stock_price(self, price, loss, random):
-        """Abstract method to calculate the stock price based on initial price,
-        loss, and random generator.
+        """Abstract method to calculate the stock price.
 
         Parameters
         ----------
@@ -285,8 +285,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         initial_price,
         random,
     ):
-        """Generate a DataFrame for a single stock with random prices based on
-        loss sequence.
+        """Generate a DataFrame for a single stock with random prices.
 
         Parameters
         ----------
@@ -339,8 +338,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         price=100,
         weights=None,
     ):
-        """Create a stocks set of stocks with random prices and specified
-        parameters.
+        """Create a stocks set of stocks with random prices.
 
         Parameters
         ----------

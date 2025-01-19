@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test Optimize base module."""
 
 # =============================================================================
 # IMPORTS
@@ -21,6 +22,7 @@ import pytest
 
 
 def test_OptimizerABC__calculate_weights_not_implementhed(risso_stocks_set):
+    """Test for OptimizerABC when calculate weights are not implemented."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     class FooOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
@@ -33,7 +35,6 @@ def test_OptimizerABC__calculate_weights_not_implementhed(risso_stocks_set):
 
 def test_optimizerabc_family_not_string():
     """Test that an error is raised if 'family' is not a string."""
-
     with pytest.raises(
         TypeError,
         # fmt: off
@@ -46,7 +47,6 @@ def test_optimizerabc_family_not_string():
 
 def test_optimizerabc_family_undefined():
     """Test that an error is raised if 'family' is not defined."""
-
     with pytest.raises(
         TypeError,
         match="'UndefinedFamilyOptimizer.family' must be redefined as string",
@@ -66,6 +66,8 @@ def test_optimizerabc_family_valid():
 
 
 def test_OptimizerABC_get_family():
+    """Test OptimizerABC family."""
+
     class TestMeanVarianceFamily(MeanVarianceFamilyMixin, OptimizerABC):
         pass
 

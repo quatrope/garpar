@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test Risso Module."""
 
 # =============================================================================
 # IMPORTS
@@ -24,6 +25,7 @@ import pandas as pd
 
 
 def test_argnearest():
+    """Test argnearest function."""
     assert datasets.risso.argnearest([0.1, 0.11, -0.001], 0) == 2
 
 
@@ -33,11 +35,13 @@ def test_argnearest():
 
 
 def test_RissoUniform_delisted():
+    """Test RissoUniform delisted."""
     maker = datasets.RissoUniform()
     assert maker.make_stock_price(0, True, np.random.default_rng()) == 0
 
 
 def test_make_risso_uniform():
+    """Test make_risso_uniform."""
     result = datasets.make_risso_uniform(
         random_state=42, window_size=2, days=3, stocks=2
     )
@@ -64,11 +68,13 @@ def test_make_risso_uniform():
 
 
 def test_RissoNormal_delisted():
+    """Test RissoNormal delisted."""
     maker = datasets.RissoNormal()
     assert maker.make_stock_price(0, True, np.random.default_rng()) == 0
 
 
 def test_make_risso_normal():
+    """Test make_risso_normal."""
     result = datasets.make_risso_normal(
         random_state=42, window_size=2, days=3, stocks=2
     )
@@ -95,11 +101,13 @@ def test_make_risso_normal():
 
 
 def test_RissoLevyStable_delisted():
+    """Test RissoLevyStable delisted."""
     maker = datasets.RissoLevyStable()
     assert maker.make_stock_price(0, True, np.random.default_rng()) == 0
 
 
 def test_make_risso_levy_stable():
+    """Test make_risso_levy_stable."""
     result = datasets.make_risso_levy_stable(
         random_state=42, window_size=2, days=3, stocks=2
     )

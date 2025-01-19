@@ -17,10 +17,6 @@ from .opt_base import MeanVarianceFamilyMixin, OptimizerABC
 from ..utils import mabc
 
 
-# =============================================================================
-# MVOptimizer
-# =============================================================================
-
 # METHODS =====================================================================
 
 
@@ -93,7 +89,7 @@ def _mv_portfolio_performance(instance, optimizer, ss):
 
 # REGISTER ====================================================================
 
-MV_OPTIMIZATION_METHODS = {
+MV_OPTIMIZATION_MODELS = {
     "min_volatility": _mv_min_volatility,
     "max_sharpe": _mv_max_sharpe,
     "max_quadratic_utility": _mv_max_quadratic_utility,
@@ -102,12 +98,15 @@ MV_OPTIMIZATION_METHODS = {
     "portfolio_performance": _mv_portfolio_performance,
 }
 
+# =============================================================================
+# MVOptimizer
+# =============================================================================
 
 @attr.define(repr=False)
 class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     """Flexible Mean Variance Optimizer."""
 
-    method = mabc.hparam(default="max_sharpe")
+    model = mabc.hparam(default="max_sharpe")
 
     weight_bounds = mabc.hparam(default=(0, 1))
     market_neutral = mabc.hparam(default=False)
@@ -123,11 +122,11 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     risk_free_rate = mabc.hparam(default=None)
     risk_aversion = mabc.hparam(default=None)
 
-    @method.validator
-    def _check_method(self, attribute, value):
-        method_func = MV_OPTIMIZATION_METHODS.get(value, value)
-        if not callable(method_func):
-            raise ValueError("'method' doesn't look like a method")
+    @model.validator
+    def _check_model(self, attribute, value):
+        model_func = MV_OPTIMIZATION_MODELS.get(value, value)
+        if not callable(model_func):
+            raise ValueError("'model' doesn't look like a method")
 
     def _get_optimizer(self, ss):
         expected_returns = ss.ereturns(self.returns, **self.returns_kw)
@@ -169,8 +168,8 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
     def _calculate_weights(self, ss):
         optimizer = self._get_optimizer(ss)
-        method_func = MV_OPTIMIZATION_METHODS.get(self.method, self.method)
-        return method_func(instance=self, optimizer=optimizer, ss=ss)
+        model_func = MV_OPTIMIZATION_MODELS.get(self.model, self.model)
+        return model_func(instance=self, optimizer=optimizer, ss=ss)
 
 
 # =============================================================================

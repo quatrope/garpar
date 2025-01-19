@@ -55,9 +55,10 @@ def _as_float_array(arr):
 
 @attr.s(repr=False, cmp=False)
 class StocksSet:
-    """
-    Represents a financial stocks set with utilities for analysis and
-    manipulation.
+    """Represents a financial stocks set.
+
+    Represents a financial stocks set with utilities for
+    analysis and manipulation.
     """
 
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
@@ -152,8 +153,7 @@ class StocksSet:
         stocks=None,
         **metadata,
     ):
-        """Alternative constructor to create a StocksSet instance from various
-        inputs.
+        """Alternative constructor to create a StocksSet instance.
 
         Parameters
         ----------
@@ -494,8 +494,7 @@ class StocksSet:
         return df
 
     def as_returns(self, **kwargs):
-        """Convert prices to returns using PyStocksSetOpt's expected_returns
-        module.
+        """Convert prices to returns using PyPortfolioOpt's module.
 
         Parameters
         ----------
@@ -710,8 +709,7 @@ class StocksSet:
         return dim
 
     def __repr__(self):
-        """Return a string representation of the StocksSet. Mainly for Jupyter
-        notebooks.
+        """Return a string representation of the StocksSet.
 
         Returns
         -------

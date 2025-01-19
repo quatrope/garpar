@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test Multisector module."""
 
 # =============================================================================
 # IMPORTS
@@ -23,6 +24,7 @@ import pytest
 
 
 def test_make_multisector():
+    """Test make_multisector."""
     result = datasets.make_multisector(
         datasets.RissoUniform(random_state=42),
         datasets.RissoNormal(random_state=42),
@@ -47,16 +49,19 @@ def test_make_multisector():
 
 
 def test_make_multisector_to_few_maker():
+    """Test make_multisector with few maker."""
     with pytest.raises(ValueError):
         datasets.make_multisector(datasets.RissoUniform())
 
 
 def test_make_multisector_maker_is_not_instance_of_StocksSetMakerABC():
+    """Test make_multisector maker is not instance of StocksSetMakerABC."""
     with pytest.raises(TypeError):
         datasets.make_multisector(datasets.RissoUniform(), None)
 
 
 def test_make_multisector_prices_and_stocks_different_length():
+    """Test make_multisector prices and stocks different length."""
     with pytest.raises(ValueError):
         datasets.make_multisector(
             datasets.RissoUniform(random_state=42),
@@ -67,6 +72,7 @@ def test_make_multisector_prices_and_stocks_different_length():
 
 
 def test_make_multisector_stoks_lt_makers():
+    """Test make_multisector stocks less than makers."""
     with pytest.raises(ValueError):
         datasets.make_multisector(
             datasets.RissoUniform(random_state=42),

@@ -5,6 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test StocksSetPlotterAccessor module."""
 
 from garpar.core.plot_acc import StocksSetPlotterAccessor
 
@@ -23,6 +24,7 @@ import seaborn as sns
 def test_StocksSetPlotterAccessor_line(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor line."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -43,6 +45,7 @@ def test_StocksSetPlotterAccessor_line(
 def test_StocksSetPlotterAccessor_heatmap(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor heatmap."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -62,6 +65,7 @@ def test_StocksSetPlotterAccessor_heatmap(
 def test_StocksSetPlotterAccessor_wheatmap(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor wheatmap."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -83,6 +87,7 @@ def test_StocksSetPlotterAccessor_wheatmap(
 def test_StocksSetPlotterAccessor_hist(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor hist."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -102,6 +107,7 @@ def test_StocksSetPlotterAccessor_hist(
 def test_StocksSetPlotterAccessor_whist(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor whist."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -122,6 +128,7 @@ def test_StocksSetPlotterAccessor_whist(
 def test_StocksSetPlotterAccessor_box(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor box."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -141,6 +148,7 @@ def test_StocksSetPlotterAccessor_box(
 def test_StocksSetPlotterAccessor_wbox(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor wbox."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -161,6 +169,7 @@ def test_StocksSetPlotterAccessor_wbox(
 def test_StocksSetPlotterAccessor_kde(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor kde."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -180,6 +189,7 @@ def test_StocksSetPlotterAccessor_kde(
 def test_StocksSetPlotterAccessor_wkde(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor wkde."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -200,6 +210,7 @@ def test_StocksSetPlotterAccessor_wkde(
 def test_StocksSetPlotterAccessor_ogive(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor ogive."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 

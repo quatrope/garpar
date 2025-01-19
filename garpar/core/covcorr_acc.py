@@ -102,8 +102,10 @@ class CovarianceAccessor(accabc.AccessorABC):
         )
 
     def ledoit_wolf_cov(self, shrinkage_target="constant_variance", **kwargs):
-        """Compute the Ledoit-Wolf covariance matrix with optional
-        shrinkage target.
+        """Compute the Ledoit-Wolf covariance matrix.
+
+        Compute the Ledoit-Wolf covariance matrix
+        with optional shrinkage target
 
         Parameters
         ----------
