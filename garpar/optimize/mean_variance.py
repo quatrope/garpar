@@ -21,6 +21,15 @@ from ..utils import mabc
 
 
 def _mv_min_volatility(instance, optimizer, ss):
+    """Optimize a StocksSet to minize risk
+
+    Returns
+    -------
+    weights
+        Array of weights
+    metadata
+        Dictionary with metadata
+    """
     weights_dict = optimizer.min_volatility()
     weights = [weights_dict[stock] for stock in ss.stocks]
 
@@ -28,6 +37,15 @@ def _mv_min_volatility(instance, optimizer, ss):
 
 
 def _mv_max_sharpe(instance, optimizer, ss):
+    """Optimize a StocksSet based on the max Sharpe's ratio
+
+    Returns
+    -------
+    weights
+        Array of weights
+    metadata
+        Dictionary with metadata
+    """
     risk_free_rate = instance._coerce_risk_free_rate(ss)
 
     weights_dict = optimizer.max_sharpe(risk_free_rate=risk_free_rate)
@@ -37,6 +55,15 @@ def _mv_max_sharpe(instance, optimizer, ss):
 
 
 def _mv_max_quadratic_utility(instance, optimizer, ss):
+    """Optimize a StocksSet based on the max quadratic utility
+
+    Returns
+    -------
+    weights
+        Array of weights
+    metadata
+        Dictionary with metadata
+    """
     risk_aversion = instance._coerce_risk_aversion(ss)
 
     weights_dict = optimizer.max_quadratic_utility(
@@ -51,7 +78,16 @@ def _mv_max_quadratic_utility(instance, optimizer, ss):
 
 
 def _mv_efficient_risk(instance, optimizer, ss):
-    target_volatility = instance._coerce_target_volatility(ss)
+    """Optimize a StocksSet based on a specific risk value
+
+    Returns
+    -------
+    weights
+        Array of weights
+    metadata
+        Dictionary with metadata
+    """
+    target_volatility = instance._coerce_target_risk(ss)
 
     weights_dict = optimizer.efficient_risk(
         target_volatility, market_neutral=instance.market_neutral
@@ -65,6 +101,15 @@ def _mv_efficient_risk(instance, optimizer, ss):
 
 
 def _mv_efficient_return(instance, optimizer, ss):
+    """Optimize a StocksSet based on a specific return value
+
+    Returns
+    -------
+    weights
+        Array of weights
+    metadata
+        Dictionary with metadata
+    """
     target_return = instance._coerce_target_return(ss)
 
     weights_dict = optimizer.efficient_return(
@@ -79,6 +124,15 @@ def _mv_efficient_return(instance, optimizer, ss):
 
 
 def _mv_portfolio_performance(instance, optimizer, ss):
+    """Check a StocksSet best performance, do not use to optimize
+
+    Returns
+    -------
+    weights
+        Array of weights
+    metadata
+        Dictionary with metadata
+    """
     risk_free_rate = instance._coerce_risk_free_rate(ss)
 
     weigths_dict = optimizer.portfolio_performance(risk_free_rate)
@@ -160,7 +214,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         returns = returns[(returns != 0) & (~np.isnan(returns))]
         return np.min(np.abs(returns))
 
-    def _coerce_target_volatility(self, ss):
+    def _coerce_target_risk(self, ss):
         if self.target_risk is not None:
             return self.target_risk
 
@@ -242,6 +296,34 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
             return np.min(np.abs(returns))
         return self.target_return
 
+    def _coerce_target_risk(self, ss):
+        """Coerce the target risk.
+
+        Parameters
+        ----------
+        ss : StocksSet
+            The stocks set to optimize.
+
+        Returns
+        -------
+        float
+            The coerced target risk.
+        """
+        if self.target_risk is not None:
+            return self.target_risk
+
+        return np.min(np.std(ss.as_prices(), axis=0))
+
+    def _get_model_and_target_value(self, ss):
+        optimizer = self._get_optimizer(ss)
+
+        if self.target_return:
+            return (optimizer.efficient_return, self._coerce_target_return(ss),
+                    "target_return")
+
+        return (optimizer.efficient_risk, self._coerce_target_risk(ss),
+                "target_risk")
+
     def _calculate_weights(self, ss):
         """Calculate the optimal weights for the stocks set.
 
@@ -256,17 +338,19 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
             A tuple containing the optimal weights and optimizer metadata.
         """
         optimizer = self._get_optimizer(ss)
-        target_return = self._coerce_target_return(ss)
+
+        model, target_value, value_name = self._get_model_and_target_value(ss)
+
         market_neutral = self._get_market_neutral()
 
-        weights_dict = optimizer.efficient_return(
-            target_return, market_neutral=market_neutral
+        weights_dict = model(
+            target_value, market_neutral=market_neutral
         )
         weights = [weights_dict[stock] for stock in ss.stocks]
 
         optimizer_metadata = {
             "name": type(self).__name__,
-            "target_return": target_return,
+            f"{value_name}": target_value,
         }
 
         return weights, optimizer_metadata

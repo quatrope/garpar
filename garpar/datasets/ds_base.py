@@ -305,7 +305,6 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         pandas.DataFrame
             DataFrame containing the stock prices for each day.
         """
-        # determinamos que dia se pierde y que dia se gana
         # fmt: off
         loss_sequence = self._make_loss_sequence(days, loss_probability,
                                                  random)
