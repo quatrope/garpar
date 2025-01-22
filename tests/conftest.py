@@ -34,7 +34,7 @@ DISTRIBUTIONS = {
     "uniform": gp.datasets.make_risso_uniform,
 }
 
-METHODS = [
+MODELS = [
     "min_volatility",
     "max_sharpe",
     "max_quadratic_utility",
@@ -81,4 +81,4 @@ matplotlib.use("agg")
 
 def pytest_configure():
     pytest.DISTRIBUTIONS = DISTRIBUTIONS
-    pytest.METHODS = METHODS
+    pytest.MODELS = MODELS

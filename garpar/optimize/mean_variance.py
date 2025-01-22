@@ -15,6 +15,7 @@ import pypfopt
 
 from .opt_base import MeanVarianceFamilyMixin, OptimizerABC
 from ..utils import mabc
+from .. import __EPSILON__
 
 
 # METHODS =====================================================================
@@ -218,7 +219,10 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.target_risk is not None:
             return self.target_risk
 
-        return np.min(np.std(ss.as_prices(), axis=0))
+        cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
+
+        return (np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) +
+                __EPSILON__)
 
     def _calculate_weights(self, ss):
         optimizer = self._get_optimizer(ss)
@@ -312,7 +316,10 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         if self.target_risk is not None:
             return self.target_risk
 
-        return np.min(np.std(ss.as_prices(), axis=0))
+        cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
+
+        return (np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) +
+                __EPSILON__)
 
     def _get_model_and_target_value(self, ss):
         optimizer = self._get_optimizer(ss)
