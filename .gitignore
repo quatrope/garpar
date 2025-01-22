@@ -111,4 +111,4 @@ venv.bak/
 draft/
 
 # assets
-assets/
+assets/**
