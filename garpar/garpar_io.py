@@ -100,7 +100,7 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
     """
     # # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
-    h5_metadata["utc_timestamp"] = dt.datetime.utcnow().isoformat()
+    h5_metadata["utc_timestamp"] = dt.datetime.now(dt.UTC).isoformat()
 
     # prepare kwargs
     kwargs.setdefault("compression", "gzip")
