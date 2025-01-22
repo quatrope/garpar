@@ -13,9 +13,9 @@ from .ds_base import RandomEntropyStocksSetMakerABC, StocksSetMakerABC
 from .multisector import MultiSector, make_multisector
 from .risso import (
     RissoLevyStable,
+    RissoMixin,
     RissoNormal,
     RissoUniform,
-    RissoMixin,
     make_risso_levy_stable,
     make_risso_normal,
     make_risso_uniform,

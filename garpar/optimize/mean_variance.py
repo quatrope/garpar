@@ -14,8 +14,8 @@ import numpy as np
 import pypfopt
 
 from .opt_base import MeanVarianceFamilyMixin, OptimizerABC
-from ..utils import mabc
 from .. import __EPSILON__
+from ..utils import mabc
 
 
 # METHODS =====================================================================
@@ -157,6 +157,7 @@ MV_OPTIMIZATION_MODELS = {
 # MVOptimizer
 # =============================================================================
 
+
 @attr.define(repr=False)
 class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     """Flexible Mean Variance Optimizer."""
@@ -221,8 +222,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 
-        return (np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) +
-                __EPSILON__)
+        return np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) + __EPSILON__
 
     def _calculate_weights(self, ss):
         optimizer = self._get_optimizer(ss)
@@ -318,18 +318,23 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 
-        return (np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) +
-                __EPSILON__)
+        return np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) + __EPSILON__
 
     def _get_model_and_target_value(self, ss):
         optimizer = self._get_optimizer(ss)
 
         if self.target_return:
-            return (optimizer.efficient_return, self._coerce_target_return(ss),
-                    "target_return")
+            return (
+                optimizer.efficient_return,
+                self._coerce_target_return(ss),
+                "target_return",
+            )
 
-        return (optimizer.efficient_risk, self._coerce_target_risk(ss),
-                "target_risk")
+        return (
+            optimizer.efficient_risk,
+            self._coerce_target_risk(ss),
+            "target_risk",
+        )
 
     def _calculate_weights(self, ss):
         """Calculate the optimal weights for the stocks set.
@@ -344,15 +349,12 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         tuple
             A tuple containing the optimal weights and optimizer metadata.
         """
-        optimizer = self._get_optimizer(ss)
 
         model, target_value, value_name = self._get_model_and_target_value(ss)
 
         market_neutral = self._get_market_neutral()
 
-        weights_dict = model(
-            target_value, market_neutral=market_neutral
-        )
+        weights_dict = model(target_value, market_neutral=market_neutral)
         weights = [weights_dict[stock] for stock in ss.stocks]
 
         optimizer_metadata = {

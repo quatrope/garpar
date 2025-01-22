@@ -145,11 +145,25 @@ def test_Markowitz_optimize_default_target_risk():
     ss = StocksSet.from_dfkws(
         prices=pd.DataFrame(
             {
-                "stock0": [100.000000, 100.134675, 100.372761, 100.346268, 100.194167, 100.294895],
-                "stock1": [100.000000, 100.448529, 100.397479, 100.354087, 100.377197, 100.421145]
+                "stock0": [
+                    100.000000,
+                    100.134675,
+                    100.372761,
+                    100.346268,
+                    100.194167,
+                    100.294895,
+                ],
+                "stock1": [
+                    100.000000,
+                    100.448529,
+                    100.397479,
+                    100.354087,
+                    100.377197,
+                    100.421145,
+                ],
             }
         ),
-        weights=[1.0, 1.0]
+        weights=[1.0, 1.0],
     )
 
     # Instance
@@ -174,6 +188,7 @@ def test_Markowitz_optimize_default_target_risk():
     assert isinstance(result.weights, pd.Series)
     pd.testing.assert_series_equal(result.weights, expected_weights)
 
+
 def test_Markowitz_optimize_default_target_return():
     """Test Markowitz optimize default target return."""
     ss = StocksSet.from_dfkws(
@@ -187,7 +202,7 @@ def test_Markowitz_optimize_default_target_return():
     )
 
     # Instance
-    markowitz = Markowitz(target_return=.01)
+    markowitz = Markowitz(target_return=0.01)
 
     # Tested model
     result = markowitz.optimize(ss)
@@ -202,7 +217,7 @@ def test_Markowitz_optimize_default_target_return():
     assert result is not ss
     pd.testing.assert_frame_equal(ss.as_prices(), result.as_prices())
     np.testing.assert_allclose(
-        result.metadata.optimizer["target_return"], .01
+        result.metadata.optimizer["target_return"], 0.01
     )
 
     assert isinstance(result.weights, pd.Series)
