@@ -5,7 +5,17 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """StocksSet."""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
+import functools
 
 import attr
 from attr import validators as vldt
@@ -147,6 +157,7 @@ class StocksSet:
     def from_dfkws(
         cls,
         prices,
+        *,
         weights=None,
         entropy=None,
         window_size=None,
@@ -752,3 +763,13 @@ class StocksSet:
         )
 
         return html
+
+
+# =============================================================================
+# MAKER
+# =============================================================================
+
+
+@functools.wraps(StocksSet.from_dfkws)
+def mkss(*args, **kwargs):
+    return StocksSet.from_dfkws(*args, **kwargs)
