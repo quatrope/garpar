@@ -25,6 +25,7 @@ jobs:
         python-version: "3.13"
     - name: Install dependencies
       run: |
+        apt install openblas
         python -m pip install --upgrade pip
         if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
     - name: Test with tox
