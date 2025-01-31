@@ -9,7 +9,55 @@
 # DOCS
 # =============================================================================
 
-"""StocksSet."""
+"""Financial Portfolio/market Analysis with StocksSet.
+
+A comprehensive toolset for analyzing and managing financial portfolios/markets
+through the StocksSet class. Provides functionality for portfolio/market
+optimization, risk assessment, and performance analysis.
+
+Key Features:
+    - Portfolio/market construction and rebalancing
+    - Risk metrics calculation (variance, VaR, etc.)
+    - Expected returns estimation
+    - Correlation and covariance analysis
+    - Diversification metrics
+    - Portfolio/market visualization tools
+    - Market data handling and validation
+    - Entropy-based analysis
+
+Example:
+    >>> import garpar
+    >>> prices_df = [[...], [...]]  # Your price data
+    >>> ss = garpar.mkss(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=30
+    ... )
+    >>> ss.risk.value_at_risk()
+    >>> ss.plot.returns()
+
+    or
+
+    >>> import garpar
+    >>> prices_df = pd.DataFrame(...)  # Your price data
+    >>> ss = garpar.StocksSet.from_prices(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=30
+    ... )
+    >>> ss.risk.value_at_risk()
+    >>> ss.plot.returns()
+
+Classes:
+    StocksSet: Main class representing a financial portfolio.
+
+See Also:
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
+
+References:
+    Markowitz, H.M. (1952). Portfolio Selection
+    https://doi.org/10.1111/j.1540-6261.1952.tb01525.x
+"""
 
 # =============================================================================
 # IMPORTS
