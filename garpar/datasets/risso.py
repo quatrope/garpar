@@ -116,9 +116,9 @@ class RissoMixin:
 
         # Calcula entropy
         first_part = loss_probability * np.log2(loss_probability)
-        # fmt: off
-        second_part = ((1.0 - loss_probability) *
-                       np.log2(1.0 - loss_probability))
+        second_part = (1.0 - loss_probability) * np.log2(
+            1.0 - loss_probability
+        )
 
         modificated_entropy = -1.0 * (first_part + second_part)
         return modificated_entropy, loss_probability

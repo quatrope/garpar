@@ -305,9 +305,9 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         pandas.DataFrame
             DataFrame containing the stock prices for each day.
         """
-        # fmt: off
-        loss_sequence = self._make_loss_sequence(days, loss_probability,
-                                                 random)
+        loss_sequence = self._make_loss_sequence(
+            days, loss_probability, random
+        )
 
         # fijamos el primer precio como el precio orginal
         current_price = initial_price

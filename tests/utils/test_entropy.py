@@ -79,8 +79,7 @@ def test_proportion_risso(risso_stocks_set, window_size, expected_entropy):
 
     np.testing.assert_allclose(
         entropy.risso(ss.as_prices(), window_size=window_size),
-        # fmt: off
-        expected_entropy
+        expected_entropy,
     )
 
 
