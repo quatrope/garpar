@@ -9,7 +9,29 @@
 # DOCS
 # =============================================================================
 
-"""Utilies Accessor."""
+"""
+Utilities Accessor.
+
+This module provides the `UtilitiesAccessor` class, which enables the computation of various
+utility and performance metrics for financial portfolios and individual stocks.
+
+Key Features:
+    - Computation of ex-ante and ex-post tracking error
+    - Calculation of stocks set return
+    - Estimation of quadratic utility
+
+Example:
+    >>> accessor = UtilitiesAccessor(ss)
+    >>> error = accessor.ex_ante_tracking_error()
+    >>> ret = accessor.stocks_set_return()
+    >>> utility = accessor.quadratic_utility()
+
+Classes:
+    UtilitiesAccessor: Provides methods for computing utility and performance metrics for stocks and portfolios.
+
+See Also:
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
+"""
 
 # =============================================================================
 # IMPORTS
