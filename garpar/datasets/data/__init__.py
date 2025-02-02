@@ -38,7 +38,7 @@ def load_MERVAL(imputation="ffill", first=None, last=None):
     if last is not None:
         df = df[df.index <= last]
 
-    port = StocksSet.from_dfkws(
+    port = StocksSet.from_prices(
         df,
         weights=None,
         title="Merval",

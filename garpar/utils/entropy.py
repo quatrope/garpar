@@ -5,7 +5,16 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Entropy."""
+
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import warnings
 
@@ -16,7 +25,12 @@ import pypfopt
 from scipy import stats
 
 
-def _computeMarks(prices, **kwargs):
+# =============================================================================
+# ENTROPY
+# =============================================================================
+
+
+def _compute_marks(prices, **kwargs):
     """
     Compute the marks for a given set of prices based on returns.
 
@@ -95,7 +109,7 @@ def risso(prices, window_size=None, **kwargs):
                 of days"""
         )
 
-    marks = _computeMarks(prices, **kwargs)
+    marks = _compute_marks(prices, **kwargs)
 
     entropies = []
 
@@ -131,19 +145,51 @@ def risso(prices, window_size=None, **kwargs):
     return entropies
 
 
-def HOne(weights):
-    """Calculate minimax entropy with z1."""
+def h_one(weights):
+    """Calculate minimax entropy with z -> 1.
+
+    This function computes the entropy measure where z approaches 1,
+    which corresponds to the quadratic entropy. It is calculated as:
+
+        H_1 = 1 - sum(weights^2)
+
+    This metric emphasizes the evenness of the weight distribution,
+    where higher values indicate a more uniform distribution.
+
+    Parameters:
+    weights (array-like): A list or numpy array of weights representing
+    proportions.
+
+    Returns:
+    float: The computed entropy measure.
+    """
     weights = np.asarray(weights)
     return 1 - np.sum(weights**2)
 
 
-def HInf(weights):
-    """Calculate minimax entropy with zinf."""
+def h_inf(weights):
+    """Calculate minimax entropy with z -> inf.
+
+    This function computes the entropy measure where z approaches infinity,
+    which corresponds to the minimax entropy. It is defined as:
+
+        H_inf = 1 - max(weights)
+
+    This measure focuses on the dominance of the largest weight, providing
+    insight into the concentration of distribution.
+
+    Parameters:
+    weights (array-like): A list or numpy array of weights representing
+    proportions.
+
+    Returns:
+    float: The computed entropy measure.
+    """
     weights = np.asarray(weights)
     return 1 - np.max(weights)
 
 
-def yagerOne(weights):
+def yager_one(weights):
     """Compute Yager's entropy for a fuzzy set and z=1.
 
     Parameters
@@ -162,7 +208,7 @@ def yagerOne(weights):
     return sum(weights - 1 / n)
 
 
-def yagerInf(weigths):
+def yager_inf(weigths):
     """Compute Yager's entropy for a fuzzy set and z=inf.
 
     Parameters

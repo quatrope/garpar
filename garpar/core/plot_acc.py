@@ -5,6 +5,10 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Plot Accessor."""
 
 # =============================================================================
@@ -25,8 +29,7 @@ from ..utils import AccessorABC
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class StocksSetPlotterAccessor(AccessorABC):
-    """Accessor class for plotting stocks set data.
-    """
+    """Accessor class for plotting stocks set data."""
 
     _default_kind = "line"
 

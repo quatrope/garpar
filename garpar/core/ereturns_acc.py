@@ -5,7 +5,15 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Expected Returns Accessor."""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
@@ -21,8 +29,7 @@ from ..utils import AccessorABC
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class ExpectedReturnsAccessor(AccessorABC):
-    """Accessor class for computing expected returns of a stocks set.
-    """
+    """Accessor class for computing expected returns of a stocks set."""
 
     _default_kind = "capm"
 

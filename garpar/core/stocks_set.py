@@ -85,8 +85,8 @@ from . import (
     risk_acc,
     utilities_acc,
 )
-from ..utils import Bunch, df_temporal_header, entropy, scalers
 from ..constansts import GARPAR_METADATA_KEY
+from ..utils import Bunch, df_temporal_header, entropy, scalers
 
 # =============================================================================
 # CONSTANTS
@@ -177,8 +177,9 @@ class StocksSet:
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=_as_float_array)
     _entropy = attr.ib(converter=_as_float_array)
-    _window_size = attr.ib(converter=lambda v: (None if pd.isna(v)
-                                                else int(v)))
+    _window_size = attr.ib(
+        converter=lambda v: (None if pd.isna(v) else int(v))
+    )
     _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
 
     # accessors
@@ -406,21 +407,25 @@ class StocksSet:
     def loc(self):
         """"""
         return _Loc(
-            "loc", slicer=self._prices_df.loc,
+            "loc",
+            slicer=self._prices_df.loc,
             weights=self.weights,
             entropy=self.entropy,
             window_size=self.window_size,
-            metadata=self.metadata)
+            metadata=self.metadata,
+        )
 
     @property
     def iloc(self):
         """"""
         return _Loc(
-            "iloc", slicer=self._prices_df.iloc,
+            "iloc",
+            slicer=self._prices_df.iloc,
             weights=self.weights,
             entropy=self.entropy,
             window_size=self.window_size,
-            metadata=self.metadata)
+            metadata=self.metadata,
+        )
 
     # PROPERTIES ==============================================================
     @property
@@ -560,8 +565,9 @@ class StocksSet:
             self._window_size if window_size is None else window_size
         )
 
-        new_metadata = (self._metadata.to_dict() if preserve_old_metadata
-                        else {})
+        new_metadata = (
+            self._metadata.to_dict() if preserve_old_metadata else {}
+        )
         new_metadata.update(metadata)
 
         new_ss = self.from_prices(

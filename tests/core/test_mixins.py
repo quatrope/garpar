@@ -62,7 +62,7 @@ def test_CoercerMixin_coerce_weights_another_ss(risso_stocks_set):
 
     coercer = Coercer()
 
-    ss_bench = StocksSet.from_dfkws(ss.as_prices(), weights=[0.9, 0.1])
+    ss_bench = StocksSet.from_prices(ss.as_prices(), weights=[0.9, 0.1])
     expected = ss_bench.weights.to_numpy()
 
     result = coercer.coerce_weights(ss_bench)
@@ -80,7 +80,7 @@ def test_CoercerMixin_coerce_weights_bad_ss(risso_stocks_set):
 
     prices = ss.as_prices()
     prices.columns = ["S0", "SB"]
-    ss_bench = StocksSet.from_dfkws(prices, weights=[0.9, 0.1])
+    ss_bench = StocksSet.from_prices(prices, weights=[0.9, 0.1])
 
     with pytest.raises(KeyError):
         coercer.coerce_weights(ss_bench)

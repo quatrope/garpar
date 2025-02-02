@@ -24,7 +24,7 @@ import pandas as pd
 
 def test_StocksSet_to_hdf5_read_hdf5():
     """Test StocksSet to hdf5 and read hdf5."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],

@@ -5,7 +5,15 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Multisector."""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import numpy as np
 
@@ -14,6 +22,10 @@ import pandas as pd
 from .ds_base import StocksSetMakerABC
 from ..core.stocks_set import StocksSet
 from ..utils import Bunch, mabc, unique_names
+
+# =============================================================================
+# MULTISECTOR
+# =============================================================================
 
 
 class MultiSector(StocksSetMakerABC):
@@ -155,7 +167,7 @@ class MultiSector(StocksSetMakerABC):
         stock_df = pd.concat(stocks_dfs, axis="columns")
 
         # create the stocks set
-        return StocksSet.from_dfkws(
+        return StocksSet.from_prices(
             stock_df,
             weights=weights,
             window_size=window_size,

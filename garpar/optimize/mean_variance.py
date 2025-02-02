@@ -5,7 +5,16 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Mean variance optimizers."""
+
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
@@ -18,7 +27,9 @@ from ..constansts import EPSILON
 from ..utils import mabc
 
 
-# METHODS =====================================================================
+# =============================================================================
+# METHODS
+# =============================================================================
 
 
 def _mv_min_volatility(instance, optimizer, ss):
@@ -142,7 +153,9 @@ def _mv_portfolio_performance(instance, optimizer, ss):
     return weights, {"name": "portfolio_performance"}
 
 
-# REGISTER ====================================================================
+# =============================================================================
+# REGISTER
+# =============================================================================
 
 MV_OPTIMIZATION_MODELS = {
     "min_volatility": _mv_min_volatility,
@@ -152,6 +165,7 @@ MV_OPTIMIZATION_MODELS = {
     "efficient_return": _mv_efficient_return,
     "portfolio_performance": _mv_portfolio_performance,
 }
+
 
 # =============================================================================
 # MVOptimizer
@@ -245,6 +259,8 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 # =============================================================================
 # MARKOWITZ
 # =============================================================================
+
+
 @attr.define(repr=False)
 class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     """Classic Markowitz model.

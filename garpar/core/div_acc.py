@@ -5,7 +5,15 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Diversification Accessor."""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
@@ -23,8 +31,7 @@ from ..utils import AccessorABC
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class DiversificationMetricsAccessor(AccessorABC, _mixins.CoercerMixin):
-    """A class to calculate various diversification metrics for a stocks set.
-    """
+    """A class to calculate various diversification metrics for a StocksSet."""
 
     _default_kind = "ratio"
 

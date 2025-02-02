@@ -5,7 +5,15 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Covariance Accessor."""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
@@ -21,8 +29,7 @@ from ..utils import AccessorABC
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class CovarianceAccessor(AccessorABC):
-    """Accessor class for calculating various covariance matrices.
-    """
+    """Accessor class for calculating various covariance matrices."""
 
     _default_kind = "sample_cov"
 
@@ -132,8 +139,7 @@ class CovarianceAccessor(AccessorABC):
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class CorrelationAccessor(AccessorABC):
-    """Accessor class for calculating various correlation matrices.
-    """
+    """Accessor class for calculating various correlation matrices."""
 
     _default_kind = "sample_corr"
 

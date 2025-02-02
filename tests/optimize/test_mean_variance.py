@@ -109,7 +109,7 @@ def test_MVOptimizer_coerce_risk(volatiliy, price_distribution):
 
 def test_Markowitz_optimize():
     """Test Markowitz optimizer."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1.11, 1.12, 1.10, 1.13, 1.18],
@@ -142,7 +142,7 @@ def test_Markowitz_optimize():
 
 def test_Markowitz_optimize_default_target_risk():
     """Test Markowitz optimize default target return."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [
@@ -191,7 +191,7 @@ def test_Markowitz_optimize_default_target_risk():
 
 def test_Markowitz_optimize_default_target_return():
     """Test Markowitz optimize default target return."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1.11, 1.12, 1.10],

@@ -9,7 +9,8 @@
 # DOCS
 # =============================================================================
 
-"""Accessor base class."""
+"""Accessor utils for Garpar project."""
+
 
 # =============================================================================
 # IMPORTS
@@ -17,13 +18,19 @@
 
 import abc
 
+
 # =============================================================================
-# ACESSOR ABC
+# CONSTANTS
 # =============================================================================
 
 # This constans are used to mark a class attribute as abstract, and prevet an
 # instantiaiton of a class
 _ABSTRACT = property(abc.abstractmethod(lambda: ...))
+
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
 
 
 class AccessorABC(abc.ABC):

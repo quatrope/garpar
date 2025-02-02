@@ -16,7 +16,10 @@
 # =============================================================================
 
 from . import entropy, mabc, scalers
-from .base_utils import AccessorABC, Bunch, df_temporal_header, unique_names
+from .accabc import AccessorABC
+from .bunch import Bunch
+from .context import df_temporal_header
+from .unames import unique_names
 
 # =============================================================================
 # ALL

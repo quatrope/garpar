@@ -96,16 +96,16 @@ def test_yager_h1(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
-        entropy.HOne(ss.weights), -3.3923344857821336
+        entropy.h_one(ss.weights), -3.3923344857821336
     )
 
 
-def test_yager_hinf(risso_stocks_set):
+def test_yager_h_inf(risso_stocks_set):
     """Test yager entropy for h->inf."""
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
-        entropy.HInf(ss.weights), 0.024377648363244075
+        entropy.h_inf(ss.weights), 0.024377648363244075
     )
 
 
@@ -114,7 +114,7 @@ def test_yager_one(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
-        entropy.yagerOne(ss.weights), 4.964303714641588
+        entropy.yager_one(ss.weights), 4.964303714641588
     )
 
 
@@ -123,5 +123,5 @@ def test_yager_inf(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
-        entropy.yagerInf(ss.weights), 0.875622351636756
+        entropy.yager_inf(ss.weights), 0.875622351636756
     )

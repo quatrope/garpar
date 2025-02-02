@@ -33,7 +33,7 @@ def test_make_multisector():
         stocks=2,
     )
 
-    expected = StocksSet.from_dfkws(
+    expected = StocksSet.from_prices(
         [
             [100.0, 100.0],
             [103.99299697386559, 100.15141604581204],

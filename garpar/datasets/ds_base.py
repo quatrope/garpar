@@ -5,6 +5,10 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Base StocksSet Maker."""
 
 # =============================================================================
@@ -381,7 +385,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
 
         stock_df = pd.concat(stocks, axis=1)
 
-        return StocksSet.from_dfkws(
+        return StocksSet.from_prices(
             stock_df,
             weights=weights,
             entropy=self.entropy,

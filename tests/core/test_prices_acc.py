@@ -107,7 +107,7 @@ def test_PricesAccessor_dir(risso_stocks_set):
 
 
 def test_PricesAccessor_mean_tendency_size():
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices={
             "stock0": [
                 100.000000,

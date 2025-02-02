@@ -43,7 +43,7 @@ def test_StocksSet_creation():
         window_size=window_size,
         metadata=metadata,
     )
-    mk_ss = StocksSet.from_dfkws(
+    mk_ss = StocksSet.from_prices(
         prices=df.copy(), weights=1, entropy=0.5, window_size=None, **metadata
     )
 
@@ -53,7 +53,7 @@ def test_StocksSet_creation():
 
 def test_StocksSet_len():
     """Test StocksSet len."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
@@ -64,7 +64,7 @@ def test_StocksSet_len():
 
 def test_StocksSet_copy_eq_ne():
     """Test StocksSet copy eq not equal."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
@@ -74,7 +74,7 @@ def test_StocksSet_copy_eq_ne():
     assert ss == copy
     assert ss is not copy
 
-    other = StocksSet.from_dfkws(
+    other = StocksSet.from_prices(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.25,
         window_size=5,
@@ -88,12 +88,12 @@ def test_StocksSet_bad_weights():
     df = pd.DataFrame({"stock": [1, 2, 3, 4, 5]})
 
     with pytest.raises(ValueError):
-        StocksSet.from_dfkws(df, weights=[1, 2, 3])
+        StocksSet.from_prices(df, weights=[1, 2, 3])
 
 
 def test_StocksSet_slice():
     """Test StocksSet slice."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
@@ -101,7 +101,7 @@ def test_StocksSet_slice():
         window_size=5,
     )
 
-    expected = StocksSet.from_dfkws(
+    expected = StocksSet.from_prices(
         prices=pd.DataFrame(
             {"stock1": [10, 20, 30, 40, 50]},
         ),
@@ -115,7 +115,7 @@ def test_StocksSet_slice():
 
 def test_StocksSet_as_returns():
     """Test StocksSet as_returns function."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5]},
         ),
@@ -136,7 +136,7 @@ def test_StocksSet_as_returns():
 
 def test_StocksSet_as_prices():
     """Test StocksSet as_prices."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5]},
         ),
@@ -157,7 +157,7 @@ def test_StocksSet_as_prices():
 
 def test_StocksSet_repr():
     """Test StocksSet repr."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
@@ -181,7 +181,7 @@ def test_StocksSet_repr():
 
 def test_StocksSet_to_dataframe():
     """Test StocksSet to_dataframe."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
@@ -206,7 +206,7 @@ def test_StocksSet_to_dataframe():
 
 def test_StocksSet_to_hdf5():
     """Test StocksSet to_hdf5."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {"stock0": [1, 2, 3, 4, 5], "stock1": [10, 20, 30, 40, 50]},
         ),
@@ -224,7 +224,7 @@ def test_StocksSet_to_hdf5():
 
 def test_StocksSet_weights_prune():
     """Test StocksSet weights_prune."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -243,7 +243,7 @@ def test_StocksSet_weights_prune():
 
 def test_StocksSet_delisted_prune():
     """Test StocksSet delisted_prune."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -263,7 +263,7 @@ def test_StocksSet_delisted_prune():
 
 def test_StocksSet_scale_weights():
     """Test StocksSet scale_weights."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -284,7 +284,7 @@ def test_StocksSet_scale_weights():
 
 def test_StocksSet_scale_weights_bad_scaler():
     """Test StocksSet scale_weights with bad scaler."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -303,7 +303,7 @@ def test_StocksSet_scale_weights_bad_scaler():
 
 def test_StocksSet_refresh_entropy():
     """Test StocksSet refresh_entropy."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -324,7 +324,7 @@ def test_StocksSet_refresh_entropy():
 
 def test_StocksSet_refresh_entropy_bad_entropy():
     """Test StocksSet refresh_entropy with bad entropy."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -343,7 +343,7 @@ def test_StocksSet_refresh_entropy_bad_entropy():
 
 def test_StocksSet_repr_html():
     """Test StocksSet repr_html."""
-    ss = StocksSet.from_dfkws(
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame({"stock": [1, 2, 3, 4, 5]}),
         entropy=0.5,
         window_size=5,
