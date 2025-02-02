@@ -5,6 +5,8 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Optimization base file."""
+
 from ..utils import mabc
 
 # =============================================================================

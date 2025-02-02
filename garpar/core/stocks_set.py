@@ -772,4 +772,5 @@ class StocksSet:
 
 @functools.wraps(StocksSet.from_dfkws)
 def mkss(*args, **kwargs):
+    """StocksSet.from_dfkws wrapper."""
     return StocksSet.from_dfkws(*args, **kwargs)

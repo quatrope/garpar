@@ -18,7 +18,7 @@ import numpy as np
 import scipy.stats
 
 from .ds_base import RandomEntropyStocksSetMakerABC
-from .. import __EPSILON__
+from ..constansts import EPSILON
 from ..utils import mabc
 
 
@@ -28,9 +28,7 @@ from ..utils import mabc
 
 
 def argnearest(arr, v):
-    """
-    Find the index of the element in the array `arr` that is nearest to the
-    value `v`.
+    """Find the index of the element in the array `v`.
 
     Parameters
     ----------
@@ -90,8 +88,8 @@ class RissoMixin:
     """
 
     def generate_loss_probabilities(self, window_size, eps=None):
-        """
-        Calculate candidate entropies and corresponding loss probabilities.
+        """Calculate candidate entropies and corresponding loss probabilities.
+
         Note that for a greater window size, the chances of losing or winning
         are more transparent.
 
@@ -108,7 +106,7 @@ class RissoMixin:
         """
         # Se corrigen probabilidades porque el cálculo de la entropía trabaja
         # con logaritmo y el logaritmo de cero no puede calcularse
-        epsilon = __EPSILON__ if eps is None else eps
+        epsilon = EPSILON if eps is None else eps
 
         loss_probability = np.linspace(
             epsilon, 1.0 - epsilon, num=window_size + 1
@@ -124,7 +122,8 @@ class RissoMixin:
         return modificated_entropy, loss_probability
 
     def get_window_loss_probability(self, window_size, entropy, eps=None):
-        """
+        """Get the loss probability that corresponds to the nearest entropy.
+
         Get the loss probability that corresponds to the nearest candidate
         entropy value to the target entropy.
 
@@ -172,9 +171,7 @@ class RissoMixin:
 
 
 class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
-    Implementation of a portfolio maker using a uniform distribution for
-    price changes.
+    """Implementation of a portfolio maker using a uniform distribution.
 
     This class extends RissoABC and overrides the method make_stock_price to
     simulate stock price changes based on a uniform distribution within
@@ -199,7 +196,8 @@ class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     high = mabc.hparam(default=5, converter=float)
 
     def make_stock_price(self, price, loss, random):
-        """
+        """Calculate the new stock price.
+
         Calculate the new stock price based on the current price, loss flag,
         and a random number generator following a uniform distribution.
 
@@ -287,9 +285,7 @@ def make_risso_uniform(
 
 
 class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
-    StocksSet maker implementing a stochastic model with normal
-    distribution for daily returns.
+    """StocksSet maker with normal distribution.
 
     Parameters
     ----------
@@ -320,7 +316,8 @@ class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     sigma = mabc.hparam(default=0.2, converter=float)
 
     def make_stock_price(self, price, loss, random):
-        """
+        """Generate a new stock price.
+
         Generate a new stock price based on current price, daily return
         direction, and normal distribution parameters.
 
@@ -452,7 +449,8 @@ class _LStableCache:
 
 
 class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
+    """StocksSet maker.
+
     StocksSet maker implementing a stochastic model with Levy stable
     distribution for daily returns.
 
@@ -510,7 +508,8 @@ class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
         )
 
     def make_stock_price(self, price, loss, random):
-        """
+        """Generate a new stock price.
+
         Generate a new stock price based on current price, daily return
         direction, and Levy stable distribution parameters.
 

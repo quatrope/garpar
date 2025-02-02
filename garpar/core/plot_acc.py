@@ -15,7 +15,7 @@ import attr
 
 import seaborn as sns
 
-from ..utils import accabc
+from ..utils import AccessorABC
 
 
 # =============================================================================
@@ -24,7 +24,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class StocksSetPlotterAccessor(accabc.AccessorABC):
+class StocksSetPlotterAccessor(AccessorABC):
     """Accessor class for plotting stocks set data.
 
     Attributes

@@ -11,7 +11,7 @@ import attr
 
 import numpy as np
 
-from ..utils import accabc
+from ..utils import AccessorABC
 
 # =============================================================================
 # STATISTIC ACCESSOR
@@ -19,7 +19,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class PricesAccessor(accabc.AccessorABC):
+class PricesAccessor(AccessorABC):
     """Accessor for price-related data and methods.
 
     The PricesAccessor class provides a convenient interface to perform various

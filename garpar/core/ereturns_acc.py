@@ -11,7 +11,7 @@ import attr
 
 from pypfopt import expected_returns
 
-from ..utils import accabc
+from ..utils import AccessorABC
 
 
 # =============================================================================
@@ -20,7 +20,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class ExpectedReturnsAccessor(accabc.AccessorABC):
+class ExpectedReturnsAccessor(AccessorABC):
     """Accessor class for computing expected returns of a stocks set.
 
     Attributes

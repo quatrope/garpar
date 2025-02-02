@@ -15,15 +15,15 @@
 # IMPORTS
 # =============================================================================
 
-from . import accabc, entropy, mabc, scalers
-from .base_utils import Bunch, df_temporal_header, unique_names
+from . import entropy, mabc, scalers
+from .base_utils import AccessorABC, Bunch, df_temporal_header, unique_names
 
 # =============================================================================
 # ALL
 # =============================================================================
 
 __all__ = [
-    "accabc",
+    "AccessorABC",
     "df_temporal_header",
     "Bunch",
     "unique_names",

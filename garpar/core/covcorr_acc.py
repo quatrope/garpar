@@ -11,7 +11,7 @@ import attr
 
 from pypfopt import risk_models
 
-from ..utils import accabc
+from ..utils import AccessorABC
 
 
 # =============================================================================
@@ -20,7 +20,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class CovarianceAccessor(accabc.AccessorABC):
+class CovarianceAccessor(AccessorABC):
     """Accessor class for calculating various covariance matrices.
 
     Attributes
@@ -146,8 +146,13 @@ class CovarianceAccessor(accabc.AccessorABC):
         return covshrink.oracle_approximating()
 
 
+# =============================================================================
+# CORRELATION ACCESSOR
+# =============================================================================
+
+
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class CorrelationAccessor(accabc.AccessorABC):
+class CorrelationAccessor(AccessorABC):
     """Accessor class for calculating various correlation matrices.
 
     Attributes

@@ -12,7 +12,7 @@ import attr
 from pypfopt import objective_functions
 
 from . import _mixins
-from ..utils import accabc
+from ..utils import AccessorABC
 
 # =============================================================================
 # UTILITIES ACCESSOR
@@ -20,7 +20,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class UtilitiesAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
+class UtilitiesAccessor(AccessorABC, _mixins.CoercerMixin):
     """Accessor for various utility and performance metrics.
 
     The UtilitiesAccessor class provides methods to compute ex-ante tracking

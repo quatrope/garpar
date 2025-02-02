@@ -14,7 +14,7 @@ import numpy as np
 import pypfopt
 
 from .opt_base import MeanVarianceFamilyMixin, OptimizerABC
-from .. import __EPSILON__
+from ..constansts import EPSILON
 from ..utils import mabc
 
 
@@ -22,7 +22,7 @@ from ..utils import mabc
 
 
 def _mv_min_volatility(instance, optimizer, ss):
-    """Optimize a StocksSet to minize risk
+    """Optimize a StocksSet to minize risk.
 
     Returns
     -------
@@ -38,7 +38,7 @@ def _mv_min_volatility(instance, optimizer, ss):
 
 
 def _mv_max_sharpe(instance, optimizer, ss):
-    """Optimize a StocksSet based on the max Sharpe's ratio
+    """Optimize a StocksSet based on the max Sharpe's ratio.
 
     Returns
     -------
@@ -56,7 +56,7 @@ def _mv_max_sharpe(instance, optimizer, ss):
 
 
 def _mv_max_quadratic_utility(instance, optimizer, ss):
-    """Optimize a StocksSet based on the max quadratic utility
+    """Optimize a StocksSet based on the max quadratic utility.
 
     Returns
     -------
@@ -79,7 +79,7 @@ def _mv_max_quadratic_utility(instance, optimizer, ss):
 
 
 def _mv_efficient_risk(instance, optimizer, ss):
-    """Optimize a StocksSet based on a specific risk value
+    """Optimize a StocksSet based on a specific risk value.
 
     Returns
     -------
@@ -102,7 +102,7 @@ def _mv_efficient_risk(instance, optimizer, ss):
 
 
 def _mv_efficient_return(instance, optimizer, ss):
-    """Optimize a StocksSet based on a specific return value
+    """Optimize a StocksSet based on a specific return value.
 
     Returns
     -------
@@ -125,7 +125,7 @@ def _mv_efficient_return(instance, optimizer, ss):
 
 
 def _mv_portfolio_performance(instance, optimizer, ss):
-    """Check a StocksSet best performance, do not use to optimize
+    """Check a StocksSet best performance, do not use to optimize.
 
     Returns
     -------
@@ -222,9 +222,21 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 
-        return np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) + __EPSILON__
+        return np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) + EPSILON
 
     def _calculate_weights(self, ss):
+        """Calculate the optimal weights for the stocks set.
+
+        Parameters
+        ----------
+        ss : StocksSet
+            The stocks set to optimize.
+
+        Returns
+        -------
+        tuple
+            A tuple containing the optimal weights and optimizer metadata.
+        """
         optimizer = self._get_optimizer(ss)
         model_func = MV_OPTIMIZATION_MODELS.get(self.model, self.model)
         return model_func(instance=self, optimizer=optimizer, ss=ss)
@@ -318,7 +330,7 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 
-        return np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) + __EPSILON__
+        return np.sqrt(1 / np.sum(np.linalg.pinv(cov_matrix))) + EPSILON
 
     def _get_model_and_target_value(self, ss):
         optimizer = self._get_optimizer(ss)
@@ -349,7 +361,6 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         tuple
             A tuple containing the optimal weights and optimizer metadata.
         """
-
         model, target_value, value_name = self._get_model_and_target_value(ss)
 
         market_neutral = self._get_market_neutral()

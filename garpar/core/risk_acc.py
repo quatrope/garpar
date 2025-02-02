@@ -14,7 +14,7 @@ import numpy as np
 from pypfopt import expected_returns, objective_functions
 
 from . import _mixins
-from ..utils import accabc
+from ..utils import AccessorABC
 
 # =============================================================================
 # RISK ACCESSOR
@@ -22,7 +22,7 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
+class RiskAccessor(AccessorABC, _mixins.CoercerMixin):
     """Accessor for various risk metrics.
 
     The RiskAccessor class provides methods to compute stock and stocks set

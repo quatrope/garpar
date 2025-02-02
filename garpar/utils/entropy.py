@@ -132,27 +132,30 @@ def risso(prices, window_size=None, **kwargs):
 
 
 def HOne(weights):
+    """Calculate minimax entropy with z1."""
     weights = np.asarray(weights)
     return 1 - np.sum(weights**2)
 
 
 def HInf(weights):
+    """Calculate minimax entropy with zinf."""
     weights = np.asarray(weights)
     return 1 - np.max(weights)
 
 
 def yagerOne(weights):
+    """Compute Yager's entropy for a fuzzy set and z=1.
+
+    Parameters
+    ----------
+    weights
+        array-like, list of membership degrees (values in [0, 1])
+
+    Returns
+    -------
+    entropy
+        float, Yager's entropy
     """
-    Computes Yager's entropy for a fuzzy set.
-
-    Parameters:
-    - weights: array-like, list of membership degrees (values in [0, 1])
-    - p: float, parameter to control sensitivity (default = 1)
-
-    Returns:
-    - entropy: float, Yager's entropy
-    """
-
     n = len(weights)
     weights = np.asarray(weights)
 
@@ -160,6 +163,18 @@ def yagerOne(weights):
 
 
 def yagerInf(weigths):
+    """Compute Yager's entropy for a fuzzy set and z=inf.
+
+    Parameters
+    ----------
+    weights
+        array-like, list of membership degrees (values in [0, 1])
+
+    Returns
+    -------
+    entropy:
+        float, Yager's entropy
+    """
     weigths = np.asarray(weigths)
     n = len(weigths)
 
