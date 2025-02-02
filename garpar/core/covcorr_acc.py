@@ -22,27 +22,6 @@ from ..utils import AccessorABC
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class CovarianceAccessor(AccessorABC):
     """Accessor class for calculating various covariance matrices.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of covariance matrix.
-    _ss : StocksSet
-        StocksSet object containing prices data.
-
-    Methods
-    -------
-    sample_cov(**kwargs)
-        Compute the sample covariance matrix.
-    exp_cov(**kwargs)
-        Compute the exponentially-weighted covariance matrix.
-    semi_cov(**kwargs)
-        Compute the semi-covariance matrix.
-    ledoit_wolf_cov(shrinkage_target="constant_variance", **kwargs)
-        Compute the Ledoit-Wolf covariance matrix with optional shrinkage
-        target.
-    oracle_approximating_cov(**kwargs)
-        Compute the Oracle-approximating covariance matrix.
     """
 
     _default_kind = "sample_cov"
@@ -154,26 +133,6 @@ class CovarianceAccessor(AccessorABC):
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class CorrelationAccessor(AccessorABC):
     """Accessor class for calculating various correlation matrices.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of correlation matrix.
-    _ss : StocksSet
-        StocksSet object containing prices data.
-
-    Methods
-    -------
-    sample_corr(**kwargs)
-        Compute the sample correlation matrix.
-    exp_corr(**kwargs)
-        Compute the exponentially-weighted correlation matrix.
-    semi_corr(**kwargs)
-        Compute the semi-correlation matrix.
-    ledoit_wolf_corr(**kwargs)
-        Compute the Ledoit-Wolf correlation matrix.
-    oracle_approximating_corr(**kwargs)
-        Compute the Oracle-approximating correlation matrix.
     """
 
     _default_kind = "sample_corr"

@@ -86,12 +86,11 @@ from . import (
     utilities_acc,
 )
 from ..utils import Bunch, df_temporal_header, entropy, scalers
+from ..constansts import GARPAR_METADATA_KEY
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-
-GARPAR_METADATA_KEY = "__garpar_metadata__"
 
 _SCALERS = {
     "proportion": scalers.proportion_scaler,
@@ -178,7 +177,6 @@ class StocksSet:
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=_as_float_array)
     _entropy = attr.ib(converter=_as_float_array)
-    # fmt: off
     _window_size = attr.ib(converter=lambda v: (None if pd.isna(v)
                                                 else int(v)))
     _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
@@ -258,7 +256,7 @@ class StocksSet:
 
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
-    def from_dfkws(
+    def from_prices(
         cls,
         prices,
         *,
@@ -321,12 +319,12 @@ class StocksSet:
 
     # INTERNALS
     def __len__(self):
-        """Return the number of days in the price DataFrame.
+        """Return the number of days in the StocksSet.
 
         Returns
         -------
         int
-            Number of days in the price DataFrame.
+            Number of days in the StocksSet.
         """
         return len(self._prices_df)
 
@@ -566,7 +564,7 @@ class StocksSet:
                         else {})
         new_metadata.update(metadata)
 
-        new_ss = self.from_dfkws(
+        new_ss = self.from_prices(
             new_prices_df,
             weights=new_weights,
             entropy=new_entropy,
@@ -894,7 +892,7 @@ class StocksSet:
 # =============================================================================
 
 
-@functools.wraps(StocksSet.from_dfkws)
+@functools.wraps(StocksSet.from_prices)
 def mkss(*args, **kwargs):
-    """StocksSet.from_dfkws wrapper."""
-    return StocksSet.from_dfkws(*args, **kwargs)
+    """StocksSet.from_prices wrapper."""
+    return StocksSet.from_prices(*args, **kwargs)

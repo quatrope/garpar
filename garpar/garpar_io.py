@@ -31,7 +31,8 @@ import numpy as np
 import pandas as pd
 
 from . import __version__ as VERSION
-from .core import GARPAR_METADATA_KEY, StocksSet
+from .constansts import GARPAR_METADATA_KEY
+from .core import StocksSet
 
 # =============================================================================
 # CONSTANTS

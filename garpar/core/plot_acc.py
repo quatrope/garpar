@@ -26,36 +26,6 @@ from ..utils import AccessorABC
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class StocksSetPlotterAccessor(AccessorABC):
     """Accessor class for plotting stocks set data.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of plot.
-    _ss : StocksSet
-        StocksSet object containing data to plot.
-
-    Methods
-    -------
-    line(returns=False, **kwargs)
-        Plot data as a line plot.
-    heatmap(returns=False, **kwargs)
-        Plot data as a heatmap.
-    wheatmap(**kwargs)
-        Plot weights as a heatmap.
-    hist(returns=False, **kwargs)
-        Plot data as a histogram.
-    whist(**kwargs)
-        Plot weights as a histogram.
-    box(returns=False, **kwargs)
-        Plot data as a box plot.
-    wbox(**kwargs)
-        Plot weights as a box plot.
-    kde(returns=False, **kwargs)
-        Plot data as a kernel density estimate plot.
-    wkde(**kwargs)
-        Plot weights as a kernel density estimate plot.
-    ogive(returns=False, **kwargs)
-        Plot data as an ogive (empirical cumulative distribution function).
     """
 
     _default_kind = "line"

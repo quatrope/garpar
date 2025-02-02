@@ -8,3 +8,5 @@
 """Constants file."""
 
 EPSILON = 1e-9
+
+GARPAR_METADATA_KEY = "__garpar_metadata__"

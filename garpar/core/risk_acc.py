@@ -28,30 +28,6 @@ class RiskAccessor(AccessorABC, _mixins.CoercerMixin):
     The RiskAccessor class provides methods to compute stock and stocks set
     betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at
     Risk (VaR).
-
-    Attributes
-    ----------
-    _default_kind : str
-        The default kind of risk measure, default is "ss_beta".
-    _ss : attr.ib
-        The StocksSet object containing weights, prices, and other attributes.
-
-    Methods
-    -------
-    stock_beta(market_prices=None, log_returns=False)
-        Computes the beta of individual stocks in the stocks_set.
-    stocks_set_beta(benchmark_weights=None, log_returns=False)
-        Computes the beta of the entire stocks_set.
-    treynor_ratio(expected_returns='capm', expected_returns_kw=None,
-                  negative=True, benchmark_weights=None, log_returns=False)
-        Computes the Treynor ratio of the stocks_set.
-    stocks_set_variance(covariance='sample_cov', covariance_kw=None)
-        Computes the variance of the stocks_set.
-    sharpe_ratio(expected_returns='capm', covariance='sample_cov',
-                 expected_returns_kw=None, covariance_kw=None, **kwargs)
-        Computes the Sharpe ratio of the stocks_set.
-    value_at_risk(alpha=0.05)
-        Computes the Value at Risk (VaR) of the stocks_set.
     """
 
     _default_kind = "ss_beta"

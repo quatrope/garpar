@@ -25,35 +25,6 @@ class PricesAccessor(AccessorABC):
     The PricesAccessor class provides a convenient interface to perform various
     statistical and mathematical operations on price data, using a predefined
     whitelist of allowable methods.
-
-    Attributes
-    ----------
-    _default_kind : str
-        The default kind of operation, default is "describe".
-    _ss : attr.ib
-        The stocks set object containing price data and other attributes.
-    _DF_WHITELIST : list of str
-        A list of allowable DataFrame methods.
-    _GARPAR_WHITELIST : list of str
-        A list of allowable custom methods.
-    _WHITELIST : list of str
-        A combined list of allowable methods from _DF_WHITELIST and
-        _GARPAR_WHITELIST.
-
-    Methods
-    -------
-    __getattr__(a)
-        Dynamically retrieve whitelisted attributes.
-    __dir__()
-        List available attributes, including whitelisted methods.
-    log()
-        Apply the natural logarithm to the price data.
-    log10()
-        Apply the base 10 logarithm to the price data.
-    log2()
-        Apply the base 2 logarithm to the price data.
-    mad(skipna=True)
-        Compute the mean absolute deviation of the price data.
     """
 
     _default_kind = "describe"

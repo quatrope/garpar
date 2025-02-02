@@ -22,23 +22,6 @@ from ..utils import AccessorABC
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class ExpectedReturnsAccessor(AccessorABC):
     """Accessor class for computing expected returns of a stocks set.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default method for computing expected returns.
-    _ss : StocksSet
-        StocksSet object containing prices data.
-
-    Methods
-    -------
-    capm(**kwargs)
-        Compute expected returns using the CAPM method.
-    mah(**kwargs)
-        Compute expected returns using the mean historical method.
-    emah(**kwargs)
-        Compute expected returns using the exponential moving average
-        historical method.
     """
 
     _default_kind = "capm"

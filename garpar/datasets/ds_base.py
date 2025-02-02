@@ -259,20 +259,15 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         """
         win_probability = 1.0 - loss_probability
 
-        # primero seleccionamos con las probabilidades adecuadas si en cada
-        # dia se pierde o se gana
+        # select based on loss_probability the raises and drops of an asset
         sequence = random.choice(
             [True, False],
             size=days,
             p=[loss_probability, win_probability],
         )
 
-        # con esto generamos lugares al azar donde vamos a invertir la
-        # secuencia anterior dado que las probabilidades representan
-        # una distribucion simétrica
         reverse_mask = random.choice([True, False], size=days)
 
-        # finalmente invertimos esos lugares
         final_sequence = np.where(reverse_mask, ~sequence, sequence)
 
         return final_sequence
@@ -309,10 +304,8 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
             days, loss_probability, random
         )
 
-        # fijamos el primer precio como el precio orginal
         current_price = initial_price
 
-        # vamos a tener tantos dias como dijimos mas un dia 0 al comienzo
         timeserie = np.empty(days + 1, dtype=float)
 
         # first price is the initial one

@@ -26,13 +26,6 @@ class UtilitiesAccessor(AccessorABC, _mixins.CoercerMixin):
     The UtilitiesAccessor class provides methods to compute ex-ante tracking
     error, ex-post tracking error, stocks set return, and quadratic utility
     for a given stocks set.
-
-    Attributes
-    ----------
-    _default_kind : str
-        The default kind of performance measure, default is "ss_return".
-    _ss : attr.ib
-        The StocksSet object containing weights and other attributes.
     """
 
     _default_kind = "ss_return"

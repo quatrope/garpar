@@ -17,20 +17,6 @@ class CoercerMixin:
 
     This class provides methods to coerce expected returns, weights, and
     covariance matrices into desired formats.
-
-    Attributes
-    ----------
-    _FORBIDDEN_METHODS : list of str
-        A list of method names that are forbidden.
-
-    Methods
-    -------
-    coerce_expected_returns(expected_returns, kw, asarray=True)
-        Coerce expected returns into the desired format.
-    coerce_weights(weights, asarray=True)
-        Coerce weights into the desired format.
-    coerce_covariance_matrix(cov_matrix, kw, asarray=True)
-        Coerce covariance matrices into the desired format.
     """
 
     _FORBIDDEN_METHODS = [

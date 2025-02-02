@@ -7,6 +7,6 @@
 
 """Core utilities."""
 
-from .stocks_set import GARPAR_METADATA_KEY, StocksSet, mkss
+from .stocks_set import StocksSet, mkss
 
-__all__ = ["GARPAR_METADATA_KEY", "StocksSet", "mkss"]
+__all__ = ["StocksSet", "mkss"]

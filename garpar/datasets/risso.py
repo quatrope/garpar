@@ -104,15 +104,14 @@ class RissoMixin:
             Tuple containing the calculated modified entropy values and
             corresponding loss probabilities.
         """
-        # Se corrigen probabilidades porque el cálculo de la entropía trabaja
-        # con logaritmo y el logaritmo de cero no puede calcularse
+        # log(0) is undefined
         epsilon = EPSILON if eps is None else eps
 
         loss_probability = np.linspace(
             epsilon, 1.0 - epsilon, num=window_size + 1
         )
 
-        # Calcula entropy
+        # calculate entropy with log2 as Risso with returns
         first_part = loss_probability * np.log2(loss_probability)
         second_part = (1.0 - loss_probability) * np.log2(
             1.0 - loss_probability
@@ -436,11 +435,11 @@ class _LStableCache:
         while not cache:
             values = refresher(size=self.refresh_size, random_state=random)
 
-            # lo dividimos en positivos y negaticos
+            # split it into possitive and negatives
             self.negatives.extend(values[values < 0])
             self.positives.extend(values[values >= 0])
 
-            # y la siguiente vez que se le pida valores, pedimos un poco maas
+            # next time ask for more samples
             self.refresh_size = self.refresh_size + int(
                 np.log(10 + self.refresh_size)
             )

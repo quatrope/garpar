@@ -24,30 +24,6 @@ from ..utils import AccessorABC
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
 class DiversificationMetricsAccessor(AccessorABC, _mixins.CoercerMixin):
     """A class to calculate various diversification metrics for a stocks set.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of diversification metric.
-    _ss : StocksSet
-        The stocks set object.
-
-    Methods
-    -------
-    ratio(covariance="sample_cov", covariance_kw=None)
-        Calculate the diversification ratio.
-    mrc(covariance="sample_cov", covariance_kw=None)
-        Calculate the marginal risk contribution.
-    pdi(n_components=None, whiten=False, svd_solver="auto", tol=0.0,
-        iterated_power="auto", n_oversamples=10,
-        power_iteration_normalizer="auto", random_state=None)
-        Calculate the stocks set diversification index.
-    zheng_entropy()
-        Calculate Zheng's entropy.
-    cross_entropy(benchmark_weights=None)
-        Calculate cross entropy.
-    ke_zang_entropy(covariance="sample_cov", covariance_kw=None)
-        Calculate Ke and Zang's entropy.
     """
 
     _default_kind = "ratio"
