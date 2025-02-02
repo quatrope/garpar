@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -9,7 +9,56 @@
 # DOCS
 # =============================================================================
 
-"""StocksSet."""
+"""Financial Portfolio/market Analysis with StocksSet.
+
+A comprehensive toolset for analyzing and managing financial portfolios/markets
+through the StocksSet class. Provides functionality for portfolio/market
+optimization, risk assessment, and performance analysis.
+
+Key Features:
+    - Portfolio/market construction and rebalancing
+    - Risk metrics calculation (variance, VaR, etc.)
+    - Expected returns estimation
+    - Correlation and covariance analysis
+    - Diversification metrics
+    - Portfolio/market visualization tools
+    - Market data handling and validation
+    - Entropy-based analysis
+
+Example:
+    >>> import garpar
+    >>> prices_df = [[...], [...]]  # Your price data
+    >>> ss = garpar.mkss(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=30
+    ... )
+    >>> ss.risk.value_at_risk()
+    >>> ss.plot.returns()
+
+    or
+
+    >>> import garpar
+    >>> prices_df = pd.DataFrame(...)  # Your price data
+    >>> ss = garpar.StocksSet.from_prices(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=30
+    ... )
+    >>> ss.risk.value_at_risk()
+    >>> ss.plot.returns()
+
+Classes:
+    StocksSet: Main class representing a financial portfolio.
+
+See Also:
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
+
+References:
+    Markowitz, H.M. (1952). Portfolio Selection
+    https://doi.org/10.1111/j.1540-6261.1952.tb01525.x
+
+"""
 
 # =============================================================================
 # IMPORTS
@@ -56,6 +105,61 @@ _ENTROPY_CALCULATORS = {"shannon": entropy.shannon}
 
 def _as_float_array(arr):
     return np.asarray(arr, dtype=float)
+
+
+# =============================================================================
+# SCLICER
+# =============================================================================
+
+
+class _Loc:
+    """Locator abstraction.
+
+    this class ensures that the correct objectives and weights are applied to
+    the sliced ``DecisionMatrix``.
+
+    """
+
+    def __init__(self, name, slicer, weights, entropy, window_size, metadata):
+        self._name = name
+        self._slicer = slicer
+        self._weights = weights
+        self._entropy = entropy
+        self._window_size = window_size
+        self._metadata = metadata
+
+    @property
+    def name(self):
+        """The name of the locator."""
+        return self._name
+
+    def __getitem__(self, slc):
+        """dm[slc] <==> dm.__getitem__(slc)."""
+        prices = self._slicer.__getitem__(slc)
+        if isinstance(prices, pd.Series):
+            prices = prices.to_frame().T
+
+            dtypes = self._slicer.obj.dtypes
+            dtypes = dtypes[dtypes.index.isin(prices.columns)]
+
+            prices = prices.astype(dtypes)
+
+        weights = self._weights
+        weights = weights[weights.index.isin(prices.columns)].to_numpy()
+
+        entropy = self._entropy
+        entropy = entropy[entropy.index.isin(prices.columns)].to_numpy()
+
+        window_size = self._window_size
+        metadata = dict(self._metadata)
+
+        return StocksSet(
+            prices_df=prices,
+            weights=weights,
+            entropy=entropy,
+            window_size=window_size,
+            metadata=metadata,
+        )
 
 
 # =============================================================================
@@ -299,6 +403,26 @@ class StocksSet:
         )
 
         return sliced
+
+    @property
+    def loc(self):
+        """"""
+        return _Loc(
+            "loc", slicer=self._prices_df.loc,
+            weights=self.weights,
+            entropy=self.entropy,
+            window_size=self.window_size,
+            metadata=self.metadata)
+
+    @property
+    def iloc(self):
+        """"""
+        return _Loc(
+            "iloc", slicer=self._prices_df.iloc,
+            weights=self.weights,
+            entropy=self.entropy,
+            window_size=self.window_size,
+            metadata=self.metadata)
 
     # PROPERTIES ==============================================================
     @property

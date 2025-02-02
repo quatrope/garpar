@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -305,9 +305,9 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         pandas.DataFrame
             DataFrame containing the stock prices for each day.
         """
-        # fmt: off
-        loss_sequence = self._make_loss_sequence(days, loss_probability,
-                                                 random)
+        loss_sequence = self._make_loss_sequence(
+            days, loss_probability, random
+        )
 
         # fijamos el primer precio como el precio orginal
         current_price = initial_price

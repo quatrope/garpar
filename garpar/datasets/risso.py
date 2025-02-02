@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -114,9 +114,9 @@ class RissoMixin:
 
         # Calcula entropy
         first_part = loss_probability * np.log2(loss_probability)
-        # fmt: off
-        second_part = ((1.0 - loss_probability) *
-                       np.log2(1.0 - loss_probability))
+        second_part = (1.0 - loss_probability) * np.log2(
+            1.0 - loss_probability
+        )
 
         modificated_entropy = -1.0 * (first_part + second_part)
         return modificated_entropy, loss_probability

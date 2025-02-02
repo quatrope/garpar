@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -100,7 +100,7 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
     """
     # # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
-    h5_metadata["utc_timestamp"] = dt.datetime.now(dt.UTC).isoformat()
+    h5_metadata["utc_timestamp"] = dt.datetime.now(dt.timezone.utc).isoformat()
 
     # prepare kwargs
     kwargs.setdefault("compression", "gzip")

@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -79,8 +79,7 @@ def test_proportion_risso(risso_stocks_set, window_size, expected_entropy):
 
     np.testing.assert_allclose(
         entropy.risso(ss.as_prices(), window_size=window_size),
-        # fmt: off
-        expected_entropy
+        expected_entropy,
     )
 
 
