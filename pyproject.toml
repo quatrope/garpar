@@ -1,3 +1,8 @@
+[tool.numpydoc_validation]
+checks = [
+    "all",
+]
+
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
