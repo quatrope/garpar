@@ -9,7 +9,39 @@
 # DOCS
 # =============================================================================
 
-"""Risso StocksSet Maker."""
+"""Risso StocksSet Maker.
+
+The creator of every generator that follows the Risso strategy to simulate
+a market based on entropy and window size.
+
+Key Features:
+    - Portfolio/market simulation
+    - Entropy-based simulation
+
+Example:
+    >>> import garpar
+    >>> ss = garpar.datasets.make_risso_normal(stocks=2, days=20)
+    >>> ss.as_prices()
+    >>> ss.as_returns()
+
+Classes:
+    RissoMixin: Class for generating and merging multiple stocks sets
+    RissoUniform: Class that utilizes a uniform distribution to generate prices
+    RissoNormal: Class that utilizes a normal distribution to generate prices
+    RissoLevyStable: Class that utilizes a levy stable distribution to
+        generate prices
+
+See Also
+--------
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
+
+References
+----------
+    Risso, W. A. (2008). The informational efficiency and the
+    financial crashes.
+    https://doi.org/10.1016/j.ribaf.2008.02.005.
+
+"""
 
 # =============================================================================
 # IMPORTS

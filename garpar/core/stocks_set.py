@@ -51,10 +51,12 @@ Example:
 Classes:
     StocksSet: Main class representing a financial portfolio.
 
-See Also:
+See Also
+--------
     PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
 
-References:
+References
+----------
     Markowitz, H.M. (1952). Portfolio Selection
     https://doi.org/10.1111/j.1540-6261.1952.tb01525.x
 
@@ -405,7 +407,7 @@ class StocksSet:
 
     @property
     def loc(self):
-        """"""
+        """Access to the prices dataframe through loc."""
         return _Loc(
             "loc",
             slicer=self._prices_df.loc,
@@ -417,7 +419,7 @@ class StocksSet:
 
     @property
     def iloc(self):
-        """"""
+        """Access to the prices dataframe through iloc."""
         return _Loc(
             "iloc",
             slicer=self._prices_df.iloc,

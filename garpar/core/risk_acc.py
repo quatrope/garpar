@@ -9,30 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""
-Risk Accessor.
-
-This module provides the `RiskAccessor` class, which enables the computation of various
-risk-related metrics for financial portfolios and individual stocks.
-
-Key Features:
-    - Computation of stock betas and stocks set beta
-    - Calculation of the Treynor ratio and Sharpe ratio
-    - Portfolio variance estimation
-    - Value at Risk (VaR) analysis
-    
-Example:
-    >>> accessor = RiskAccessor(ss)
-    >>> beta = accessor.stock_beta()
-    >>> var = accessor.value_at_risk(alpha=0.05)
-    >>> sharpe = accessor.sharpe_ratio()
-
-Classes:
-    RiskAccessor: Provides methods for computing risk-related metrics for stocks and portfolios.
-
-See Also:
-    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
-"""
+"""Risk Accessor."""
 
 # =============================================================================
 # IMPORTS

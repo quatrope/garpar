@@ -156,11 +156,13 @@ def h_one(weights):
     This metric emphasizes the evenness of the weight distribution,
     where higher values indicate a more uniform distribution.
 
-    Parameters:
+    Parameters
+    ----------
     weights (array-like): A list or numpy array of weights representing
     proportions.
 
-    Returns:
+    Returns
+    -------
     float: The computed entropy measure.
     """
     weights = np.asarray(weights)
@@ -178,11 +180,13 @@ def h_inf(weights):
     This measure focuses on the dominance of the largest weight, providing
     insight into the concentration of distribution.
 
-    Parameters:
+    Parameters
+    ----------
     weights (array-like): A list or numpy array of weights representing
     proportions.
 
-    Returns:
+    Returns
+    -------
     float: The computed entropy measure.
     """
     weights = np.asarray(weights)
