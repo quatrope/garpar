@@ -24,8 +24,7 @@ authors = [
     {name = "Diego N Gimenez Irusta", email = "d.gimenez0101@unc.edu.ar"},
     {name = "Nadia A Luczywo", email = "nadia.luczywo@unc.edu.ar"},
     {name = "Juan B Cabral", email = "jbcabral@unc.edu.ar"},
-    {name = "Trinchi Chalela", email = ""},
-    {name = "QuatroPe"}
+    {name = "Trinchi Chalela & QuatroPe", email = "quatrope@gmail.com"},
 ]
 readme = "README.md"
 license = {file = "LICENSE.txt"}
