@@ -110,17 +110,6 @@ class RissoMixin:
     This class extends RandomEntropyStocksSetMakerABC and implements methods
     for calculating candidate entropies and selecting loss probabilities based
     on a given window size and target entropy.
-
-    Attributes
-    ----------
-    entropy : float
-        Target entropy value for portfolio optimization.
-    random_state : numpy.random.Generator
-        Random number generator instance for reproducibility.
-    n_jobs : int, optional
-        Number of parallel jobs to run. Default is None.
-    verbose : int, optional
-        Verbosity level. Default is 0.
     """
 
     def generate_loss_probabilities(self, window_size, eps=None):
@@ -211,15 +200,6 @@ class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     This class extends RissoABC and overrides the method make_stock_price to
     simulate stock price changes based on a uniform distribution within
     specified bounds.
-
-    Attributes
-    ----------
-    low : float, optional
-        Lower bound of the uniform distribution for daily returns.
-        Default is 1.0.
-    high : float, optional
-        Upper bound of the uniform distribution for daily returns.
-        Default is 5.0.
 
     Notes
     -----
@@ -320,24 +300,7 @@ def make_risso_uniform(
 
 
 class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """StocksSet maker with normal distribution.
-
-    Parameters
-    ----------
-    mu : float, optional
-        Mean of the normal distribution for daily returns. Default is 0.0.
-    sigma : float, optional
-        Standard deviation of the normal distribution for daily returns.
-        Default is 0.2.
-    entropy : float, optional
-        Entropy parameter controlling the randomness in portfolio creation.
-        Default is 0.5.
-    random_state : {None, int, numpy.random.Generator}, optional
-        Seed or Generator for the random number generator. Default is None.
-    n_jobs : int, optional
-        Number of parallel jobs to run. Default is None.
-    verbose : int, optional
-        Verbosity level. Default is 0.
+    """StocksSet maker that follows a normal distribution.
 
     Notes
     -----
@@ -488,28 +451,6 @@ class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
 
     StocksSet maker implementing a stochastic model with Levy stable
     distribution for daily returns.
-
-    Parameters
-    ----------
-    alpha : float, optional
-        Shape parameter of the Levy stable distribution.Default is 1.6411.
-    beta : float, optional
-        Scale parameter of the Levy stable distribution. Default is -0.0126.
-    mu : float, optional
-        Location parameter (mean) of the Levy stable distribution.
-        Default is 0.0005.
-    sigma : float, optional
-        Scale parameter (spread) of the Levy stable distribution.
-        Default is 0.005.
-    entropy : float, optional
-        Entropy parameter controlling the randomness in stocks set creation.
-        Default is 0.5.
-    random_state : {None, int, numpy.random.Generator}, optional
-        Seed or Generator for the random number generator. Default is None.
-    n_jobs : int, optional
-        Number of parallel jobs to run. Default is None.
-    verbose : int, optional
-        Verbosity level. Default is 0.
 
     Notes
     -----
