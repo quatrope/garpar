@@ -87,7 +87,7 @@ from . import (
     risk_acc,
     utilities_acc,
 )
-from ..constansts import GARPAR_METADATA_KEY
+from ..constants import GARPAR_METADATA_KEY, EPSILON
 from ..utils import Bunch, df_temporal_header, entropy, scalers
 
 # =============================================================================
@@ -117,7 +117,7 @@ class _Loc:
     """Locator abstraction.
 
     this class ensures that the correct objectives and weights are applied to
-    the sliced ``DecisionMatrix``.
+    the sliced ``StocksSet``.
 
     """
 
@@ -662,7 +662,7 @@ class StocksSet:
 
     # PRUNNING ================================================================
 
-    def weights_prune(self, threshold=1e-4):
+    def weights_prune(self, threshold=EPSILON):
         """Prune the stocks set based on a weight threshold.
 
         Parameters
@@ -771,6 +771,7 @@ class StocksSet:
         return self.copy(weights=scaled_weights)
 
     # CALCULATE ENTROPY =======================================================
+
     def refresh_entropy(self, *, entropy="shannon", entropy_kws=None):
         """Refresh entropy values using a specified entropy calculation method.
 

@@ -54,7 +54,7 @@ import numpy as np
 import scipy.stats
 
 from .ds_base import RandomEntropyStocksSetMakerABC
-from ..constansts import EPSILON
+from ..constants import EPSILON
 from ..utils import mabc
 
 

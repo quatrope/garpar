@@ -13,7 +13,7 @@
 
 __version__ = "1.0"
 
-from . import constansts, datasets, garpar_io, optimize
+from . import constants, datasets, garpar_io, optimize
 from .core import StocksSet, mkss
 
 
@@ -23,5 +23,5 @@ __all__ = [
     "garpar_io",
     "optimize",
     "mkss",
-    "constansts",
+    "constants",
 ]

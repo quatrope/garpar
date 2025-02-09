@@ -23,7 +23,7 @@ import numpy as np
 import pypfopt
 
 from .opt_base import MeanVarianceFamilyMixin, OptimizerABC
-from ..constansts import EPSILON
+from ..constants import EPSILON
 from ..utils import mabc
 
 
