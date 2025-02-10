@@ -9,7 +9,50 @@
 # DOCS
 # =============================================================================
 
-"""Mean variance optimizers."""
+"""Mean variance optimizers.
+
+A set of implementations for different mean variance models. Including
+Markowitz mean-variance model.
+
+Key Features:
+    - Portfolio optimization
+    - Mean-variance models
+    - Markowitz model
+
+Example:
+    >>> import garpar
+    >>> prices_df = [[...], [...]]  # Your price data
+    >>> ss = garpar.mkss(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=5
+    ... )
+    >>> from garpar.optimize.mean_variance import MVOptimizer
+    >>> modl = MVOptimizer(model="efficient_risk", target_return=0.07)
+    >>> modl.optimize(ss)
+
+    or
+
+    >>> from garpar import StocksSet
+    >>> from garpar.optimize.mean_variance import MVOptimizer
+    >>> prices_df = pd.DataFrame(...)  # Your price data
+    >>> ss = StocksSet.from_prices(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=7
+    ... )
+    >>> modl = MVOptimizer(model="efficient_risk", target_return=0.07)
+    >>> modl.optimize(ss)
+
+Classes:
+    MVOptimizer: Main class representing an optimization model.
+    Markowitz: Main class representing the Markowitz optimization model.
+
+See Also
+--------
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
+
+"""
 
 
 # =============================================================================
@@ -196,7 +239,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     def _check_model(self, attribute, value):
         model_func = MV_OPTIMIZATION_MODELS.get(value, value)
         if not callable(model_func):
-            raise ValueError("'model' doesn't look like a method")
+            raise ValueError("'model' is not callable")
 
     def _get_optimizer(self, ss):
         expected_returns = ss.ereturns(self.returns, **self.returns_kw)
@@ -211,12 +254,16 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.risk_free_rate is not None:
             return self.risk_free_rate
 
+        print("Warning: no risk_free_rate specified, coercing it")
+
         expected_returns = list(ss.ereturns())
         return np.median(expected_returns)
 
     def _coerce_risk_aversion(self, ss):
         if self.risk_aversion is not None:
             return self.risk_aversion
+
+        print("Warning: no risk_aversion specified, coercing it")
 
         expected_returns = list(ss.ereturns())
         risk_aversion = 1 / np.var(expected_returns)
@@ -226,6 +273,8 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.target_return is not None:
             return self.target_return
 
+        print("Warning: no target_return specified, coercing it")
+
         returns = ss.as_returns().to_numpy().flatten()
         returns = returns[(returns != 0) & (~np.isnan(returns))]
         return np.min(np.abs(returns))
@@ -233,6 +282,8 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
     def _coerce_target_risk(self, ss):
         if self.target_risk is not None:
             return self.target_risk
+
+        print("Warning: no target_risk specified, coercing it")
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 
@@ -321,12 +372,15 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         float
             The coerced target return.
         """
-        if self.target_return is None:
-            returns = ss.as_returns().to_numpy().flatten()
-            returns = returns[returns != 0]
-            returns = returns[~np.isnan(returns)]
-            return np.min(np.abs(returns))
-        return self.target_return
+        if self.target_return:
+            return self.target_return
+
+        print("Warning: no target_return specified, coercing it")
+
+        returns = ss.as_returns().to_numpy().flatten()
+        returns = returns[returns != 0]
+        returns = returns[~np.isnan(returns)]
+        return np.min(np.abs(returns))
 
     def _coerce_target_risk(self, ss):
         """Coerce the target risk.
@@ -343,6 +397,8 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
         """
         if self.target_risk is not None:
             return self.target_risk
+
+        print("Warning: no target_risk specified, coercing it")
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 
