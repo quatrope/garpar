@@ -53,9 +53,7 @@ def _compute_marks(prices, **kwargs):
 
     avg_returns = returns.mean(axis=0)
 
-    marks = (returns.values >= avg_returns.values).astype(int)
-
-    return marks
+    return (returns.values >= avg_returns.values).astype(int)
 
 
 def shannon(prices, window_size=None, **kwargs):

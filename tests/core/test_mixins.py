@@ -5,14 +5,14 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Test _mixins module."""
+"""Test coercer_mixin module."""
 
 # =============================================================================
 # IMPORTS
 # =============================================================================
 
 from garpar import StocksSet
-from garpar.core._mixins import CoercerMixin
+from garpar.core.coercer_mixin import CoercerMixin
 
 import numpy as np
 

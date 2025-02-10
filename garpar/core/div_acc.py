@@ -21,7 +21,7 @@ import numpy as np
 
 from sklearn.decomposition import PCA
 
-from . import _mixins
+from . import coercer_mixin
 from ..utils import AccessorABC
 
 # =============================================================================
@@ -30,7 +30,7 @@ from ..utils import AccessorABC
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class DiversificationMetricsAccessor(AccessorABC, _mixins.CoercerMixin):
+class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
     """A class to calculate various diversification metrics for a StocksSet."""
 
     _default_kind = "ratio"
