@@ -6,7 +6,25 @@
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
 
-"""Different utilities to create or load stocks sets."""
+"""Datasets module for Garpar project.
+
+This module provides functions for market simulation. It is used to
+generate random market data based on a distribution, entropy, and window size.
+Additionally, it includes a function to load MERVAL data from January 2012 to
+August 2022.
+
+Key Features:
+    - Market simulation
+    - Data loading
+    - Entropy-based simulation
+    - MERVAL dataset
+
+See also
+--------
+    Wiston Adrián Risso,
+    The informational efficiency and the financial crashes.
+    https://doi.org/10.1016/j.ribaf.2008.02.005.
+"""
 
 from .data import load_MERVAL
 from .ds_base import RandomEntropyStocksSetMakerABC, StocksSetMakerABC

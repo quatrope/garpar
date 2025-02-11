@@ -9,7 +9,12 @@
 # DOCS
 # =============================================================================
 
-"""Utilities Accessor."""
+"""Utilities Accessor.
+
+The UtilitiesAccessor class provides methods to compute ex-ante tracking
+error, ex-post tracking error, stocks set return, and quadratic utility
+for a given stocks set.
+"""
 
 # =============================================================================
 # IMPORTS
@@ -64,11 +69,6 @@ class UtilitiesAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         -------
         float
             The ex-ante tracking error of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = UtilitiesAccessor(ss)
-        >>> error = accessor.ex_ante_tracking_error()
         """
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
         benchmark_weights = self.coerce_weights(benchmark_weights)
@@ -106,11 +106,6 @@ class UtilitiesAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         -------
         float
             The ex-post tracking error of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = UtilitiesAccessor(ss)
-        >>> error = accessor.ex_post_tracking_error()
         """
         historic_returns = self.coerce_expected_returns(
             historic_returns, historic_returns_kw
@@ -148,11 +143,6 @@ class UtilitiesAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         -------
         float
             The expected return of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = UtilitiesAccessor(ss)
-        >>> ret = accessor.stocks_set_return()
         """
         expected_returns = self.coerce_expected_returns(
             expected_returns, expected_returns_kw
@@ -199,11 +189,6 @@ class UtilitiesAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         -------
         float
             The quadratic utility of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = UtilitiesAccessor(ss)
-        >>> utility = accessor.quadratic_utility()
         """
         expected_returns = self.coerce_expected_returns(
             expected_returns, expected_returns_kw

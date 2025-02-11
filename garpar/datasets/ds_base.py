@@ -9,7 +9,21 @@
 # DOCS
 # =============================================================================
 
-"""Base StocksSet Maker."""
+"""Abstract classes for StocksSet makers.
+
+This module provides two abstract classes for creating stocks sets. One general
+class, StocksSetMakerABC, and one specific class, that considers entropy,
+RandomEntropyStocksSetMakerABC, that implements the StocksSetMakerABC
+interface.
+
+Key Features:
+    - Entropy-based portfolio simulation
+
+See also
+--------
+    StocksSetMakerABC
+
+"""
 
 # =============================================================================
 # IMPORTS

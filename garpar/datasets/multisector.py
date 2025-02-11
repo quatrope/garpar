@@ -9,7 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""Multisector."""
+"""Multisector class for Garpar project."""
 
 # =============================================================================
 # IMPORTS
@@ -29,25 +29,10 @@ from ..utils import Bunch, mabc, unique_names
 
 
 class MultiSector(StocksSetMakerABC):
-    """StocksSet maker for creating a multi-sector stocks set.
+    """StocksSet maker for creating a multi-sector StocksSet.
 
-    Attributes
-    ----------
-    makers : tuple
-        Tuple of (maker_name, StocksSetMakerABC) pairs representing different
-        sector makers.
-
-    Methods
-    -------
-    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100,
-                    weights=None)
-        Creates a multi-sector stocks set based on specified parameters.
-
-    Notes
-    -----
-    This class extends StocksSetMakerABC and allows for creating a stocks set
-    with multiple sectors, each handled by a different StocksSetMakerABC
-    instance.
+    This class allows the user to analyze the stocks of multiple sectors at
+    the same time.
     """
 
     makers = mabc.hparam(converter=lambda v: tuple(dict(v).items()))
@@ -191,29 +176,6 @@ def make_multisector(*makers, **kwargs):
     StocksSet
         Multi-sector stocks set object generated
         by MultiSector.make_stocks_set.
-
-    Notes
-    -----
-    This function creates a multi-sector stocks set by initializing a
-    MultiSector object with unique names for each sector maker and then
-    calling make_stocks_set with specified parameters.
-
-    Example
-    -------
-    Example usage:
-
-    >>> from mymodule import make_multisector, CustomSectorMaker1,
-        CustomSectorMaker2
-
-    >>> port = make_multisector(
-    >>>     CustomSectorMaker1(),
-    >>>     CustomSectorMaker2(),
-    >>>     window_size=7,
-    >>>     days=250,
-    >>>     stocks=15,
-    >>>     price=200,
-    >>>     weights=[0.2, 0.3, 0.5]
-    >>> )
     """
     names = [type(maker).__name__.lower() for maker in makers]
     named_makers = unique_names(names=names, elements=makers)

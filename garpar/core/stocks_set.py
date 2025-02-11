@@ -87,7 +87,7 @@ from . import (
     risk_acc,
     utilities_acc,
 )
-from ..constants import GARPAR_METADATA_KEY, EPSILON
+from ..constants import EPSILON, GARPAR_METADATA_KEY
 from ..utils import Bunch, df_temporal_header, entropy, scalers
 
 # =============================================================================

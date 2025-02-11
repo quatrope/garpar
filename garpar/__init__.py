@@ -25,6 +25,18 @@ Key Features:
     - Market data handling and validation
     - Entropy-based analysis
 
+Available subpackages
+---------------------
+core
+    Core functionality for creating and analyzing StocksSet objects.
+datasets
+    Functionality to create and manipulate StocksSet objects.
+optimize
+    Optimization models for StocksSets objects.
+
+Functions:
+    mkss: Function for creating StocksSet objects.
+
 """
 
 # =============================================================================
@@ -33,9 +45,8 @@ Key Features:
 
 import importlib
 
-from . import constants, datasets, garpar_io, optimize
+from . import constants, core, datasets, garpar_io, optimize
 from .core import StocksSet, mkss
-
 
 # =============================================================================
 # METADATA
@@ -43,12 +54,16 @@ from .core import StocksSet, mkss
 
 __version__ = importlib.metadata.version("garpar")
 
+# =============================================================================
+# EXPORTS
+# =============================================================================
 
 __all__ = [
-    "StocksSet",
+    "constants",
+    "core",
     "datasets",
     "garpar_io",
-    "optimize",
     "mkss",
-    "constants",
+    "optimize",
+    "StocksSet",
 ]

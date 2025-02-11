@@ -9,14 +9,26 @@
 # DOCS
 # =============================================================================
 
-"""Package modules provided."""
+"""Garpar optimize module.
+
+This module provides optimizers for Garpar project. It includes mean-variance
+optimizers. And interfaces for such optimizers.
+
+Key Features:
+    - Portfolio optimization
+    - Mean-variance models
+    - Markowitz model
+
+"""
 
 # =============================================================================
 # IMPORTS
 # =============================================================================
 
-__version__ = "0.1"
-
 from . import mean_variance
+
+# =============================================================================
+# EXPORTS
+# =============================================================================
 
 __all__ = ["mean_variance"]

@@ -9,7 +9,10 @@
 # DOCS
 # =============================================================================
 
-"""Utilities for garpar."""
+"""Utilities for Garpar project.
+
+Utilities for particular implementations of Garpar project.
+"""
 
 # =============================================================================
 # IMPORTS

@@ -5,7 +5,10 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Core utilities."""
+"""Core utilities for Garpar project.
+
+The core module provides classes and functions for the Garpar project.
+"""
 
 from .stocks_set import StocksSet, mkss
 

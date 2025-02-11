@@ -5,7 +5,7 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Constants file."""
+"""Constants for Garpar project."""
 
 EPSILON = 1e-9
 
