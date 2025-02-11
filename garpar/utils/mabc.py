@@ -49,8 +49,8 @@ def hparam(**kwargs):
         Additional keyword arguments are passed and are documented in
         ``attr.ib()``.
 
-    Return
-    ------
+    Returns
+    -------
     Hyper parameter with a default value.
 
     Notes
@@ -80,8 +80,8 @@ def mproperty(**kwargs):
         Additional keyword arguments are passed and are documented in
         ``attr.ib()``.
 
-    Return
-    ------
+    Returns
+    -------
     Hyper parameter with a default value.
 
     Notes
@@ -102,15 +102,6 @@ class ModelABC(metaclass=ABCMeta):
     designed to be used with the `attrs` library, and it ensures that all
     inherited classes are decorated with `attr.s()` and have a frozen
     configuration.
-
-    Parameters
-    ----------
-    None
-
-    Attributes
-    ----------
-    __model_cls_config__ : dict
-        Class configuration for `attr.s()`.
     """
 
     __model_cls_config__ = {"repr": False, "frozen": True}

@@ -62,8 +62,15 @@ def _df_to_sarray(df):
     This is functionally equivalent to but more efficient than
     np.array(df.to_array())
 
-    :param df: the data frame to convert
-    :return: a numpy structured array representation of df
+    Parameters
+    ----------
+    df : DataFrame
+        The data frame to convert
+    
+    Returns
+    -------
+    z
+        A numpy structured array representation of df
 
 
     """
@@ -97,7 +104,6 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
         The name of the group where the stocks set will be stored.
     kwargs :
         Extra arguments to the function ``h5py.File.create_dataset``.
-
     """
     # # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
@@ -129,7 +135,20 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
 
 
 def read_hdf5(path_or_stream, group="stocks set"):
-    """HDF5 file reader."""
+    """HDF5 file reader.
+    
+    Parameters
+    ----------
+    path_to_stream : String
+        Path to hdf5 stream
+    group : String
+        The value to look inside hdf5 file
+
+    Returns
+    -------
+    ss
+        A StocksSet instance
+    """
     with h5py.File(path_or_stream, "r") as fp:
         grp = fp[group]
 
