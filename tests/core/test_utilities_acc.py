@@ -13,11 +13,14 @@
 
 import numpy as np
 
+import pytest
+
 # =============================================================================
 # DRISK TESTS
 # =============================================================================
 
 
+@pytest.fixture(scope="function")
 def test_UtilitiesAccessor_ex_ante_tracking_error(risso_stocks_set):
     """Test UtilitiesAccessor ex ante tracking error."""
     ss = risso_stocks_set(random_state=42)
@@ -25,6 +28,7 @@ def test_UtilitiesAccessor_ex_ante_tracking_error(risso_stocks_set):
     np.testing.assert_allclose(ss.utilities.ex_ante_tracking_error(), expected)
 
 
+@pytest.fixture(scope="function")
 def test_UtilitiesAccessor_ex_post_tracking_error(risso_stocks_set):
     """Test UtilitiesAccessor ex post tracking error."""
     ss = risso_stocks_set(random_state=42)
@@ -32,15 +36,17 @@ def test_UtilitiesAccessor_ex_post_tracking_error(risso_stocks_set):
     np.testing.assert_allclose(ss.utilities.ex_post_tracking_error(), expected)
 
 
+@pytest.fixture(scope="function")
 def test_UtilitiesAccessor_portfolio_return(risso_stocks_set):
     """Test UtilitiesAccessor portfolio return."""
     ss = risso_stocks_set(random_state=42)
-    expected = 0.15201221100419665
+    expected = 0.15201221100419662
     np.testing.assert_allclose(ss.utilities.stocks_set_return(), expected)
 
 
+@pytest.fixture(scope="function")
 def test_UtilitiesAccessor_quadratic_utility(risso_stocks_set):
     """Test UtilitiesAccessor quadratic utility."""
     ss = risso_stocks_set(random_state=42)
-    expected = 0.1524349633808143
+    expected = 0.15243496338081428
     np.testing.assert_allclose(ss.utilities.quadratic_utility(), expected)

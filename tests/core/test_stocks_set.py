@@ -232,7 +232,7 @@ def test_StocksSet_weights_prune():
                 "stock2": [10, 20, 30, 40, 50],
             },
         ),
-        weights=[0.7, 0.29999, 0.000001],
+        weights=[0.7, 0.29999, 1e-10],
         entropy=0.5,
         window_size=5,
     )

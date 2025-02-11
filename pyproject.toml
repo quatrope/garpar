@@ -20,11 +20,10 @@ ignore = [
 
 [tool.pytest.ini_options]
 markers = [
-    "slow: marks tests that require significant execution time (deselect with '-m \"not slow\"')",
     "plot: marks tests related to matplotlib integration (deselect with '-m \"not plot\"')",
 ]
 testpaths = ["tests"]
-addopts = "-m 'not slow'"
+addopts = "-m 'not slow' -n auto"
 
 # =============================================================================
 # PACKAGING
