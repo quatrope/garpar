@@ -2,6 +2,7 @@ include LICENSE
 include README.md
 include pyproject.toml
 
+include setup.py
 recursive-include garpar *.csv
 
 exclude tox.ini
@@ -14,3 +15,4 @@ recursive-exclude assets *
 recursive-exclude draft *
 recursive-exclude tools *
 recursive-exclude res   *
+recursive-exclude docs   *
