@@ -1,14 +1,9 @@
 Sphinx
-sphinx_rtd_theme
-
-nbsphinx
-sphinx_copybutton
+sphinx-autobuild
 
 ipykernel
 ipython
-
-sphinxcontrib-bibtex
-sphinx-nested-apidoc
-pybtex-apa-style
+nbsphinx
+lxml_html_clean
 
 m2r2
