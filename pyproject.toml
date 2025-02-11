@@ -1,40 +1,53 @@
 [tool.numpydoc_validation]
-checks = [
-    "all",
-]
+checks = ["all"]
 
 [tool.black]
 line-length = 79
 target-version = ['py310', 'py311', 'py312', 'py313']
+
+[tool.check-manifest]
+ignore = [
+    "tox.ini",
+    ".header-template",
+    "requirements.txt",
+    "requirements_dev.txt",
+    "tests",
+    "assets",
+    "draft",
+    "tools",
+    "res",
+]
 
 [tool.pytest.ini_options]
 markers = [
     "slow: marks tests that require significant execution time (deselect with '-m \"not slow\"')",
     "plot: marks tests related to matplotlib integration (deselect with '-m \"not plot\"')",
 ]
-testpaths = [
-    "tests",
-]
+testpaths = ["tests"]
 addopts = "-m 'not slow'"
+
+# =============================================================================
+# PACKAGING
+# =============================================================================
 
 [project]
 name = "garpar"
 version = "1.0.0"
 authors = [
-    {name = "Diego N Gimenez Irusta", email = "d.gimenez0101@unc.edu.ar"},
-    {name = "Nadia A Luczywo", email = "nadia.luczywo@unc.edu.ar"},
-    {name = "Juan B Cabral", email = "jbcabral@unc.edu.ar"},
-    {name = "Trinchi Chalela", email = "mchalela@unc.edu.ar"},
+    { name = "Diego N Gimenez Irusta", email = "d.gimenez0101@unc.edu.ar" },
+    { name = "Nadia A Luczywo", email = "nadia.luczywo@unc.edu.ar" },
+    { name = "Juan B Cabral", email = "jbcabral@unc.edu.ar" },
+    { name = "Trinchi Chalela", email = "mchalela@unc.edu.ar" },
 ]
 readme = "README.md"
-license = {file = "LICENSE.txt"}
+license = { file = "LICENSE.txt" }
 description = "Generation and Analysis of Real and Artificial Portfolio Returns"
-keywords=[
+keywords = [
     "market simulation",
     "informational efficiency",
     "portfolio optimization",
 ]
-classifiers=[
+classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
@@ -66,6 +79,3 @@ include-package-data = true
 [tool.setuptools.packages.find]
 include = ["garpar", "garpar.*"]
 namespaces = false
-
-[tool.check-manifest]
-ignore = ["tox.ini", ".header-template", "requirements.txt", "requirements_dev.txt", "tests", "assets", "draft", "tools", "res"]

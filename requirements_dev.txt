@@ -1,0 +1,19 @@
+-e .
+
+ipdb
+pytest
+black
+
+pytest-coverage
+pytest-xdist
+
+flake8
+flake8-import-order
+flake8-black
+flake8-builtins
+
+pydocstyle
+
+https://github.com/quatrope/qafan/archive/refs/heads/master.zip
+
+-r docs/requirements.txt
