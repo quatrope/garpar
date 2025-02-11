@@ -112,3 +112,4 @@ draft/
 
 # misc
 assets/**
+docs/source/_dynamic/*.rst
