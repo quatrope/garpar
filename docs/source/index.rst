@@ -1,23 +1,24 @@
-.. Scikit-Criteria documentation master file, created by
+.. Garpar documentation master file, created by
    sphinx-quickstart on Sun Jan 11 22:01:56 2015.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 .. meta::
-   :keywords: muticriteria, mcda, mcdm, weightedsum, weightedproduct, simus, topsis, moora, electre, critic, entropy, dominance
+   :keywords: portfolio optimizarion, market
 
-.. title:: Scikit-Criteria Documentation
+.. title:: Garpar Documentation
 
 
-.. image:: _static/logo_medium.png
+.. image:: _static/logo.png
     :align: center
-    :scale: 100 %
+    :scale: 40 %
 
 ----
 
 .. rst-class:: version
 
 Ver. |version|
+
 
 ----
 
@@ -33,20 +34,16 @@ Contents
     :caption: Tutorials
 
     install
-    tutorial/index
+    tutorials/index
+
 
 .. toctree::
-    :maxdepth: 3
-    :caption: Reference
-
-    api/index
-
-.. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: Misc
 
     changelog
-    bibliography
+
+
 
 
 
