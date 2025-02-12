@@ -9,10 +9,10 @@
 # DOCS
 # =============================================================================
 
-"""Optimize base class and mean variance family mixin.
+"""Optimizer base classes module.
 
-This module provides an abstract base class for the stocks set optimizers.
-It also provides a mixin class for mean-variance family optimizers.
+This module provides an abstract base class for optimization models. It
+also provides a mixin class for mean-variance family optimizers.
 
 Example:
     >>> from garpar.optimize.opt_base import OptimizerABC
@@ -25,10 +25,6 @@ Example:
     >>> my_optimizer = MyOptimizer()
     >>> ss = garpar.mkss(prices=[...])
     >>> my_optimizer.optimize(ss)
-
-Classes:
-    OptimizerABC: Abstract base class for stocks set optimizers.
-    MeanVarianceFamilyMixin: Mixin class for mean-variance family optimizers.
 
 """
 

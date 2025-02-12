@@ -9,12 +9,14 @@
 # DOCS
 # =============================================================================
 
-"""Datasets module for Garpar project.
+"""Datasets subpackage of Garpar project.
 
-This module provides functions for market simulation. It is used to
-generate random market data based on a distribution, entropy, and a
-window size. Additionally, it includes a function to load MERVAL data from
-January 2012 to August 2022.
+This package provides everything related to StocksSets generation. It includes
+StocksSet makers for simulation of market data. It includes a base class for
+StocksSet makers and a base class for random entropy-based functions for market
+simulation. It also includes a base class for multi-sector StocksSet makers.
+Additionally, it includes a function to create a StocksSet from MERVAL data
+from January 2012 to August 2022.
 
 Key Features:
     - Entropy-based market simulation

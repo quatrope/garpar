@@ -9,15 +9,20 @@
 # DOCS
 # =============================================================================
 
-"""Garpar optimize module.
+"""Optimize subpackage of Garpar project.
 
-This module provides optimizers for Garpar project. It includes mean-variance
-optimizers. And interfaces for such optimizers.
+This subpackage offers foundational classes for developing mean-variance 
+optimization models tailored for StocksSets, featuring various implementations 
+leveraging PyPortfolioOpt.
 
 Key Features:
     - Portfolio optimization
     - Mean-variance models
     - Markowitz model
+
+See Also
+--------
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
 
 """
 

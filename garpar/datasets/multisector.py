@@ -19,7 +19,6 @@ Key Features:
 
 Example:
     >>> from garpar.datasets import make_multisector, RissoNormal, RissoUniform
-
     >>> port = make_multisector(
     ...     RissoNormal(),
     ...     RissoUniform(),
@@ -27,7 +26,6 @@ Example:
     ...     days=365,
     ...     window_size=5,
     ... )
-
     >>> port.as_prices()
 
 """

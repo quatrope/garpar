@@ -9,8 +9,10 @@
 # DOCS
 # =============================================================================
 
-"""Entropy."""
+"""Entropy measure module.
 
+A collection of functions for calculating entropy measures.
+"""
 
 # =============================================================================
 # IMPORTS

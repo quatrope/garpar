@@ -11,8 +11,7 @@
 
 """Mean variance optimizers.
 
-A set of implementations for different mean variance models. Including
-Markowitz mean-variance model.
+Mean-variance models implementations.
 
 Key Features:
     - Portfolio optimization
@@ -43,10 +42,6 @@ Example:
     ... )
     >>> modl = MVOptimizer(model="efficient_risk", target_return=0.07)
     >>> modl.optimize(ss)
-
-Classes:
-    MVOptimizer: Main class representing an optimization model.
-    Markowitz: Main class representing the Markowitz optimization model.
 
 See Also
 --------
