@@ -18,7 +18,14 @@ DATA_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
 
 def load_MERVAL(imputation="ffill", first=None, last=None):
-    """Argentine stock market prices (MERVAL)."""
+    """Argentine stock market prices (MERVAL).
+
+    Returns
+    -------
+    garpar.core.stocks_set.StocksSet
+        A StocksSet instance containing the MERVAL data.
+
+    """
     df = pd.read_csv(DATA_PATH / "merval.csv", index_col="Days")
     df.index = pd.to_datetime(df.index)
     df.sort_index(inplace=True)

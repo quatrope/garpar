@@ -31,17 +31,16 @@ Key Features:
 # IMPORTS
 # =============================================================================
 
-import importlib
 
-# from . import constants, datasets, garpar_io, optimize
-# from .core import StocksSet, mkss
+from . import constants, datasets, garpar_io, optimize
+from .core import StocksSet, mkss
 
 
 # =============================================================================
 # METADATA
 # =============================================================================
 
-__version__ = importlib.metadata.version("garpar")
+__version__ = constants.VERSION
 
 
 __all__ = [

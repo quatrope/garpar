@@ -37,11 +37,6 @@ class MultiSector(StocksSetMakerABC):
         Tuple of (maker_name, StocksSetMakerABC) pairs representing different
         sector makers.
 
-    Methods
-    -------
-    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100,
-                    weights=None)
-        Creates a multi-sector stocks set based on specified parameters.
 
     Notes
     -----
@@ -126,7 +121,7 @@ class MultiSector(StocksSetMakerABC):
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             StocksSet object representing the generated multi-sector stocks
             set.
         """
@@ -188,9 +183,8 @@ def make_multisector(*makers, **kwargs):
 
     Returns
     -------
-    StocksSet
-        Multi-sector stocks set object generated
-        by MultiSector.make_stocks_set.
+    garpar.core.stocks_set.StocksSet
+        StocksSet object representing the generated multi-sector stocks set.
 
     Notes
     -----

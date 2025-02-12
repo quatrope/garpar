@@ -273,7 +273,7 @@ def make_risso_uniform(
 
     Returns
     -------
-    StocksSet
+    garpar.core.stocks_set.StocksSet
         Generated portfolio instance.
 
     Notes
@@ -381,7 +381,7 @@ def make_risso_normal(
 
     Returns
     -------
-    StocksSet
+    garpar.core.stocks_set.StocksSet
         Generated stocks set instance.
 
     Notes
@@ -556,7 +556,7 @@ def make_risso_levy_stable(
 
     Returns
     -------
-    StocksSet
+    garpar.core.stocks_set.StocksSet
         StocksSet object representing the created stocks set.
 
     Notes

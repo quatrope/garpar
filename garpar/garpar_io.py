@@ -30,8 +30,7 @@ import numpy as np
 
 import pandas as pd
 
-from . import __version__ as VERSION
-from .constants import GARPAR_METADATA_KEY
+from .constants import GARPAR_METADATA_KEY, VERSION
 from .core import StocksSet
 
 # =============================================================================
@@ -40,8 +39,8 @@ from .core import StocksSet
 
 _DEFAULT_HDF5_METADATA = {
     "garpar": VERSION,
-    "author_email": "nluczywo@unc.edu.ar",
-    "affiliation": "FCE-UNC, QuatroPe",
+    "author_email": "jbcabral@unc.edu.ar, nluczywo@unc.edu.ar",
+    "affiliation": "FAMAF-UNC, FCE-UNC, QuatroPe",
     "url": "https://github.com/quatrope/garpar",
     "platform": platform.platform(),
     "system_encoding": sys.getfilesystemencoding(),
@@ -66,7 +65,7 @@ def _df_to_sarray(df):
     ----------
     df : DataFrame
         The data frame to convert
-    
+
     Returns
     -------
     z
@@ -105,6 +104,7 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
     kwargs :
         Extra arguments to the function ``h5py.File.create_dataset``.
     """
+
     # # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
     h5_metadata["utc_timestamp"] = dt.datetime.now(dt.timezone.utc).isoformat()
@@ -136,7 +136,7 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
 
 def read_hdf5(path_or_stream, group="stocks set"):
     """HDF5 file reader.
-    
+
     Parameters
     ----------
     path_to_stream : String
@@ -146,7 +146,7 @@ def read_hdf5(path_or_stream, group="stocks set"):
 
     Returns
     -------
-    ss
+    ss: garpar.core.stocks_set.StocksSet
         A StocksSet instance
     """
     with h5py.File(path_or_stream, "r") as fp:

@@ -32,23 +32,11 @@ from ..utils import mabc
 
 
 class StocksSetMakerABC(mabc.ModelABC):
-    """
-    Abstract base class for defining a stocks set maker.
+    """Abstract base class for defining a stocks set maker.
 
-    Attributes
-    ----------
-    _MKPORT_SIGNATURE : set of str
-        Expected signature for the make_stocks_set method.
+    This class provides a base for all stocks set makers in the project and
+    ensures that all subclasses implement a make_stocks_set method.
 
-    Methods
-    -------
-    __init_subclass__()
-        Checks the signature of make_stocks_set method against
-        _MKPORT_SIGNATURE.
-
-    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100,
-                    weights=None)
-        Abstract method to create a stocks set.
     """
 
     _MKPORT_SIGNATURE = {
@@ -351,8 +339,10 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
 
         Returns
         -------
-        StocksSet
-            StocksSet object representing the generated stocks set.
+        garpar.core.stocks_set.StocksSet
+            Object representing the generated stocks prices
+            along multiple days.
+
         """
         if window_size <= 0 or days < window_size:
             raise ValueError("'window_size' must be > 0")

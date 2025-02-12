@@ -5,8 +5,25 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Core utilities."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Core module.
+
+This module contains the core functionality of the Garpar package, including
+the StocksSet class and related functions.
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 from .stocks_set import StocksSet, mkss
+
+# =============================================================================
+# EXPORTS
+# =============================================================================
 
 __all__ = ["StocksSet", "mkss"]
