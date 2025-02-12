@@ -11,8 +11,9 @@
 
 """Risso StocksSet Maker.
 
-The creator of every generator that follows the Risso strategy to simulate
-a market based on entropy and window size.
+This module provides generators that use the Risso informational entropy
+calculation to determine loss probabilities. Each generator also adheres to a 
+specific distribution for generating stock prices.
 
 Example
 -------
@@ -21,11 +22,6 @@ Example
     >>> ss = garpar.datasets.make_risso_normal(stocks=2, days=20)
     >>> ss.as_prices()
     >>> ss.as_returns()
-
-
-See Also
---------
-    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
 
 References
 ----------
@@ -103,7 +99,7 @@ class RissoMixin:
     on a given window size and target entropy.
     """
 
-    def generate_loss_probabilities(self, window_size, eps=None):
+    def _generate_loss_probabilities(self, window_size, eps=None):
         """Calculate candidate entropies and corresponding loss probabilities.
 
         Note that for a greater window size, the chances of losing or winning
@@ -162,7 +158,7 @@ class RissoMixin:
         ... 0.33333333366666673
 
         """
-        h_candidates, loss_probabilities = self.generate_loss_probabilities(
+        h_candidates, loss_probabilities = self._generate_loss_probabilities(
             window_size, eps
         )
         idx = argnearest(h_candidates, entropy)

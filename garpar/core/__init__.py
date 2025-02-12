@@ -12,8 +12,8 @@
 
 """Core module.
 
-This module contains the core functionality of the Garpar package, including
-the StocksSet class and related functions.
+This module contains the core functionality of the Garpar project, including
+the StocksSet class and related functions to it.
 
 """
 

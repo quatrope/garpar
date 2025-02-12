@@ -14,7 +14,10 @@
 # IMPORTS
 # =============================================================================
 
-import importlib.metadata
+try:
+    import importlib.metadata as importlib_metadata
+except ImportError:  # Python < 3.10
+    import importlib_metadata
 
 
 # =============================================================================
@@ -22,7 +25,7 @@ import importlib.metadata
 # =============================================================================
 
 #: Version of the package
-VERSION = importlib.metadata.version("garpar")
+VERSION = importlib_metadata.version("garpar")
 
 #: Tolerance value for numerical operations
 EPSILON = 1e-9

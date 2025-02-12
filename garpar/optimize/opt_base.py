@@ -11,8 +11,9 @@
 
 """Optimization base file.
 
-This module provides an abstract base class for mean-variance family
-optimizers.
+This module provides an abstract base class for stocks set optimizers. It also
+provides a mixin class for mean-variance family optimizers. 
+
 """
 
 # =============================================================================
