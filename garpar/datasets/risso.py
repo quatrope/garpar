@@ -96,13 +96,11 @@ def argnearest(arr, v):
 
 
 class RissoMixin:
-    """Implementation of a portfolio maker based on entropy calculation by \
-    Risso.
+    """Implementation of a stock set maker using Risso's entropy calculation.
 
     This class extends RandomEntropyStocksSetMakerABC and implements methods
     for calculating candidate entropies and selecting loss probabilities based
     on a given window size and target entropy.
-
     """
 
     def generate_loss_probabilities(self, window_size, eps=None):
@@ -287,7 +285,7 @@ def make_risso_uniform(
 
 
 class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
+    """Implementation of a stocks set maker using a normal distribution.
 
     Notes
     -----
@@ -434,7 +432,7 @@ class _LStableCache:
 
 
 class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """StocksSet maker.
+    """Implementation of a stocks set maker using Levy stable distribution.
 
     StocksSet maker implementing a stochastic model with Levy stable
     distribution for daily returns.

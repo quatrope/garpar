@@ -53,7 +53,7 @@ class StocksSetMakerABC(mabc.ModelABC):
 
     """
 
-    _MKPORT_SIGNATURE = {
+    _MKSS_SIGNATURE = {
         "self",
         "window_size",
         "days",
@@ -120,8 +120,7 @@ class StocksSetMakerABC(mabc.ModelABC):
 
 
 class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
-    """Abstract class for creating StocksSets with random entropy-based \ 
-    prices."""
+    """Abstract class for generating StocksSets with entropy-based prices."""
 
     # ATTRIBUTES =============================================================
 

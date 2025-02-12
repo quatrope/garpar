@@ -59,6 +59,8 @@ See Also
 # IMPORTS
 # =============================================================================
 
+import warnings
+
 import attr
 
 import numpy as np
@@ -254,7 +256,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.risk_free_rate is not None:
             return self.risk_free_rate
 
-        print("Warning: no risk_free_rate specified, coercing it")
+        warnings.warn("No risk_free_rate specified, coercing it")
 
         expected_returns = list(ss.ereturns())
         return np.median(expected_returns)
@@ -263,7 +265,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.risk_aversion is not None:
             return self.risk_aversion
 
-        print("Warning: no risk_aversion specified, coercing it")
+        warnings.warn("No risk_aversion specified, coercing it")
 
         expected_returns = list(ss.ereturns())
         risk_aversion = 1 / np.var(expected_returns)
@@ -273,7 +275,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.target_return is not None:
             return self.target_return
 
-        print("Warning: no target_return specified, coercing it")
+        warnings.warn("No target_return specified, coercing it")
 
         returns = ss.as_returns().to_numpy().flatten()
         returns = returns[(returns != 0) & (~np.isnan(returns))]
@@ -283,7 +285,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
         if self.target_risk is not None:
             return self.target_risk
 
-        print("Warning: no target_risk specified, coercing it")
+        warnings.warn("No target_risk specified, coercing it")
 
         cov_matrix = ss.covariance(self.covariance, **self.covariance_kw)
 

@@ -58,7 +58,7 @@ def _df_to_sarray(df):
     """Convert a pandas DataFrame object to a numpy structured array.
 
     This is functionally equivalent to but more efficient than
-    np.array(df.to_array()) 
+    np.array(df.to_array())
 
     Parameters
     ----------
