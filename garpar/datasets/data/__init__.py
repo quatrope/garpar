@@ -5,7 +5,23 @@
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""MERVAL dataset."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""MERVAL dataset module.
+
+This module provides a function for loading MERVAL data from January 2012 to
+August 2022.
+
+Key Features:
+    - MERVAL dataset
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import os
 import pathlib
@@ -14,7 +30,15 @@ import pandas as pd
 
 from ...core import StocksSet
 
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
 DATA_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
+
+# =============================================================================
+# MERVAL DATASET
+# =============================================================================
 
 
 def load_MERVAL(imputation="ffill", first=None, last=None):

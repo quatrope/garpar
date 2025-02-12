@@ -11,9 +11,9 @@
 
 """Covariance Accessor.
 
-The CovarianceAccessor class provides methods to compute various covariance
-matrices. The CorrelationAccessor class provides methods to compute various
-correlation matrices.
+The covariance accessor module provides an accessor class to compute
+various covariance matrices. The module also defines the CorrelationAccessor
+class, which provides methods for calculating different correlation matrices.
 
 Key Features:
     - Correlation and covariance analysis
@@ -43,7 +43,6 @@ import attr
 from pypfopt import risk_models
 
 from ..utils import AccessorABC
-
 
 # =============================================================================
 # COVARIANCE ACCESSOR

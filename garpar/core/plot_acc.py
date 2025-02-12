@@ -11,9 +11,8 @@
 
 """Plot Accessor.
 
-The plot accessor module provides a convenient interface to perform various
-statistical and mathematical operations on stocks set data, using a predefined
-whitelist of allowable methods.
+The plot accessor module provides an accessor class to visualize stocks set
+data, including line plots, heatmaps, and other visualizations.
 
 Key Features:
     - Portfolio/market visualization tools
@@ -35,7 +34,6 @@ import attr
 import seaborn as sns
 
 from ..utils import AccessorABC
-
 
 # =============================================================================
 # PLOTTER OBJECT

@@ -9,7 +9,28 @@
 # DOCS
 # =============================================================================
 
-"""Multisector class for Garpar project."""
+"""Multisector module for Garpar project.
+
+This module provides a class for creating a multi-sector StocksSet using
+different sector makers.
+
+Key Features:
+    - Multi-sector StocksSet creation
+
+Example:
+    >>> from garpar.datasets import make_multisector, RissoNormal, RissoUniform
+
+    >>> port = make_multisector(
+    ...     RissoNormal(),
+    ...     RissoUniform(),
+    ...     stocks=100,
+    ...     days=365,
+    ...     window_size=5,
+    ... )
+
+    >>> port.as_prices()
+
+"""
 
 # =============================================================================
 # IMPORTS

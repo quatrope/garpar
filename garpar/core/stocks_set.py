@@ -95,10 +95,12 @@ _SCALERS = {
 
 _ENTROPY_CALCULATORS = {"shannon": entropy.shannon}
 
+# =============================================================================
+# HELPERS
+# =============================================================================
 
 def _as_float_array(arr):
     return np.asarray(arr, dtype=float)
-
 
 # =============================================================================
 # SLICER
@@ -397,6 +399,8 @@ class StocksSet:
 
         return sliced
 
+    # PROPERTIES ==============================================================
+
     @property
     def loc(self):
         """Access a group of days and stocks by label(s) or a boolean array.
@@ -432,7 +436,6 @@ class StocksSet:
             metadata=self.metadata,
         )
 
-    # PROPERTIES ==============================================================
     @property
     def weights(self):
         """Return the weights as a pandas Series.
@@ -529,6 +532,7 @@ class StocksSet:
         return self._prices_df.shape
 
     # UTILS ===================================================================
+
     def copy(
         self,
         *,

@@ -11,21 +11,16 @@
 
 """Coercer mixin for Garpar project.
 
-The CoercerMixin class provides methods to coerce expected returns, weights,
-and covariance matrices.
+The coercer mixin module provides a specific mixin class used to coerce
+expected returns, weights, and covariance matrices into the desired formats.
 
 Example:
     >>> from garpar import StocksSet
     >>> ss = StocksSet(prices=[...])
     >>> ss.covariance.sample_cov()
-    >>> ss.covariance.exp_cov()
-    >>> ss.covariance.semi_cov()
     >>> ss.covariance.ledoit_wolf_cov()
     >>> ss.covariance.oracle_approximating_cov()
     >>> ss.correlation.sample_corr()
-    >>> ss.correlation.exp_corr()
-    >>> ss.correlation.semi_corr()
-    >>> ss.correlation.ledoit_wolf_corr()
     >>> ss.correlation.oracle_approximating_corr()
 
 """
@@ -34,11 +29,9 @@ Example:
 # IMPORTS
 # =============================================================================
 
-
 import numpy as np
 
 import pandas as pd
-
 
 # =============================================================================
 # COERCER MIXIN
@@ -105,8 +98,6 @@ class CoercerMixin:
             bench_weights = weights.weights
 
             stocks = self._ss.stocks
-            # creamos un lugar donde poner los precios en el mismo orden que
-            # en el ss original
             weights = pd.Series(
                 np.zeros(len(stocks), dtype=float), index=stocks
             )

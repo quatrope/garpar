@@ -9,19 +9,34 @@
 # DOCS
 # =============================================================================
 
-"""Risso StocksSet Maker.
+"""Risso StocksSet Makers.
 
 This module provides generators that use the Risso informational entropy
 calculation to determine loss probabilities. Each generator also adheres to a 
-specific distribution for generating stock prices.
+specific distribution for generating each stock prices.
+
+Key Features:
+    - Entropy-based portfolio simulation
 
 Example
 -------
-
     >>> import garpar
     >>> ss = garpar.datasets.make_risso_normal(stocks=2, days=20)
     >>> ss.as_prices()
     >>> ss.as_returns()
+
+    or
+
+    >>> from garpar.datasets import RissoNormal
+    >>> maker = RissoNormal(
+    ...     mu=10,
+    ...     sigma=0.2,
+    ...     entropy=0.5,
+    ...     random_state=10,
+    ...     n_jobs=None,
+    ...     verbose=0
+    ... )
+    >>> maker.make_stocks_set()
 
 References
 ----------

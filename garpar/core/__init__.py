@@ -12,8 +12,10 @@
 
 """Core module.
 
-This module contains the core functionality of the Garpar project, including
-the StocksSet class, accessors of that class and related functions to it.
+This module contains the core functionality of the Garpar project. The
+StocksSet class represents both a portfolio and a market in a single structure.
+It provides accessors to compute various properties, graphs, and metrics of a
+portfolio.
 
 Key Features:
     - Correlation and covariance analysis

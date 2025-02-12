@@ -11,8 +11,8 @@
 
 """Diversification Accessor.
 
-The diversification accessor module provides methods to compute diversification
-metrics for a given stocks set.
+The diversification accessor module provides an accessor class to compute
+diversification metrics for a given stocks set.
 
 Key Features:
     - Diversification metrics calculation
@@ -30,7 +30,6 @@ Example:
 # IMPORTS
 # =============================================================================
 
-
 import attr
 
 import numpy as np
@@ -39,7 +38,6 @@ from sklearn.decomposition import PCA
 
 from . import coercer_mixin
 from ..utils import AccessorABC
-
 
 # =============================================================================
 # DIVERSIFICATION

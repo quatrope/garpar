@@ -11,9 +11,9 @@
 
 """Utilities Accessor.
 
-The utlities accessor module provides methods to compute ex-ante tracking
-error, ex-post tracking error, stocks set return, and quadratic utility
-for a given stocks set.
+The utlities accessor module provides an accessor class to compute ex-ante
+tracking error, ex-post tracking error, stocks set return, and quadratic
+utility for a given stocks set.
 
 Key Features:
     - Utility metrics calculation

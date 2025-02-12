@@ -11,9 +11,9 @@
 
 """Prices Accessor.
 
-The prices accessor module provides a convenient interface to perform various
-statistical and mathematical operations on price data, using a predefined
-whitelist of allowable methods.
+The prices accessor module offers an accessor class to perform a variety of
+statistical and mathematical operations on stock prices, leveraging a
+predefined whitelist of permitted methods.
 
 Key Features:
     - Price-related data and methods
@@ -159,7 +159,14 @@ class PricesAccessor(AccessorABC):
         return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)
 
     def mean_tendency_size(self):
-        """Compute the mean tendency size."""
+        """Compute the mean size of consecutive winning or losing streaks.
+
+        Returns
+        -------
+        Series
+            A Series with the mean streak size for each asset, representing
+            the average length of consecutive up or down movements in returns.
+        """
 
         def count_consecutive(stock_groups):
             # Calculate the size of each consecutive group

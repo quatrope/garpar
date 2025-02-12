@@ -11,8 +11,8 @@
 
 """Expected Returns Accessor.
 
-The expected returns accessor module provides methods to compute expected
-returns for a given stocks set.
+The expected returns accessor module provides an accessor class with methods to
+compute expected returns for a given stocks set.
 
 Key Features:
     - Expected returns estimation
@@ -30,13 +30,11 @@ Example:
 # IMPORTS
 # =============================================================================
 
-
 import attr
 
 from pypfopt import expected_returns
 
 from ..utils import AccessorABC
-
 
 # =============================================================================
 # EXPECTED RETURNS

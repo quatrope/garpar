@@ -11,8 +11,8 @@
 
 """Risk Accessor.
 
-The risk accessor module provides methods to compute stock and stocks set
-betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk
+The risk accessor module provides an accessor class to compute stock and stocks
+set betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk
 (VaR).
 
 Key Features:
