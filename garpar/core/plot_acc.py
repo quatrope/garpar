@@ -9,7 +9,22 @@
 # DOCS
 # =============================================================================
 
-"""Plot Accessor."""
+"""Plot Accessor.
+
+The plot accessor module provides a convenient interface to perform various
+statistical and mathematical operations on stocks set data, using a predefined
+whitelist of allowable methods.
+
+Key Features:
+    - Portfolio/market visualization tools
+
+Examples:
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.plot.line()
+    >>> ss.plot.heatmap()
+
+"""
 
 # =============================================================================
 # IMPORTS

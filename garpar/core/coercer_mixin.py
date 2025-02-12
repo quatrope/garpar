@@ -14,10 +14,19 @@
 The CoercerMixin class provides methods to coerce expected returns, weights,
 and covariance matrices.
 
-Key Features:
-    - Expected returns coercion
-    - Weight coercion
-    - Covariance matrix coercion
+Example:
+    >>> from garpar import StocksSet
+    >>> ss = StocksSet(prices=[...])
+    >>> ss.covariance.sample_cov()
+    >>> ss.covariance.exp_cov()
+    >>> ss.covariance.semi_cov()
+    >>> ss.covariance.ledoit_wolf_cov()
+    >>> ss.covariance.oracle_approximating_cov()
+    >>> ss.correlation.sample_corr()
+    >>> ss.correlation.exp_corr()
+    >>> ss.correlation.semi_corr()
+    >>> ss.correlation.ledoit_wolf_corr()
+    >>> ss.correlation.oracle_approximating_corr()
 
 """
 

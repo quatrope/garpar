@@ -9,7 +9,22 @@
 # DOCS
 # =============================================================================
 
-"""Prices Accessor."""
+"""Prices Accessor.
+
+The prices accessor module provides a convenient interface to perform various
+statistical and mathematical operations on price data, using a predefined
+whitelist of allowable methods.
+
+Key Features:
+    - Price-related data and methods
+
+Examples:
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.prices.describe()
+    >>> ss.prices.log()
+
+"""
 
 # =============================================================================
 # IMPORTS

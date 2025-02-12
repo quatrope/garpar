@@ -9,7 +9,22 @@
 # DOCS
 # =============================================================================
 
-"""Expected Returns Accessor."""
+"""Expected Returns Accessor.
+
+The expected returns accessor module provides methods to compute expected
+returns for a given stocks set.
+
+Key Features:
+    - Expected returns estimation
+
+Example:
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.expected_returns.capm()
+    >>> ss.expected_returns.mah()
+    >>> ss.expected_returns.emah()
+
+"""
 
 # =============================================================================
 # IMPORTS

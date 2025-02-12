@@ -11,9 +11,21 @@
 
 """Utilities Accessor.
 
-The UtilitiesAccessor class provides methods to compute ex-ante tracking
+The utlities accessor module provides methods to compute ex-ante tracking
 error, ex-post tracking error, stocks set return, and quadratic utility
 for a given stocks set.
+
+Key Features:
+    - Utility metrics calculation
+
+Example:
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.utilities.ex_ante_tracking_error()
+    >>> ss.utilities.ex_post_tracking_error()
+    >>> ss.utilities.ss_return()
+    >>> ss.utilities.quadratic_utility()
+
 """
 
 # =============================================================================

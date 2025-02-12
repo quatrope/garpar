@@ -16,16 +16,21 @@ matrices. The CorrelationAccessor class provides methods to compute various
 correlation matrices.
 
 Key Features:
-    - Sample covariance matrix computation
-    - Exponential covariance matrix computation
-    - Semi-covariance matrix computation
-    - Ledoit-Wolf covariance matrix computation
-    - Oracle-approximating covariance matrix computation
-    - Sample correlation matrix computation
-    - Exponential correlation matrix computation
-    - Semi-correlation matrix computation
-    - Ledoit-Wolf correlation matrix computation
-    - Oracle-approximating correlation matrix computation
+    - Correlation and covariance analysis
+
+Example:
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.covariance.sample_cov()
+    >>> ss.covariance.exp_cov()
+    >>> ss.covariance.semi_cov()
+    >>> ss.covariance.ledoit_wolf_cov()
+    >>> ss.covariance.oracle_approximating_cov()
+    >>> ss.correlation.sample_corr()
+    >>> ss.correlation.exp_corr()
+    >>> ss.correlation.semi_corr()
+    >>> ss.correlation.ledoit_wolf_corr()
+    >>> ss.correlation.oracle_approximating_corr()
 
 """
 

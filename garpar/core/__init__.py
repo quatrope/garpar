@@ -13,7 +13,19 @@
 """Core module.
 
 This module contains the core functionality of the Garpar project, including
-the StocksSet class and related functions to it.
+the StocksSet class, accessors of that class and related functions to it.
+
+Key Features:
+    - Correlation and covariance analysis
+    - Diversification metrics
+    - Entropy-based analysis
+    - Expected returns estimation
+    - Market data handling and validation
+    - Portfolio/market construction and rebalancing
+    - Portfolio/market visualization tools
+    - Price-related data and methods
+    - Risk metrics calculation (variance, VaR, etc.)
+    - Utility metrics calculation
 
 """
 

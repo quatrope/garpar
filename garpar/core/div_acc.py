@@ -9,7 +9,22 @@
 # DOCS
 # =============================================================================
 
-"""Diversification Accessor."""
+"""Diversification Accessor.
+
+The diversification accessor module provides methods to compute diversification
+metrics for a given stocks set.
+
+Key Features:
+    - Diversification metrics calculation
+
+Example:
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.diversification.ratio()
+    >>> ss.diversification.mrc()
+    >>> ss.diversification.pdi()
+
+"""
 
 # =============================================================================
 # IMPORTS

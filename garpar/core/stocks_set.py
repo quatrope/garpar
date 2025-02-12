@@ -17,13 +17,7 @@ optimization, risk assessment, and performance analysis.
 
 Key Features:
     - Portfolio/market construction and rebalancing
-    - Risk metrics calculation (variance, VaR, etc.)
-    - Expected returns estimation
-    - Correlation and covariance analysis
-    - Diversification metrics
-    - Portfolio/market visualization tools
     - Market data handling and validation
-    - Entropy-based analysis
 
 Example:
     >>> import garpar
