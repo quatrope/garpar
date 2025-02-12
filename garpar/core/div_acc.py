@@ -15,6 +15,7 @@
 # IMPORTS
 # =============================================================================
 
+
 import attr
 
 import numpy as np
@@ -23,6 +24,7 @@ from sklearn.decomposition import PCA
 
 from . import coercer_mixin
 from ..utils import AccessorABC
+
 
 # =============================================================================
 # DIVERSIFICATION

@@ -9,11 +9,22 @@
 # DOCS
 # =============================================================================
 
-"""Coercer mixin for Garpar project."""
+"""Coercer mixin for Garpar project.
+
+The CoercerMixin class provides methods to coerce expected returns, weights,
+and covariance matrices.
+
+Key Features:
+    - Expected returns coercion
+    - Weight coercion
+    - Covariance matrix coercion
+
+"""
 
 # =============================================================================
 # IMPORTS
 # =============================================================================
+
 
 import numpy as np
 

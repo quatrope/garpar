@@ -31,15 +31,15 @@ from ..utils import Bunch, mabc, unique_names
 class MultiSector(StocksSetMakerABC):
     """StocksSet maker for creating a multi-sector StocksSet.
 
-    This class allows the user to analyze the stocks of multiple sectors at
-    the same time.
+    This class allows the user to create a multi-sector StocksSet using
+    multiple StocksSet maker objects.
     """
 
     makers = mabc.hparam(converter=lambda v: tuple(dict(v).items()))
 
     @makers.validator
     def _makers_validator(self, attribute, value):
-        """Validate 'makers' attribute.
+        """Validate the StocksSets makers.
 
         Parameters
         ----------
@@ -94,16 +94,16 @@ class MultiSector(StocksSetMakerABC):
     def make_stocks_set(
         self, *, window_size=5, days=365, stocks=10, price=100, weights=None
     ):
-        """Create a multi-sector stocks set based on specified parameters.
+        """Create a multi-sector StocksSet based on specified parameters.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for stocks set creation (default is 5).
+            Window size for StocksSet creation (default is 5).
         days : int, optional
-            Number of days for stocks set evaluation (default is 365).
+            Number of days for StocksSet evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the stocks set (default is 10).
+            Number of stocks in the StocksSet (default is 10).
         price : int, float, or array-like, optional
             Initial price or prices of stocks (default is 100).
         weights : array-like or None, optional
@@ -151,7 +151,7 @@ class MultiSector(StocksSetMakerABC):
         # join all the dfs in one
         stock_df = pd.concat(stocks_dfs, axis="columns")
 
-        # create the stocks set
+        # create the StocksSet
         return StocksSet.from_prices(
             stock_df,
             weights=weights,
@@ -162,7 +162,7 @@ class MultiSector(StocksSetMakerABC):
 
 
 def make_multisector(*makers, **kwargs):
-    """Create a multi-sector stocks set using specified sector makers.
+    """Create a multi-sector StocksSet using specified sector makers.
 
     Parameters
     ----------
@@ -174,7 +174,7 @@ def make_multisector(*makers, **kwargs):
     Returns
     -------
     StocksSet
-        Multi-sector stocks set object generated
+        Multi-sector StocksSet object generated
         by MultiSector.make_stocks_set.
     """
     names = [type(maker).__name__.lower() for maker in makers]

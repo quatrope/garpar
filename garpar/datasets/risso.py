@@ -64,7 +64,7 @@ from ..utils import mabc
 
 
 def argnearest(arr, v):
-    """Find the index of the element in the array `v`.
+    """Find the index of the element in the array `arr` that is closest to `v`.
 
     Parameters
     ----------
@@ -105,7 +105,7 @@ def argnearest(arr, v):
 
 class RissoMixin:
     """
-    Implementation of a portfolio maker based on entropy calculation by Risso.
+    Implementation of a portfolio maker based on Risso entropy calculation.
 
     This class extends RandomEntropyStocksSetMakerABC and implements methods
     for calculating candidate entropies and selecting loss probabilities based
@@ -163,22 +163,6 @@ class RissoMixin:
         float
             Loss probability that corresponds to the nearest candidate entropy
             value to the target entropy.
-
-        Example
-        --------
-        If we run this function with window_size=3 and entropy=.99
-        >>> # Example with a sliding window size of 3 and target entropy
-            # of 0.99
-        >>> get_window_loss_probability(window_size=3, entropy=0.99)
-        We get the following data
-        Candidates
-        [1.18666621e-14 9.18295834e-01 9.18295834e-01 1.18666621e-14]
-        Entropy
-        0.99
-        Loss probabilities
-        [2.22044605e-16 3.33333333e-01 6.66666667e-01 1.00000000e+00]
-        Loss probability
-        0.3333333333333333
         """
         h_candidates, loss_probabilities = self.generate_loss_probabilities(
             window_size, eps
@@ -195,7 +179,7 @@ class RissoMixin:
 
 
 class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """Implementation of a portfolio maker using a uniform distribution.
+    """Implementation of a StocksSets maker using a uniform distribution.
 
     This class extends RissoABC and overrides the method make_stock_price to
     simulate stock price changes based on a uniform distribution within
@@ -248,7 +232,10 @@ def make_risso_uniform(
     verbose=0,
     **kwargs,
 ):
-    """Create a portfolio using RissoUniform portfolio maker.
+    """Create a StocksSet instance using RissoUniform maker.
+
+    This function is an implementation of the factory method that creates a
+    StocksSet using the RissoUniform maker.
 
     Parameters
     ----------
@@ -300,7 +287,7 @@ def make_risso_uniform(
 
 
 class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """StocksSet maker that follows a normal distribution.
+    """
 
     Notes
     -----

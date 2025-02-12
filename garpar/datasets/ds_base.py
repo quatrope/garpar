@@ -11,15 +11,15 @@
 
 """Abstract classes for StocksSet makers.
 
-This module provides two abstract classes for creating stocks sets. One general
-class, StocksSetMakerABC, and one specific class, that considers entropy,
+This module provides two abstract classes for creating StocksSets. One general
+class, StocksSetMakerABC. One specific class, that considers entropy,
 RandomEntropyStocksSetMakerABC, that implements the StocksSetMakerABC
 interface.
 
 Key Features:
     - Entropy-based portfolio simulation
 
-See also
+See Also
 --------
     StocksSetMakerABC
 
@@ -46,26 +46,9 @@ from ..utils import mabc
 
 
 class StocksSetMakerABC(mabc.ModelABC):
-    """
-    Abstract base class for defining a stocks set maker.
+    """Abstract base class for defining a StocksSet maker."""
 
-    Attributes
-    ----------
-    _MKPORT_SIGNATURE : set of str
-        Expected signature for the make_stocks_set method.
-
-    Methods
-    -------
-    __init_subclass__()
-        Checks the signature of make_stocks_set method against
-        _MKPORT_SIGNATURE.
-
-    make_stocks_set(*, window_size=5, days=365, stocks=10, price=100,
-                    weights=None)
-        Abstract method to create a stocks set.
-    """
-
-    _MKPORT_SIGNATURE = {
+    _MKSS_SIGNATURE = {
         "self",
         "window_size",
         "days",
@@ -78,16 +61,15 @@ class StocksSetMakerABC(mabc.ModelABC):
         """Ensure that the make_stocks_set method in subclasses fits criteria.
 
         Ensure that the make_stocks_set method in subclasses
-        conforms to _MKPORT_SIGNATURE.
+        conforms to _MKSS_SIGNATURE.
 
         Raises
         ------
         TypeError
-            If make_stocks_set method signature does not match
-            _MKPORT_SIGNATURE.
+            If make_stocks_set method signature does not match _MKSS_SIGNATURE.
         """
         mpsig = inspect.signature(cls.make_stocks_set)
-        missing_args = cls._MKPORT_SIGNATURE.difference(mpsig.parameters)
+        missing_args = cls._MKSS_SIGNATURE.difference(mpsig.parameters)
         if missing_args:
             missing_args_str = ", ".join(missing_args)
             msg = f"Missing arguments {missing_args_str!r} in make_stocks_set"
@@ -104,16 +86,16 @@ class StocksSetMakerABC(mabc.ModelABC):
         price=100,
         weights=None,
     ):
-        """Abstract method to create a stocks set.
+        """Abstract factory method to create StocksSets.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for stocks set creation (default is 5).
+            Window size for StocksSet creation (default is 5).
         days : int, optional
-            Number of days for stocks set evaluation (default is 365).
+            Number of days for StocksSet evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the stocks set (default is 10).
+            Number of stocks in the StocksSet (default is 10).
         price : float, optional
             Initial price for stocks (default is 100).
         weights : array-like or None, optional
@@ -133,21 +115,12 @@ class StocksSetMakerABC(mabc.ModelABC):
 
 
 class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
-    """Abstract base class for creating random entropy-based stocks sets.
-
-    Attributes
-    ----------
-    entropy : float, default=0.5
-        Entropy parameter for stocks set creation.
-    random_state : numpy.random.Generator, default=None
-        Random number generator. If None, uses numpy's default generator.
-    n_jobs : int or None, default=None
-        Number of jobs to run in parallel. If None, 1 job is run.
-    verbose : int, default=0
-        Verbosity level.
+    """
+    Abstract class for creating StocksSets with random entropy-based prices.
     """
 
-    # HYPERS ================================================================
+    # ATTRIBUTES =============================================================
+
     entropy = mabc.hparam(default=0.5)
     random_state = mabc.hparam(
         default=None, converter=np.random.default_rng, repr=False
@@ -164,9 +137,9 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         Parameters
         ----------
         window_size : int
-            Window size for stocks set creation.
+            Window size for StocksSet creation.
         entropy : float
-            Entropy parameter for stocks set creation.
+            Entropy parameter for StocksSet creation.
 
         Returns
         -------
@@ -348,16 +321,16 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         price=100,
         weights=None,
     ):
-        """Create a stocks set of stocks with random prices.
+        """Create a StocksSet instance with random prices.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for stocks set creation (default is 5).
+            Window size for StocksSet creation (default is 5).
         days : int, optional
-            Number of days for stocks set evaluation (default is 365).
+            Number of days for StocksSet evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the stocks set (default is 10).
+            Number of stocks in the StocksSet (default is 10).
         price : int, float, or array-like, optional
             Initial price or prices of stocks (default is 100).
         weights : array-like or None, optional
@@ -366,7 +339,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         Returns
         -------
         StocksSet
-            StocksSet object representing the generated stocks set.
+            StocksSet object representing the generated StocksSet.
         """
         if window_size <= 0 or days < window_size:
             raise ValueError("'window_size' must be > 0")

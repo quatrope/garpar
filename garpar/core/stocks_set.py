@@ -407,7 +407,7 @@ class StocksSet:
 
     @property
     def loc(self):
-        """Access to the prices dataframe through loc."""
+        """Access to the prices dataframe by label or a boolean array."""
         return _Loc(
             "loc",
             slicer=self._prices_df.loc,
@@ -419,7 +419,7 @@ class StocksSet:
 
     @property
     def iloc(self):
-        """Access to the prices dataframe through iloc."""
+        """Access to the prices dataframe through integer-location indexing"""
         return _Loc(
             "iloc",
             slicer=self._prices_df.iloc,

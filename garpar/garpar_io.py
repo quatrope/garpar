@@ -29,7 +29,6 @@ import numpy as np
 
 import pandas as pd
 
-from . import __version__ as VERSION
 from .constants import GARPAR_METADATA_KEY
 from .core import StocksSet
 
@@ -38,7 +37,6 @@ from .core import StocksSet
 # =============================================================================
 
 _DEFAULT_HDF5_METADATA = {
-    "garpar": VERSION,
     "author_email": "nluczywo@unc.edu.ar",
     "affiliation": "FCE-UNC, QuatroPe",
     "url": "https://github.com/quatrope/garpar",
@@ -68,8 +66,8 @@ def _df_to_sarray(df):
 
     Returns
     -------
-    np.ndarray
-        A numpy structured array representation of df
+    numpy.ndarray
+        A numpy structured array representation of `df`
     """
     values = df.values
     cols = df.columns
@@ -102,8 +100,11 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
     kwargs :
         Extra arguments to the function ``h5py.File.create_dataset``.
     """
+    from . import __version__
+
     # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
+    h5_metadata["garpar"] = __version__
     h5_metadata["utc_timestamp"] = dt.datetime.now(dt.timezone.utc).isoformat()
 
     # prepare kwargs
@@ -143,7 +144,7 @@ def read_hdf5(path_or_stream, group="stocks set"):
 
     Returns
     -------
-    ss
+    garpar.core.stocks_set.StocksSet
         A StocksSet instance
     """
     with h5py.File(path_or_stream, "r") as fp:

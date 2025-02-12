@@ -9,7 +9,25 @@
 # DOCS
 # =============================================================================
 
-"""Covariance Accessor."""
+"""Covariance Accessor.
+
+The CovarianceAccessor class provides methods to compute various covariance
+matrices. The CorrelationAccessor class provides methods to compute various
+correlation matrices.
+
+Key Features:
+    - Sample covariance matrix computation
+    - Exponential covariance matrix computation
+    - Semi-covariance matrix computation
+    - Ledoit-Wolf covariance matrix computation
+    - Oracle-approximating covariance matrix computation
+    - Sample correlation matrix computation
+    - Exponential correlation matrix computation
+    - Semi-correlation matrix computation
+    - Ledoit-Wolf correlation matrix computation
+    - Oracle-approximating correlation matrix computation
+
+"""
 
 # =============================================================================
 # IMPORTS

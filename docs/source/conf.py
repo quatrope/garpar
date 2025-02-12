@@ -20,9 +20,9 @@ import garpar
 
 # -- Project information -----------------------------------------------------
 
-project = 'Garpar'
-copyright = '2020, QuatroPe'
-author = 'QuatroPe'
+project = "Garpar"
+copyright = "2020, QuatroPe"
+author = "QuatroPe"
 
 # The full version, including alpha/beta/rc tags
 release = garpar.__version__
@@ -34,23 +34,23 @@ release = garpar.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.napoleon',
-    'nbsphinx']
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.coverage",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.napoleon",
+    "nbsphinx",
+]
 
-exclude_patterns = ['_build', 'source/.ipynb_checkpoints/*']
+exclude_patterns = ["_build", "source/.ipynb_checkpoints/*"]
 
 numpydoc_class_members_toctree = False
 
-nbsphinx_execute = 'never'
-
+nbsphinx_execute = "never"
 
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -63,15 +63,15 @@ exclude_patterns = []
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = "alabaster"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {"https://docs.python.org/": None}
 
 # =============================================================================
 # PREPROCESS RST
@@ -80,7 +80,7 @@ intersphinx_mapping = {'https://docs.python.org/': None}
 html_logo = "_static/logo.png"
 
 html_css_files = [
-    'custom.css',
+    "custom.css",
 ]
 
 html_theme_options = {}

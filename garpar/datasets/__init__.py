@@ -19,7 +19,7 @@ Key Features:
     - Entropy-based simulation
     - MERVAL dataset
 
-See also
+See Also
 --------
     Wiston Adrián Risso,
     The informational efficiency and the financial crashes.
