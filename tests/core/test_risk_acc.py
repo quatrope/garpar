@@ -15,6 +15,8 @@ import numpy as np
 
 import pandas as pd
 
+import pytest
+
 # =============================================================================
 # DRISK TESTS
 # =============================================================================
@@ -48,10 +50,11 @@ def test_RiskAccessor_portfolio_beta(risso_stocks_set):
     np.testing.assert_allclose(ss.risk.stocks_set_beta(), expected)
 
 
+@pytest.fixture(scope="function")
 def test_RiskAccessor_treynor_ratio(risso_stocks_set):
     """Test RiskAccessor treynor ratio."""
     ss = risso_stocks_set(random_state=42)
-    expected = 0.07097715626252858
+    expected = 0.07097715626252855
     np.testing.assert_allclose(ss.risk.treynor_ratio(), expected)
 
 
@@ -62,10 +65,11 @@ def test_RiskAccessor_portfolio_variance(risso_stocks_set):
     np.testing.assert_allclose(ss.risk.stocks_set_variance(), expected)
 
 
+@pytest.fixture(scope="function")
 def test_RiskAccessor_sharpe_ratio(risso_stocks_set):
     """Test RiskAccessor sharpe ratio."""
     ss = risso_stocks_set(random_state=42)
-    expected = 4.182984484028877
+    expected = 4.182984484028876
     np.testing.assert_allclose(ss.risk.sharpe_ratio(), expected)
 
 

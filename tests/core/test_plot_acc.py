@@ -16,7 +16,6 @@ import pytest
 import seaborn as sns
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -37,7 +36,6 @@ def test_StocksSetPlotterAccessor_line(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -58,7 +56,6 @@ def test_StocksSetPlotterAccessor_heatmap(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -79,7 +76,6 @@ def test_StocksSetPlotterAccessor_wheatmap(
     ax_ref.set_xlabel("Stocks")
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -100,7 +96,6 @@ def test_StocksSetPlotterAccessor_hist(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -120,7 +115,6 @@ def test_StocksSetPlotterAccessor_whist(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -141,7 +135,6 @@ def test_StocksSetPlotterAccessor_box(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -161,7 +154,6 @@ def test_StocksSetPlotterAccessor_wbox(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -182,7 +174,6 @@ def test_StocksSetPlotterAccessor_kde(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
@@ -202,7 +193,6 @@ def test_StocksSetPlotterAccessor_wkde(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])

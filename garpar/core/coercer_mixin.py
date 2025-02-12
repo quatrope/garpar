@@ -9,7 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""Mixins for Garpar."""
+"""Coercer mixin for Garpar project."""
 
 # =============================================================================
 # IMPORTS
@@ -54,12 +54,6 @@ class CoercerMixin:
         -------
         array-like
             The coerced expected returns.
-
-        Examples
-        --------
-        >>> mixin = CoercerMixin()
-        >>> er = mixin.coerce_expected_returns("capm",
-                                               kw={"risk_free_rate": 0.02})
         """
         if isinstance(expected_returns, str):
             kw = {} if kw is None else kw
@@ -83,11 +77,6 @@ class CoercerMixin:
         -------
         array-like
             The coerced weights.
-
-        Examples
-        --------
-        >>> mixin = CoercerMixin()
-        >>> weights = mixin.coerce_weights(None)
         """
         if weights is None:
             cols = len(self._ss.stocks)
@@ -123,12 +112,6 @@ class CoercerMixin:
         -------
         array-like
             The coerced covariance matrix.
-
-        Examples
-        --------
-        >>> mixin = CoercerMixin()
-        >>> cov = mixin.coerce_covariance_matrix("sample_cov",
-                                                 kw={"min_periods": 1})
         """
         if isinstance(cov_matrix, str):
             kw = {} if kw is None else kw

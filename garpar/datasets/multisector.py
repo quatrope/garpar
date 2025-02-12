@@ -9,7 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""Multisector."""
+"""Multisector class for Garpar project."""
 
 # =============================================================================
 # IMPORTS
@@ -29,7 +29,7 @@ from ..utils import Bunch, mabc, unique_names
 
 
 class MultiSector(StocksSetMakerABC):
-    """StocksSet maker for creating a multi-sector stocks set.
+    """StocksSet maker for creating a multi-sector StocksSet.
 
     Attributes
     ----------

@@ -32,9 +32,8 @@ Key Features:
 # =============================================================================
 
 
-from . import constants, datasets, garpar_io, optimize
+from . import constants, core, datasets, garpar_io, optimize
 from .core import StocksSet, mkss
-
 
 # =============================================================================
 # METADATA
@@ -42,12 +41,16 @@ from .core import StocksSet, mkss
 
 __version__ = constants.VERSION
 
+# =============================================================================
+# EXPORTS
+# =============================================================================
 
 __all__ = [
-    "StocksSet",
+    "constants",
+    "core",
     "datasets",
     "garpar_io",
-    "optimize",
     "mkss",
-    "constants",
+    "optimize",
+    "StocksSet",
 ]

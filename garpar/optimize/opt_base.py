@@ -9,7 +9,11 @@
 # DOCS
 # =============================================================================
 
-"""Optimization base file."""
+"""Optimization base file.
+
+This module provides an abstract base class for mean-variance family
+optimizers.
+"""
 
 # =============================================================================
 # IMPORTS
@@ -29,21 +33,7 @@ _Unknow = object()
 
 
 class OptimizerABC(mabc.ModelABC):
-    """
-    Abstract base class for stocks set optimizers.
-
-    Attributes
-    ----------
-    family : str
-        The family of the optimizer.
-
-    Methods
-    -------
-    optimize(ss)
-        Optimize the given stocks set.
-    get_optimizer_family()
-        Get the family of the optimizer.
-    """
+    """Abstract base class for stocks set optimizers."""
 
     family = _Unknow
 
@@ -55,7 +45,7 @@ class OptimizerABC(mabc.ModelABC):
 
     @mabc.abstractmethod
     def _calculate_weights(self, ss):
-        """Boilerplate method to calculate stocks set weights."""
+        """Abstract method to calculate stocks set weights."""
         raise NotImplementedError()
 
     def optimize(self, ss):
@@ -89,7 +79,6 @@ class OptimizerABC(mabc.ModelABC):
 # =============================================================================
 # MEAN VARIANCE FAMILY MIXIN
 # =============================================================================
-
 
 class MeanVarianceFamilyMixin:
     """Mixin class for mean-variance family optimizers."""

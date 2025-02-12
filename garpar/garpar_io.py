@@ -11,8 +11,7 @@
 
 """Utilities to dump and load stocks sets into hdf5.
 
-Based on: https://stackoverflow.com/a/30773118
-
+This module provides functions to dump and load stocks sets into HDF5 files.
 """
 
 # =============================================================================
@@ -68,19 +67,17 @@ def _df_to_sarray(df):
 
     Returns
     -------
-    z
+    np.ndarray
         A numpy structured array representation of df
-
-
     """
-    v = df.values
+    values = df.values
     cols = df.columns
     types = [(cols[i], df[k].dtype.type) for (i, k) in enumerate(cols)]
     dtype = np.dtype(types)
-    z = np.zeros(v.shape[0], dtype)
-    for i, k in enumerate(z.dtype.names):
-        z[k] = v[:, i]
-    return z
+    s_arr = np.zeros(values.shape[0], dtype)
+    for i, k in enumerate(s_arr.dtype.names):
+        s_arr[k] = values[:, i]
+    return s_arr
 
 
 # =============================================================================
@@ -104,8 +101,7 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
     kwargs :
         Extra arguments to the function ``h5py.File.create_dataset``.
     """
-
-    # # prepare metadata
+    # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
     h5_metadata["utc_timestamp"] = dt.datetime.now(dt.timezone.utc).isoformat()
 

@@ -9,7 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""Setup script for Garpar.
+"""Setup script for Garpar project.
 
 empty for backward compatibility
 

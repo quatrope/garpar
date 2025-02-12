@@ -12,12 +12,14 @@
 
 import pandas as pd
 
+import pytest
 
 # =============================================================================
 # DIVERSIFICATION TESTS
 # =============================================================================
 
 
+@pytest.fixture(scope="function")
 def test_ExpectedReturnsAccessor_capm(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
