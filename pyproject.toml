@@ -64,7 +64,6 @@ dependencies = [
     "attrs>=23.2.0",
     "build>=1.2.1",
     "h5py>=3.11.0",
-    "importlib_metadata",
     "numpy>=2.2.0",
     "pyportfolioopt>=1.5.0",
     "scikit-learn>=1.6.0",
