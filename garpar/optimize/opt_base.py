@@ -53,12 +53,12 @@ class OptimizerABC(mabc.ModelABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss : garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new stocks set with optimized weights.
         """
         weights, metadata = self._calculate_weights(ss)

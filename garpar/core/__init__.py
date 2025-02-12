@@ -9,10 +9,11 @@
 # DOCS
 # =============================================================================
 
-"""Core functionality for Garpar project.
 
-The core module provides a main class named StocksSet that represents both
-a portfolio and a market.
+"""Core module.
+
+This module contains the core functionality of the Garpar package, including
+the StocksSet class and related functions.
 
 """
 
@@ -20,13 +21,10 @@ a portfolio and a market.
 # IMPORTS
 # =============================================================================
 
-
 from .stocks_set import StocksSet, mkss
-
 
 # =============================================================================
 # EXPORTS
 # =============================================================================
-
 
 __all__ = ["StocksSet", "mkss"]

@@ -36,6 +36,12 @@ Contents
     install
     tutorials/index
 
+.. toctree::
+    :maxdepth: 2
+    :caption: API
+
+    api/modules.rst
+
 
 .. toctree::
     :maxdepth: 1

@@ -48,8 +48,6 @@ Example:
     >>> ss.risk.value_at_risk()
     >>> ss.plot.returns()
 
-Classes:
-    StocksSet: Main class representing a financial portfolio.
 
 See Also
 --------
@@ -288,7 +286,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new StocksSet instance.
         """
         prices = (
@@ -336,7 +334,7 @@ class StocksSet:
 
         Parameters
         ----------
-        other : StocksSet
+        other : garpar.core.stocks_set.StocksSet
             Another StocksSet instance to compare with.
 
         Returns
@@ -358,7 +356,7 @@ class StocksSet:
 
         Parameters
         ----------
-        other : StocksSet
+        other : garpar.core.stocks_set.StocksSet
             Another StocksSet instance to compare with.
 
         Returns
@@ -378,7 +376,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new StocksSet instance sliced by the key.
         """
         prices = self._prices_df.__getitem__(key)
@@ -407,7 +405,12 @@ class StocksSet:
 
     @property
     def loc(self):
-        """Access to the prices dataframe by label or a boolean array."""
+        """Access a group of days and stocks by label(s) or a boolean array.
+
+        ``.loc[]`` is primarily label based, but may also be used with a
+        boolean array.
+
+        """
         return _Loc(
             "loc",
             slicer=self._prices_df.loc,
@@ -419,7 +422,13 @@ class StocksSet:
 
     @property
     def iloc(self):
-        """Access to the prices dataframe through integer-location indexing"""
+        """Access a group of days and stocks by positions.
+
+        ``.iloc[]`` is primarily integer position based (from ``0`` to
+        ``length-1`` of the axis), but may also be used with a boolean
+        array.
+
+        """
         return _Loc(
             "iloc",
             slicer=self._prices_df.iloc,
@@ -480,12 +489,13 @@ class StocksSet:
 
     @property
     def metadata(self):
-        """Return the metadata as a Bunch object.
+        """Return the metadata as a dict-like object.
 
         Returns
         -------
-        Bunch
-            Bunch object containing metadata.
+        garpar.utils.bunch.Bunch
+            A dict like object containing metadata.
+
         """
         return self._metadata
 
@@ -557,7 +567,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new StocksSet instance with the specified modifications.
         """
         new_prices_df = (self._prices_df if prices is None else prices).copy()

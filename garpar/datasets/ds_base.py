@@ -46,9 +46,14 @@ from ..utils import mabc
 
 
 class StocksSetMakerABC(mabc.ModelABC):
-    """Abstract base class for defining a StocksSet maker."""
+    """Abstract base class for defining a stocks set maker.
 
-    _MKSS_SIGNATURE = {
+    This class provides a base for all stocks set makers in the project and
+    ensures that all subclasses implement a make_stocks_set method.
+
+    """
+
+    _MKPORT_SIGNATURE = {
         "self",
         "window_size",
         "days",
@@ -86,16 +91,16 @@ class StocksSetMakerABC(mabc.ModelABC):
         price=100,
         weights=None,
     ):
-        """Abstract factory method to create StocksSets.
+        """Abstract factory method to create a stocks set.
 
         Parameters
         ----------
         window_size : int, optional
-            Window size for StocksSet creation (default is 5).
+            Window size for stocks set creation (default is 5).
         days : int, optional
-            Number of days for StocksSet evaluation (default is 365).
+            Number of days for stocks set evaluation (default is 365).
         stocks : int, optional
-            Number of stocks in the StocksSet (default is 10).
+            Number of stocks in the stocks set (default is 10).
         price : float, optional
             Initial price for stocks (default is 100).
         weights : array-like or None, optional
@@ -115,9 +120,8 @@ class StocksSetMakerABC(mabc.ModelABC):
 
 
 class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
-    """
-    Abstract class for creating StocksSets with random entropy-based prices.
-    """
+    """Abstract class for creating StocksSets with random entropy-based \ 
+    prices."""
 
     # ATTRIBUTES =============================================================
 
@@ -338,8 +342,10 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
 
         Returns
         -------
-        StocksSet
-            StocksSet object representing the generated StocksSet.
+        garpar.core.stocks_set.StocksSet
+            Object representing the generated stocks prices
+            along multiple days.
+
         """
         if window_size <= 0 or days < window_size:
             raise ValueError("'window_size' must be > 0")

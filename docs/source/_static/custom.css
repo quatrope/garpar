@@ -1,1 +1,5 @@
 
+.sphinxsidebarwrapper > h1 {
+    display: none;
+
+}

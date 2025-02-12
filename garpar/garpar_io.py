@@ -29,7 +29,7 @@ import numpy as np
 
 import pandas as pd
 
-from .constants import GARPAR_METADATA_KEY
+from .constants import GARPAR_METADATA_KEY, VERSION
 from .core import StocksSet
 
 # =============================================================================
@@ -37,8 +37,9 @@ from .core import StocksSet
 # =============================================================================
 
 _DEFAULT_HDF5_METADATA = {
-    "author_email": "nluczywo@unc.edu.ar",
-    "affiliation": "FCE-UNC, QuatroPe",
+    "garpar": VERSION,
+    "author_email": "jbcabral@unc.edu.ar, nluczywo@unc.edu.ar",
+    "affiliation": "FAMAF-UNC, FCE-UNC, QuatroPe",
     "url": "https://github.com/quatrope/garpar",
     "platform": platform.platform(),
     "system_encoding": sys.getfilesystemencoding(),
@@ -57,7 +58,7 @@ def _df_to_sarray(df):
     """Convert a pandas DataFrame object to a numpy structured array.
 
     This is functionally equivalent to but more efficient than
-    np.array(df.to_array())
+    np.array(df.to_array()) 
 
     Parameters
     ----------
@@ -144,7 +145,7 @@ def read_hdf5(path_or_stream, group="stocks set"):
 
     Returns
     -------
-    garpar.core.stocks_set.StocksSet
+    ss: garpar.core.stocks_set.StocksSet
         A StocksSet instance
     """
     with h5py.File(path_or_stream, "r") as fp:

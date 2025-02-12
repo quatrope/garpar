@@ -26,6 +26,7 @@ author = "QuatroPe"
 
 # The full version, including alpha/beta/rc tags
 release = garpar.__version__
+version = garpar.__version__
 
 
 # -- General configuration ---------------------------------------------------
