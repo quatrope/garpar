@@ -11,7 +11,9 @@
 
 """Mean variance optimizers.
 
-Mean-variance models implementations.
+Implementations of different mean-variance models. There is a more general
+class that can be used to apply a wider range of mean-variance models. And a
+concrete class for the Markowitz model.
 
 Key Features:
     - Portfolio optimization
