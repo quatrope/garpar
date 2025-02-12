@@ -14,22 +14,14 @@
 The creator of every generator that follows the Risso strategy to simulate
 a market based on entropy and window size.
 
-Key Features:
-    - Portfolio/market simulation
-    - Entropy-based simulation
+Example
+-------
 
-Example:
     >>> import garpar
     >>> ss = garpar.datasets.make_risso_normal(stocks=2, days=20)
     >>> ss.as_prices()
     >>> ss.as_returns()
 
-Classes:
-    RissoMixin: Class for generating and merging multiple stocks sets
-    RissoUniform: Class that utilizes a uniform distribution to generate prices
-    RissoNormal: Class that utilizes a normal distribution to generate prices
-    RissoLevyStable: Class that utilizes a levy stable distribution to
-        generate prices
 
 See Also
 --------
@@ -104,12 +96,13 @@ def argnearest(arr, v):
 
 
 class RissoMixin:
-    """
-    Implementation of a portfolio maker based on entropy calculation by Risso.
+    """Implementation of a portfolio maker based on entropy calculation by \
+    Risso.
 
     This class extends RandomEntropyStocksSetMakerABC and implements methods
     for calculating candidate entropies and selecting loss probabilities based
     on a given window size and target entropy.
+
     """
 
     def generate_loss_probabilities(self, window_size, eps=None):
@@ -166,19 +159,10 @@ class RissoMixin:
 
         Example
         --------
-        If we run this function with window_size=3 and entropy=.99
-        >>> # Example with a sliding window size of 3 and target entropy
-            # of 0.99
+
         >>> get_window_loss_probability(window_size=3, entropy=0.99)
-        We get the following data
-        Candidates
-        [1.18666621e-14 9.18295834e-01 9.18295834e-01 1.18666621e-14]
-        Entropy
-        0.99
-        Loss probabilities
-        [2.22044605e-16 3.33333333e-01 6.66666667e-01 1.00000000e+00]
-        Loss probability
-        0.3333333333333333
+        ... 0.33333333366666673
+
         """
         h_candidates, loss_probabilities = self.generate_loss_probabilities(
             window_size, eps

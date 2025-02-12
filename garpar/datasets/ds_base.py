@@ -19,7 +19,7 @@ interface.
 Key Features:
     - Entropy-based portfolio simulation
 
-See also
+See Also
 --------
     StocksSetMakerABC
 

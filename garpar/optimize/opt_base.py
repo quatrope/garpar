@@ -80,6 +80,7 @@ class OptimizerABC(mabc.ModelABC):
 # MEAN VARIANCE FAMILY MIXIN
 # =============================================================================
 
+
 class MeanVarianceFamilyMixin:
     """Mixin class for mean-variance family optimizers."""
 
