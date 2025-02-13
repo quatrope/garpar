@@ -91,24 +91,6 @@ def test_proportion_window_size_greater(risso_stocks_set):
         entropy.risso(ss.as_prices(), window_size=10)
 
 
-def test_yager_h1(risso_stocks_set):
-    """Test yager entropy h1."""
-    ss = risso_stocks_set(random_state=42)
-
-    np.testing.assert_almost_equal(
-        entropy.h_one(ss.weights), -3.3923344857821336
-    )
-
-
-def test_yager_h_inf(risso_stocks_set):
-    """Test yager entropy for h->inf."""
-    ss = risso_stocks_set(random_state=42)
-
-    np.testing.assert_almost_equal(
-        entropy.h_inf(ss.weights), 0.024377648363244075
-    )
-
-
 def test_yager_one(risso_stocks_set):
     """Test yager composition."""
     ss = risso_stocks_set(random_state=42)

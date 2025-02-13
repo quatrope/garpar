@@ -11,7 +11,7 @@
 
 """Abstract classes for StocksSet makers.
 
-This module provides abstract base classes for StocksSet makers. 
+This module provides abstract base classes for StocksSet makers.
 StocksSetsMakerABC is the base class for all StocksSet makers. While
 RandomEntropyStocksSetMakerABC is the base class for all random entropy-based
 StocksSet makers.

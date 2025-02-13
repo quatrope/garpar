@@ -12,7 +12,7 @@
 """Risso StocksSet Makers.
 
 This module provides generators that use the Risso informational entropy
-calculation to determine loss probabilities. Each generator also adheres to a 
+calculation to determine loss probabilities. Each generator also adheres to a
 specific distribution for generating stock prices.
 
 Key Features:

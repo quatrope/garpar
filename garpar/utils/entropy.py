@@ -33,22 +33,6 @@ from scipy import stats
 
 
 def _compute_marks(prices, **kwargs):
-    """
-    Compute the marks for a given set of prices based on returns.
-
-    Parameters
-    ----------
-    prices : pd.DataFrame
-        DataFrame containing price data with assets as columns.
-    **kwargs
-        Additional keyword arguments to pass to returns_from_prices.
-
-    Returns
-    -------
-    np.ndarray
-        A binary array where 0 represents returns below the average
-        and 1 represents returns above or equal to the average.
-    """
     returns = pypfopt.expected_returns.returns_from_prices(
         prices=prices, **kwargs
     )
@@ -101,7 +85,8 @@ def risso(prices, window_size=None, **kwargs):
 
     Returns
     -------
-    None
+    array-like
+        The Risso entropy of the prices.
     """
     if not window_size or window_size < 1 or window_size > prices.shape[0]:
         raise ValueError(
@@ -145,85 +130,37 @@ def risso(prices, window_size=None, **kwargs):
     return entropies
 
 
-def h_one(weights):
-    """Calculate minimax entropy with z -> 1.
-
-    This function computes the entropy measure where z approaches 1,
-    which corresponds to the quadratic entropy. It is calculated as:
-
-        H_1 = 1 - sum(weights^2)
-
-    This metric emphasizes the evenness of the weight distribution,
-    where higher values indicate a more uniform distribution.
-
-    Parameters
-    ----------
-    weights (array-like): A list or numpy array of weights representing
-    proportions.
-
-    Returns
-    -------
-    float: The computed entropy measure.
-    """
-    weights = np.asarray(weights)
-    return 1 - np.sum(weights**2)
-
-
-def h_inf(weights):
-    """Calculate minimax entropy with z -> inf.
-
-    This function computes the entropy measure where z approaches infinity,
-    which corresponds to the minimax entropy. It is defined as:
-
-        H_inf = 1 - max(weights)
-
-    This measure focuses on the dominance of the largest weight, providing
-    insight into the concentration of distribution.
-
-    Parameters
-    ----------
-    weights (array-like): A list or numpy array of weights representing
-    proportions.
-
-    Returns
-    -------
-    float: The computed entropy measure.
-    """
-    weights = np.asarray(weights)
-    return 1 - np.max(weights)
-
-
 def yager_one(weights):
     """Compute Yager's entropy for a fuzzy set and z=1.
 
     Parameters
     ----------
-    weights
-        array-like, list of membership degrees (values in [0, 1])
+    weights : array-like
+        List of membership degrees (values in [0, 1])
 
     Returns
     -------
-    entropy
-        float, Yager's entropy
+    float
+        Yager's entropy for z->1
     """
     n = len(weights)
     weights = np.asarray(weights)
 
-    return sum(weights - 1 / n)
+    return sum(abs(weights - 1 / n))
 
 
 def yager_inf(weigths):
-    """Compute Yager's entropy for a fuzzy set and z=inf.
+    """Compute Yager's entropy for a fuzzy set and z->inf.
 
     Parameters
     ----------
-    weights
-        array-like, list of membership degrees (values in [0, 1])
+    weights : array-like
+        List of membership degrees (values in [0, 1])
 
     Returns
     -------
-    entropy:
-        float, Yager's entropy
+    float
+        Yager's entropy for z->inf
     """
     weigths = np.asarray(weigths)
     n = len(weigths)

@@ -153,7 +153,7 @@ def read_hdf5(path_or_stream, group="stocks set"):
 
     Returns
     -------
-    ss: garpar.core.stocks_set.StocksSet
+    garpar.core.stocks_set.StocksSet
         A StocksSet instance
     """
     with h5py.File(path_or_stream, "r") as fp:

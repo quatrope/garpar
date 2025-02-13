@@ -15,8 +15,8 @@ The coercer mixin module provides a specific mixin class used to coerce
 expected returns, weights, and covariance matrices into the desired formats.
 
 Example:
-    >>> from garpar import StocksSet
-    >>> ss = StocksSet(prices=[...])
+    >>> from garpar import mkss
+    >>> ss = mkss([...])
     >>> ss.covariance.sample_cov()
     >>> ss.covariance.ledoit_wolf_cov()
     >>> ss.covariance.oracle_approximating_cov()
@@ -108,14 +108,16 @@ class CoercerMixin:
         return np.asarray(weights) if asarray else weights
 
     def coerce_covariance_matrix(self, cov_matrix, kw, asarray=True):
-        """Coerce covariance matrices into the desired format.
+        """Coerce covariance matrix into the desired format.
 
         Parameters
         ----------
-        cov_matrix : str or array-like
-            The covariance matrix specification or values.
-        kw : dict
-            Additional keyword arguments for the covariance method.
+        cov_matrix : None, str, or array-like
+            The covariance matrix specification or values. If None, the sample
+            covariance matrix is used.
+        kw : dict, optional
+            Additional keyword arguments for the covariance matrix method,
+            by default None.
         asarray : bool, optional
             Whether to return the result as a numpy array, by default True.
 

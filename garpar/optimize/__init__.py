@@ -11,8 +11,8 @@
 
 """Optimize subpackage of Garpar project.
 
-This subpackage offers foundational classes for developing mean-variance 
-optimization models tailored for StocksSets, featuring various implementations 
+This subpackage offers foundational classes for developing mean-variance
+optimization models tailored for StocksSets, featuring various implementations
 leveraging PyPortfolioOpt.
 
 Key Features:

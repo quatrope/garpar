@@ -99,8 +99,10 @@ _ENTROPY_CALCULATORS = {"shannon": entropy.shannon}
 # HELPERS
 # =============================================================================
 
+
 def _as_float_array(arr):
     return np.asarray(arr, dtype=float)
+
 
 # =============================================================================
 # SLICER
@@ -680,7 +682,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A pruned StocksSet instance.
         """
         # get all data to prune
@@ -718,7 +720,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A pruned StocksSet instance.
         """
         # get all data to prune
@@ -764,7 +766,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A StocksSet instance with scaled weights.
         """
         """Reajusta los pesos en un rango de [0, 1]"""
@@ -792,7 +794,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A StocksSet instance with refreshed entropy values.
         """
         entropy_calc = _ENTROPY_CALCULATORS.get(entropy, entropy)

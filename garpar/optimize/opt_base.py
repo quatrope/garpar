@@ -47,7 +47,7 @@ _Unknow = object()
 
 class OptimizerABC(mabc.ModelABC):
     """Abstract base class for stocks set optimizers.
-    
+
     This abstract class defines which methods should an optimizer have.
     """
 
@@ -69,7 +69,7 @@ class OptimizerABC(mabc.ModelABC):
 
         Parameters
         ----------
-        ss : garpar.core.stocks_set.StocksSet
+        ss: garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns

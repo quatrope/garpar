@@ -9,7 +9,7 @@
 # DOCS
 # =============================================================================
 
-"""Utilities for Garpar project.
+"""Utils subpackage of Garpar project.
 
 Utilities for particular implementations of Garpar project.
 """
