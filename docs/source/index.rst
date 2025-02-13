@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 .. meta::
-   :keywords: portfolio optimizarion, market
+   :keywords: portfolio optimizarion, market simulation
 
 .. title:: Garpar Documentation
 
@@ -53,7 +53,7 @@ Contents
 
 
 
-Indices and tables
+Indexes and tables
 ==================
 
 * :ref:`genindex`

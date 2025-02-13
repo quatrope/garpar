@@ -1,4 +1,4 @@
-garpar.datasets.data package
+``garpar.datasets.data`` package
 ============================
 
 .. automodule:: garpar.datasets.data

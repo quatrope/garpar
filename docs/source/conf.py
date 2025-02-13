@@ -40,6 +40,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "sphinx_wagtail_theme",
     "nbsphinx",
 ]
 
@@ -63,8 +64,7 @@ exclude_patterns = []
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
-html_theme = "alabaster"
+html_theme = "sphinx_wagtail_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -84,7 +84,14 @@ html_css_files = [
     "custom.css",
 ]
 
-html_theme_options = {}
+html_theme_options = dict(
+    project_name = "Garpar",
+    logo = "garpar.svg",
+    logo_alt = "Garpar",
+    logo_height = 59,
+    logo_url = "/",
+    logo_width = 45,
+)
 
 
 # =============================================================================

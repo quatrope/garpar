@@ -1,5 +1,8 @@
 Sphinx
 sphinx-autobuild
+sphinx-wagtail-theme
+
+pandoc
 
 ipykernel
 ipython

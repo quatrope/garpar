@@ -31,6 +31,5 @@ VERSION = importlib_metadata.version("garpar")
 #: Tolerance value for numerical operations
 EPSILON = 1e-9
 
-
 #: Key used to store metadata in a :class:`garpar.StocksSet`
 GARPAR_METADATA_KEY = "__garpar_metadata__"
