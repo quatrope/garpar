@@ -2,3 +2,8 @@
 .sphinxsidebarwrapper > h1 {
     display: none;
 }
+
+.image-reference {
+    display: flex;
+    justify-content: center;
+}

@@ -11,7 +11,7 @@ Submodules
 ----------
 
 ``garpar.core.stocks_set`` module
-------------------------------
+---------------------------------
 
 .. automodule:: garpar.core.stocks_set
    :members:
@@ -19,7 +19,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.coercer_mixin`` module
----------------------------------
+------------------------------------
 
 .. automodule:: garpar.core.coercer_mixin
    :members:
@@ -27,7 +27,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.covcorr_acc`` module
--------------------------------
+----------------------------------
 
 .. automodule:: garpar.core.covcorr_acc
    :members:
@@ -35,7 +35,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.div_acc`` module
----------------------------
+------------------------------
 
 .. automodule:: garpar.core.div_acc
    :members:
@@ -43,7 +43,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.ereturns_acc`` module
---------------------------------
+-----------------------------------
 
 .. automodule:: garpar.core.ereturns_acc
    :members:
