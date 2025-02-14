@@ -85,12 +85,12 @@ html_css_files = [
 ]
 
 html_theme_options = dict(
-    project_name = "Garpar",
-    logo = "garpar.svg",
-    logo_alt = "Garpar",
-    logo_height = 59,
-    logo_url = "/",
-    logo_width = 45,
+    project_name="Garpar",
+    logo="garpar.svg",
+    logo_alt="Garpar",
+    logo_height=59,
+    logo_url="/",
+    logo_width=45,
 )
 
 
