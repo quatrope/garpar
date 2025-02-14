@@ -14,7 +14,8 @@
 The coercer mixin module provides a specific mixin class used to coerce
 expected returns, weights, and covariance matrices into the desired formats.
 
-Example:
+Example
+-------
     >>> from garpar import mkss
     >>> ss = mkss([...])
     >>> ss.covariance.sample_cov()

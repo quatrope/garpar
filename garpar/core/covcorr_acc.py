@@ -18,7 +18,8 @@ class, which provides methods for calculating different correlation matrices.
 Key Features:
     - Correlation and covariance analysis
 
-Example:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.covariance.sample_cov()

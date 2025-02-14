@@ -18,7 +18,8 @@ predefined whitelist of permitted methods.
 Key Features:
     - Price-related data and methods
 
-Examples:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.prices.describe()

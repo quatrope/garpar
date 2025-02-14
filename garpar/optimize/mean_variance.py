@@ -20,7 +20,8 @@ Key Features:
     - Mean-variance models
     - Markowitz model
 
-Example:
+Examples
+--------
     >>> import garpar
     >>> prices_df = [[...], [...]]  # Your price data
     >>> ss = garpar.mkss(
@@ -29,20 +30,16 @@ Example:
     ...     window_size=5
     ... )
     >>> from garpar.optimize.mean_variance import MVOptimizer
-    >>> modl = MVOptimizer(model="efficient_risk", target_return=0.07)
+    >>> modl = MVOptimizer(model="max_sharpe", risk_free_rate=0.11)
     >>> modl.optimize(ss)
 
     or
 
-    >>> from garpar import StocksSet
-    >>> from garpar.optimize.mean_variance import MVOptimizer
-    >>> prices_df = pd.DataFrame(...)  # Your price data
-    >>> ss = StocksSet.from_prices(
-    ...     prices=prices_df,
-    ...     weights=[0.4, 0.3, 0.3],
-    ...     window_size=7
-    ... )
-    >>> modl = MVOptimizer(model="efficient_risk", target_return=0.07)
+    >>> from garpar import mkss
+    >>> from garpar.optimize.mean_variance import Markowitz
+    >>> prices_df = [[...], [...]]  # Your price data
+    >>> ss = mkss(prices=prices_df, weights=[0.4, 0.3, 0.3], window_size=5)
+    >>> modl = Markowitz(model="efficient_risk", target_return=0.07)
     >>> modl.optimize(ss)
 
 See Also
@@ -214,9 +211,15 @@ MV_OPTIMIZATION_MODELS = {
 # =============================================================================
 
 
-@attr.define(repr=False)
+@attr.s(repr=False)
 class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
-    """Flexible Mean Variance Optimizer."""
+    """Flexible Mean Variance Optimizer.
+
+    An instance of this class represents a mean-variance optimization model.
+    This class also provides different coercion methods for each model
+    parameter. The parameter model indicates the optimization model to use.
+
+    """
 
     model = mabc.hparam(default="max_sharpe")
 
@@ -293,7 +296,7 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss : garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns
@@ -311,14 +314,13 @@ class MVOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
 # =============================================================================
 
 
-@attr.define(repr=False)
+@attr.s(repr=False)
 class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
     """Classic Markowitz model.
 
-    This method implements the Classic Model Markowitz 1952 in Mansini, R.,
-    WLodzimierz, O., and Speranza, M. G. (2015). Linear and mixed
-    integer programming for portfolio optimization. Springer and EURO: The
-    Association of European Operational Research Societies
+    An instance of this class represents the Markowitz optimization model with
+    specific parameters. This class also provides different coercion methods
+    for either the target return or target risk.
     """
 
     target_return = mabc.hparam(default=None)
@@ -338,7 +340,7 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss : garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns
@@ -363,7 +365,7 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss : garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns
@@ -386,7 +388,7 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss : garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns
@@ -424,7 +426,7 @@ class Markowitz(MeanVarianceFamilyMixin, OptimizerABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss : garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns

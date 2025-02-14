@@ -18,7 +18,8 @@ utility for a given stocks set.
 Key Features:
     - Utility metrics calculation
 
-Example:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.utilities.ex_ante_tracking_error()

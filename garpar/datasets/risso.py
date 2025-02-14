@@ -18,8 +18,8 @@ specific distribution for generating stock prices.
 Key Features:
     - Entropy-based portfolio simulation
 
-Example
--------
+Examples
+--------
     >>> import garpar
     >>> ss = garpar.datasets.make_risso_normal(stocks=2, days=20)
     >>> ss.as_prices()
@@ -167,7 +167,7 @@ class RissoMixin:
             value to the target entropy.
 
         Example
-        --------
+        -------
 
         >>> get_window_loss_probability(window_size=3, entropy=0.99)
         ... 0.33333333366666673

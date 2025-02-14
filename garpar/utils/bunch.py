@@ -120,8 +120,8 @@ class Bunch(Mapping):
         dict
             A deep copy of the _data attribute.
 
-        Examples
-        --------
+        Example
+        -------
         >>> bunch = Bunch()
         >>> bunch._data = {'key1': 'value1', 'key2': 'value2'}
         >>> dict_data = bunch.to_dict()

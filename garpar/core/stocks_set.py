@@ -19,7 +19,8 @@ Key Features:
     - Portfolio/market construction and rebalancing
     - Market data handling and validation
 
-Example:
+Examples
+--------
     >>> import garpar
     >>> prices_df = [[...], [...]]  # Your price data
     >>> ss = garpar.mkss(

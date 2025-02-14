@@ -18,7 +18,8 @@ set betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk
 Key Features:
     - Risk metrics calculation (variance, VaR, etc.)
 
-Example:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.risk.ss_beta()

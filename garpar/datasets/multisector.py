@@ -17,7 +17,8 @@ different sector makers.
 Key Features:
     - Multi-sector StocksSet creation
 
-Example:
+Example
+-------
     >>> from garpar.datasets import make_multisector, RissoNormal, RissoUniform
     >>> port = make_multisector(
     ...     RissoNormal(),
@@ -212,11 +213,8 @@ def make_multisector(*makers, **kwargs):
 
     Example
     -------
-    Example usage:
-
     >>> from mymodule import make_multisector, CustomSectorMaker1,
         CustomSectorMaker2
-
     >>> port = make_multisector(
     >>>     CustomSectorMaker1(),
     >>>     CustomSectorMaker2(),

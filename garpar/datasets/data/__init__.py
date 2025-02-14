@@ -9,10 +9,10 @@
 # DOCS
 # =============================================================================
 
-"""MERVAL dataset module.
+"""MERVAL dataset subpackage.
 
-This module provides a function for loading MERVAL data from January 2012 to
-August 2022.
+This subpackage provides a function for loading MERVAL data from January 2012
+to August 2022.
 
 Key Features:
     - MERVAL dataset
@@ -42,7 +42,7 @@ DATA_PATH = pathlib.Path(os.path.abspath(os.path.dirname(__file__)))
 
 
 def load_MERVAL(imputation="ffill", first=None, last=None):
-    """Argentine stock market prices (MERVAL).
+    """Argentine stock market prices (MERVAL) from January 2012 to August 2022.
 
     Returns
     -------

@@ -17,7 +17,8 @@ compute expected returns for a given stocks set.
 Key Features:
     - Expected returns estimation
 
-Example:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.expected_returns.capm()

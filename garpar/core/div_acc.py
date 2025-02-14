@@ -17,7 +17,8 @@ diversification metrics for a given stocks set.
 Key Features:
     - Diversification metrics calculation
 
-Example:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.diversification.ratio()
@@ -68,8 +69,8 @@ class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         float
             The diversification ratio.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> ratio = accessor.ratio()
         """
@@ -97,8 +98,8 @@ class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         Series
             The marginal risk contribution.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> mrc = accessor.mrc()
         """
@@ -155,8 +156,8 @@ class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         float
             The stocks set diversification index.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> pdi = accessor.pdi()
         """
@@ -187,8 +188,8 @@ class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         float
             Zheng's entropy.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> entropy = accessor.zheng_entropy()
         """
@@ -208,8 +209,8 @@ class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         float
             Cross entropy.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> cross_entropy = accessor.cross_entropy()
         """
@@ -233,8 +234,8 @@ class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
         float
             Ke and Zang's entropy.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> entropy = accessor.ke_zang_entropy()
         """

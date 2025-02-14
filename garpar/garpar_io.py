@@ -13,7 +13,8 @@
 
 This module provides functions to dump and load stocks sets into HDF5 files.
 
-Example:
+Example
+-------
     >>> from garpar import mkss
     >>> from garpar.garpar_io import to_hdf5, read_hdf5
     >>> ss = mkss(prices=[...])

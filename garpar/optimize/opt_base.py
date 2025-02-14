@@ -11,20 +11,8 @@
 
 """Optimizer base classes module.
 
-This module provides an abstract base class for optimization models. It
-also provides a mixin class for mean-variance family optimizers.
-
-Example:
-    >>> from garpar.optimize.opt_base import OptimizerABC
-    >>> class MyFamilyMixin:
-            family = "AnOptimizerFamily"
-    >>> class MyOptimizer(MyFamilyMixin, OptimizerABC):
-    ...     family = "AnOptimizerFamily"
-    ...     def _calculate_weights(self, ss):
-    ...         return ss.weights/len(ss.weights), {}
-    >>> my_optimizer = MyOptimizer()
-    >>> ss = garpar.mkss(prices=[...])
-    >>> my_optimizer.optimize(ss)
+This module provides an abstract base class for optimization models and a mixin
+class for defining mean-variance optimization models classes.
 
 """
 
@@ -46,9 +34,11 @@ _Unknow = object()
 
 
 class OptimizerABC(mabc.ModelABC):
-    """Abstract base class for stocks set optimizers.
+    """Abstract base class for stocks set optimization models.
 
-    This abstract class defines which methods should an optimizer have.
+    This class is the basic representation of an optimization model, In this
+    context, the subclasses of this class that are not abstract are called
+    optimizers.
     """
 
     family = _Unknow
@@ -98,6 +88,6 @@ class OptimizerABC(mabc.ModelABC):
 
 
 class MeanVarianceFamilyMixin:
-    """Mixin class for mean-variance like optimizers."""
+    """Mixin class for mean-variance like models."""
 
     family = "mean-variance"

@@ -17,7 +17,8 @@ data, including line plots, heatmaps, and other visualizations.
 Key Features:
     - Portfolio/market visualization tools
 
-Examples:
+Example
+-------
     >>> import garpar
     >>> ss = garpar.mkss(prices=[...])
     >>> ss.plot.line()

@@ -8,10 +8,12 @@
 > Generation and analysis of artificial and real portfolio returns
 
 -------------------------------------------
-<!-- BODY -->
-
 
 **Garpar**
+
+<!-- BODY -->
+
+## Introduction
 
 Generation and analysis of artificial and real portfolio returns.
 
@@ -63,7 +65,7 @@ Bibtex entry:
 
 
 ```bibtex
-
+    Nothing yet
 ```
 
 **Full Publication:**
