@@ -1,5 +1,5 @@
 ``garpar.utils`` package
-====================
+========================
 
 .. automodule:: garpar.utils
    :members:
@@ -11,7 +11,7 @@ Submodules
 ----------
 
 ``garpar.utils.accabc`` module
---------------------------
+------------------------------
 
 .. automodule:: garpar.utils.accabc
    :members:
@@ -19,7 +19,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.utils.bunch`` module
--------------------------
+-----------------------------
 
 .. automodule:: garpar.utils.bunch
    :members:
@@ -27,7 +27,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.utils.context`` module
----------------------------
+-------------------------------
 
 .. automodule:: garpar.utils.context
    :members:
@@ -35,7 +35,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.utils.entropy`` module
----------------------------
+-------------------------------
 
 .. automodule:: garpar.utils.entropy
    :members:
@@ -43,7 +43,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.utils.mabc`` module
-------------------------
+----------------------------
 
 .. automodule:: garpar.utils.mabc
    :members:
@@ -51,7 +51,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.utils.scalers`` module
----------------------------
+-------------------------------
 
 .. automodule:: garpar.utils.scalers
    :members:
@@ -59,7 +59,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.utils.unames`` module
---------------------------
+------------------------------
 
 .. automodule:: garpar.utils.unames
    :members:

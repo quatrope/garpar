@@ -1,5 +1,5 @@
 ``garpar.datasets`` package
-=======================
+===========================
 
 .. automodule:: garpar.datasets
    :members:
@@ -19,7 +19,7 @@ Submodules
 ----------
 
 ``garpar.datasets.ds_base`` module
--------------------------------
+----------------------------------
 
 .. automodule:: garpar.datasets.ds_base
    :members:
@@ -27,7 +27,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.datasets.multisector`` module
-----------------------------------
+--------------------------------------
 
 .. automodule:: garpar.datasets.multisector
    :members:
@@ -35,7 +35,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.datasets.risso`` module
-----------------------------
+--------------------------------
 
 .. automodule:: garpar.datasets.risso
    :members:

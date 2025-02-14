@@ -1,5 +1,5 @@
 ``garpar.datasets.data`` package
-============================
+================================
 
 .. automodule:: garpar.datasets.data
    :members:

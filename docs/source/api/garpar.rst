@@ -1,5 +1,5 @@
 ``garpar`` package
-==============
+==================
 
 .. automodule:: garpar
    :members:
@@ -22,7 +22,7 @@ Submodules
 ----------
 
 ``garpar.constants`` module
------------------------
+---------------------------
 
 .. automodule:: garpar.constants
    :members:
@@ -30,7 +30,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.garpar_io`` module
-------------------------
+---------------------------
 
 .. automodule:: garpar.garpar_io
    :members:

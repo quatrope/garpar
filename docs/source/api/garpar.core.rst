@@ -1,5 +1,5 @@
 ``garpar.core`` package
-===================
+=======================
 
 .. automodule:: garpar.core
    :members:
@@ -51,7 +51,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.plot_acc`` module
-----------------------------
+-------------------------------
 
 .. automodule:: garpar.core.plot_acc
    :members:
@@ -59,7 +59,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.prices_acc`` module
-------------------------------
+---------------------------------
 
 .. automodule:: garpar.core.prices_acc
    :members:
@@ -67,7 +67,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.risk_acc`` module
-----------------------------
+-------------------------------
 
 .. automodule:: garpar.core.risk_acc
    :members:
@@ -75,7 +75,7 @@ Submodules
    :show-inheritance:
 
 ``garpar.core.utilities_acc`` module
----------------------------------
+------------------------------------
 
 .. automodule:: garpar.core.utilities_acc
    :members:
