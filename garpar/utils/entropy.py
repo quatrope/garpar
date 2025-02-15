@@ -88,10 +88,8 @@ def risso(prices, window_size=None, **kwargs):
     array-like
         The Risso entropy of the prices.
     """
-    if window_size <=0 or window_size > prices.shape[0]:
-        raise ValueError(
-            "'window_size' must be in the interval (0, days]"
-        )
+    if window_size <= 0 or window_size > prices.shape[0]:
+        raise ValueError("'window_size' must be in the interval (0, days]")
 
     marks = _compute_marks(prices, **kwargs)
 

@@ -116,7 +116,7 @@ class MultiSector(StocksSetMakerABC):
         if isinstance(prices, (int, float)):
             prices = np.full(stocks, prices, dtype=float)
         elif len(prices) != stocks:
-            raise ValueError(f"The number of prices must be equal {stocks}")
+            raise ValueError(f"The number of prices must be equal to {stocks}")
         prices = np.asarray(prices, dtype=float)
         return np.array_split(prices, makers_len)
 
@@ -146,7 +146,7 @@ class MultiSector(StocksSetMakerABC):
         """
         makers_len = len(self.makers)
         if stocks < makers_len:
-            raise ValueError(f"stocks must be >= {makers_len}")
+            raise ValueError(f"The number of stocks must be >= {makers_len}")
 
         prices = self._coerce_price(stocks, price, makers_len)
 

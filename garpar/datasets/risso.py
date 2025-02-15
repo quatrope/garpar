@@ -173,6 +173,9 @@ class RissoMixin:
         ... 0.33333333366666673
 
         """
+        if entropy > 1.0 or entropy < 0.0:
+            raise ValueError("Entropy must be a value between 0.0 and 1.0")
+
         h_candidates, loss_probabilities = self._generate_loss_probabilities(
             window_size, eps
         )
