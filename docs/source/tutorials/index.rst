@@ -12,6 +12,7 @@ Contents:
    quickstart
    market_simulation
    portfolio_optimization
+   optimizer_creation
 
 
 
