@@ -34,7 +34,7 @@ _ABSTRACT = property(abc.abstractmethod(lambda: ...))
 
 
 class AccessorABC(abc.ABC):
-    """Generalization of the accessor idea for use in scikit-criteria.
+    """Generalization of the accessor idea for use in Garpar.
 
     Instances of this class are callable and accept as the first
     parameter 'kind' the name of a method to be executed followed by all the
