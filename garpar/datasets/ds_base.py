@@ -344,7 +344,7 @@ class RandomEntropyStocksSetMakerABC(StocksSetMakerABC):
         """
         if window_size <= 0 or window_size > days:
             raise ValueError(
-                "'window_size' must be in the interval [0, 'days')"
+                "'window_size' must be in the interval (0, days]"
             )
 
         initial_prices = self._coerce_price(stocks, price)
