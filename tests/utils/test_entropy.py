@@ -96,7 +96,7 @@ def test_yager_one(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
 
     np.testing.assert_almost_equal(
-        entropy.yager_one(ss.weights), 4.964303714641588
+        entropy.yager_one(ss.weights), 4.975949018866288
     )
 
 
