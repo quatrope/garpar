@@ -143,7 +143,7 @@ def yager_one(weights):
     n = len(weights)
     weights = np.asarray(weights)
 
-    return sum(abs(weights - 1 / n))
+    return sum(weights - 1 / n)
 
 
 def yager_inf(weigths):

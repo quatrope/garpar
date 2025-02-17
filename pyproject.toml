@@ -23,7 +23,7 @@ markers = [
     "plot: marks tests related to matplotlib integration (deselect with '-m \"not plot\"')",
 ]
 testpaths = ["tests"]
-addopts = "-m 'not slow' -n auto"
+addopts = "-m 'not slow' -n auto -p no:warnings"
 
 # =============================================================================
 # PACKAGING

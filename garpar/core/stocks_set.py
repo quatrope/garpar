@@ -319,12 +319,12 @@ class StocksSet:
 
     # INTERNALS
     def __len__(self):
-        """Return the number of days in the StocksSet.
+        """Return the number of days in the StocksSet instance.
 
         Returns
         -------
         int
-            Number of days in the StocksSet.
+            Number of days in the StocksSet instance.
         """
         return len(self._prices_df)
 
