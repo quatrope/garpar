@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        tox_env: ["style", "docstyle", "check-manifest", "check-testdir", "check-headers", "coverage", "mkdocs"]
+        tox_env: ["3.10", "3.11", "3.12", "3.13", "style", "docstyle", "check-manifest", "check-testdir", "check-headers", "coverage", "mkdocs"]
         include:
           - tox_env: "3.10"
             python-version: "3.10"
