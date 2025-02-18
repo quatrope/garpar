@@ -8,6 +8,9 @@ on:
   - push
   - pull_request
 
+# on:
+#   workflow_call:
+
 env:
   default-python: '3.13'
 
@@ -19,13 +22,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         tox_env: ["3.10", "3.11", "3.12", "3.13"]
         include:
-          - tox_sector: style
-          - tox_sector: docstyle
-          - tox_sector: check-manifest
-          - tox_sector: check-testdir
-          - tox_sector: check-headers
-          - tox_sector: coverage
-          - tox_sector: mkdocs
+          - tox_env: style
+          - tox_env: docstyle
+          - tox_env: check-manifest
+          - tox_env: check-testdir
+          - tox_env: check-headers
+          - tox_env: coverage
+          - tox_env: mkdocs
             pandoc: true
 
     # The operative sistem
@@ -41,13 +44,20 @@ jobs:
         run: sudo apt-get install pandoc
 
       # tox steps
-      - name: Set up Python ${{ matrix.tox_env || env.default-python }}
+      - name: Set up Default Python
+        if: ${{ !contains(matrix.tox_env, '3.') }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.tox_env || env.default-python }}
+          python-version: ${{ env.default-python }}
+
+      - name: Set up Python ${{ matrix.tox_env }}
+        if: ${{ contains(matrix.tox_env, '3.') }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.tox_env }}
 
       - name: Install tox
         run: pip install tox
 
-      - name: tox -re ${{ matrix.tox_sector || matrix.tox_env }}
-        run: tox -re ${{ matrix.tox_sector || matrix.tox_env }}
+      - name: tox -re ${{ matrix.tox_env }}
+        run: tox -re ${{ matrix.tox_env }}
