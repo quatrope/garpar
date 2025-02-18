@@ -9,4 +9,5 @@ ipython
 nbsphinx
 lxml_html_clean
 
+setuptools
 m2r2
