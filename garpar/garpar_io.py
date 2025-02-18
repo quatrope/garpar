@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -11,7 +11,15 @@
 
 """Utilities to dump and load stocks sets into hdf5.
 
-Based on: https://stackoverflow.com/a/30773118
+This module provides functions to dump and load stocks sets into HDF5 files.
+
+Example
+-------
+    >>> from garpar import mkss
+    >>> from garpar.garpar_io import to_hdf5, read_hdf5
+    >>> ss = mkss(prices=[...])
+    >>> to_hdf5("path/to/file.hdf5", ss)
+    >>> ss2 = read_hdf5("path/to/file.hdf5")
 
 """
 
@@ -30,8 +38,8 @@ import numpy as np
 
 import pandas as pd
 
-from . import __version__ as VERSION
-from .core import GARPAR_METADATA_KEY, StocksSet
+from .constants import GARPAR_METADATA_KEY, VERSION
+from .core import StocksSet
 
 # =============================================================================
 # CONSTANTS
@@ -39,8 +47,8 @@ from .core import GARPAR_METADATA_KEY, StocksSet
 
 _DEFAULT_HDF5_METADATA = {
     "garpar": VERSION,
-    "author_email": "nluczywo@unc.edu.ar",
-    "affiliation": "FCE-UNC, QuatroPe",
+    "author_email": "jbcabral@unc.edu.ar, nluczywo@unc.edu.ar",
+    "affiliation": "FAMAF-UNC, FCE-UNC, QuatroPe",
     "url": "https://github.com/quatrope/garpar",
     "platform": platform.platform(),
     "system_encoding": sys.getfilesystemencoding(),
@@ -61,19 +69,24 @@ def _df_to_sarray(df):
     This is functionally equivalent to but more efficient than
     np.array(df.to_array())
 
-    :param df: the data frame to convert
-    :return: a numpy structured array representation of df
+    Parameters
+    ----------
+    df : DataFrame
+        The data frame to convert
 
-
+    Returns
+    -------
+    numpy.ndarray
+        A numpy structured array representation of `df`
     """
-    v = df.values
+    values = df.values
     cols = df.columns
     types = [(cols[i], df[k].dtype.type) for (i, k) in enumerate(cols)]
     dtype = np.dtype(types)
-    z = np.zeros(v.shape[0], dtype)
-    for i, k in enumerate(z.dtype.names):
-        z[k] = v[:, i]
-    return z
+    s_arr = np.zeros(values.shape[0], dtype)
+    for i, k in enumerate(s_arr.dtype.names):
+        s_arr[k] = values[:, i]
+    return s_arr
 
 
 # =============================================================================
@@ -96,11 +109,13 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
         The name of the group where the stocks set will be stored.
     kwargs :
         Extra arguments to the function ``h5py.File.create_dataset``.
-
     """
-    # # prepare metadata
+    from . import __version__
+
+    # prepare metadata
     h5_metadata = _DEFAULT_HDF5_METADATA.copy()
-    h5_metadata["utc_timestamp"] = dt.datetime.utcnow().isoformat()
+    h5_metadata["garpar"] = __version__
+    h5_metadata["utc_timestamp"] = dt.datetime.now(dt.timezone.utc).isoformat()
 
     # prepare kwargs
     kwargs.setdefault("compression", "gzip")
@@ -128,7 +143,20 @@ def to_hdf5(path_or_stream, ss, group="stocks set", **kwargs):
 
 
 def read_hdf5(path_or_stream, group="stocks set"):
-    """HDF5 file reader."""
+    """HDF5 file reader.
+
+    Parameters
+    ----------
+    path_to_stream : String
+        Path to hdf5 stream
+    group : String
+        The value to look inside hdf5 file
+
+    Returns
+    -------
+    garpar.core.stocks_set.StocksSet
+        A StocksSet instance
+    """
     with h5py.File(path_or_stream, "r") as fp:
         grp = fp[group]
 

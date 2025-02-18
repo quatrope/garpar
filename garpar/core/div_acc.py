@@ -1,22 +1,44 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Diversification Accessor."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Diversification Accessor.
+
+The diversification accessor module provides an accessor class to compute
+diversification metrics for a given stocks set.
+
+Key Features:
+    - Diversification metrics calculation
+
+Example
+-------
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.diversification.ratio()
+    >>> ss.diversification.mrc()
+    >>> ss.diversification.pdi()
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
 import numpy as np
 
-# import scipy.stats
-
 from sklearn.decomposition import PCA
 
-from . import _mixins
-from ..utils import accabc
+from . import coercer_mixin
+from ..utils import AccessorABC
 
 # =============================================================================
 # DIVERSIFICATION
@@ -24,32 +46,8 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
-    """A class to calculate various diversification metrics for a stocks set.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of diversification metric.
-    _ss : StocksSet
-        The stocks set object.
-
-    Methods
-    -------
-    ratio(covariance="sample_cov", covariance_kw=None)
-        Calculate the diversification ratio.
-    mrc(covariance="sample_cov", covariance_kw=None)
-        Calculate the marginal risk contribution.
-    pdi(n_components=None, whiten=False, svd_solver="auto", tol=0.0, iterated_power="auto",
-        n_oversamples=10, power_iteration_normalizer="auto", random_state=None)
-        Calculate the stocks set diversification index.
-    zheng_entropy()
-        Calculate Zheng's entropy.
-    cross_entropy(benchmark_weights=None)
-        Calculate cross entropy.
-    ke_zang_entropy(covariance="sample_cov", covariance_kw=None)
-        Calculate Ke and Zang's entropy.
-    """
+class DiversificationMetricsAccessor(AccessorABC, coercer_mixin.CoercerMixin):
+    """A class to calculate various diversification metrics for a StocksSet."""
 
     _default_kind = "ratio"
 
@@ -61,7 +59,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default "sample_cov".
+            The method to compute the covariance matrix,
+            by default "sample_cov".
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method.
 
@@ -70,8 +69,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         float
             The diversification ratio.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> ratio = accessor.ratio()
         """
@@ -89,7 +88,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default "sample_cov".
+            The method to compute the covariance matrix,
+            by default "sample_cov".
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method.
 
@@ -98,8 +98,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Series
             The marginal risk contribution.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> mrc = accessor.mrc()
         """
@@ -148,15 +148,16 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         power_iteration_normalizer : str, optional
             Normalizer for power iterations, by default "auto".
         random_state : int, RandomState instance or None, optional
-            Seed or random number generator for reproducibility, by default None.
+            Seed or random number generator for reproducibility,
+            by default None.
 
         Returns
         -------
         float
             The stocks set diversification index.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> pdi = accessor.pdi()
         """
@@ -187,8 +188,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         float
             Zheng's entropy.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> entropy = accessor.zheng_entropy()
         """
@@ -208,8 +209,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         float
             Cross entropy.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> cross_entropy = accessor.cross_entropy()
         """
@@ -223,7 +224,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default "sample_cov".
+            The method to compute the covariance matrix,
+            by default "sample_cov".
         covariance_kw : dict, optional
             Additional keyword arguments for the covariance method.
 
@@ -232,8 +234,8 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         float
             Ke and Zang's entropy.
 
-        Examples
-        --------
+        Example
+        -------
         >>> accessor = DiversificationMetricsAccessor(ss)
         >>> entropy = accessor.ke_zang_entropy()
         """
@@ -243,22 +245,3 @@ class DiversificationMetricsAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         entropy = self.zheng_entropy()
 
         return ss_var + entropy
-
-    # def delta(self, *, diffentropy_kw=None):
-    #     weights = self._ss.scale_weights().weights
-    #     returns = self._ss.as_returns()
-
-    #     diffentropy_kw = {} if diffentropy_kw is None else diffentropy_kw
-    #     X_diff_entropy = scipy.stats.differential_entropy(returns)
-
-    #     exp_wH = np.exp(np.sum(weights * X_diff_entropy))
-
-    #     wX_diff_entropy = scipy.stats.differential_entropy(
-    #         np.sum(weights * returns)
-    #     )
-
-    #     exp_HwX = np.exp(wX_diff_entropy)
-
-    #     ddi = (exp_wH - exp_HwX) / exp_wH
-
-    #     return ddi

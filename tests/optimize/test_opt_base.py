@@ -1,23 +1,17 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test Optimize base module."""
 
 # =============================================================================
 # IMPORTS
 # =============================================================================
 
-
-from garpar import StocksSet
-
-from garpar.optimize.opt_base import OptimizerABC, MeanVarianceFamilyMixin
-
-import numpy as np
-
-import pandas as pd
+from garpar.optimize.opt_base import MeanVarianceFamilyMixin, OptimizerABC
 
 import pytest
 
@@ -28,6 +22,7 @@ import pytest
 
 
 def test_OptimizerABC__calculate_weights_not_implementhed(risso_stocks_set):
+    """Test for OptimizerABC when calculate weights are not implemented."""
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     class FooOptimizer(MeanVarianceFamilyMixin, OptimizerABC):
@@ -40,9 +35,9 @@ def test_OptimizerABC__calculate_weights_not_implementhed(risso_stocks_set):
 
 def test_optimizerabc_family_not_string():
     """Test that an error is raised if 'family' is not a string."""
-
     with pytest.raises(
-        TypeError, match="'InvalidOptimizer.family' must be redefined as string"
+        TypeError,
+        match="'InvalidOptimizer.family' must be redefined as string",
     ):
 
         class InvalidOptimizer(OptimizerABC):
@@ -51,7 +46,6 @@ def test_optimizerabc_family_not_string():
 
 def test_optimizerabc_family_undefined():
     """Test that an error is raised if 'family' is not defined."""
-
     with pytest.raises(
         TypeError,
         match="'UndefinedFamilyOptimizer.family' must be redefined as string",
@@ -71,6 +65,8 @@ def test_optimizerabc_family_valid():
 
 
 def test_OptimizerABC_get_family():
+    """Test OptimizerABC family."""
+
     class TestMeanVarianceFamily(MeanVarianceFamilyMixin, OptimizerABC):
         pass
 

@@ -1,11 +1,38 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Risk Accessor."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Risk Accessor.
+
+The risk accessor module provides an accessor class to compute stock and stocks
+set betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk
+(VaR).
+
+Key Features:
+    - Risk metrics calculation (variance, VaR, etc.)
+
+Example
+-------
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.risk.ss_beta()
+    >>> ss.risk.treynor_ratio()
+    >>> ss.risk.ss_variance()
+    >>> ss.risk.sharpe_ratio()
+    >>> ss.risk.value_at_risk()
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
@@ -13,8 +40,8 @@ import numpy as np
 
 from pypfopt import expected_returns, objective_functions
 
-from . import _mixins
-from ..utils import accabc
+from . import coercer_mixin
+from ..utils import AccessorABC
 
 # =============================================================================
 # RISK ACCESSOR
@@ -22,33 +49,12 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
+class RiskAccessor(AccessorABC, coercer_mixin.CoercerMixin):
     """Accessor for various risk metrics.
 
-    The RiskAccessor class provides methods to compute stock and stocks set betas,
-    Treynor ratio, stocks set variance, Sharpe ratio, and Value at Risk (VaR).
-
-    Attributes
-    ----------
-    _default_kind : str
-        The default kind of risk measure, default is "ss_beta".
-    _ss : attr.ib
-        The StocksSet object containing weights, prices, and other attributes.
-
-    Methods
-    -------
-    stock_beta(market_prices=None, log_returns=False)
-        Computes the beta of individual stocks in the stocks_set.
-    stocks_set_beta(benchmark_weights=None, log_returns=False)
-        Computes the beta of the entire stocks_set.
-    treynor_ratio(expected_returns='capm', expected_returns_kw=None, negative=True, benchmark_weights=None, log_returns=False)
-        Computes the Treynor ratio of the stocks_set.
-    stocks_set_variance(covariance='sample_cov', covariance_kw=None)
-        Computes the variance of the stocks_set.
-    sharpe_ratio(expected_returns='capm', covariance='sample_cov', expected_returns_kw=None, covariance_kw=None, **kwargs)
-        Computes the Sharpe ratio of the stocks_set.
-    value_at_risk(alpha=0.05)
-        Computes the Value at Risk (VaR) of the stocks_set.
+    The RiskAccessor class provides methods to compute stock and stocks set
+    betas, Treynor ratio, stocks set variance, Sharpe ratio, and Value at
+    Risk (VaR).
     """
 
     _default_kind = "ss_beta"
@@ -68,7 +74,8 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Returns
         -------
         tuple
-            A tuple containing the returns DataFrame and the market column name.
+            A tuple containing the returns DataFrame and the market
+            column name.
         """
         prices = self._ss._prices_df
         market_returns = None
@@ -114,11 +121,6 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         -------
         Series
             The beta values for individual stocks.
-
-        Examples
-        --------
-        >>> accessor = RiskAccessor(ss)
-        >>> betas = accessor.stock_beta()
         """
         returns, mkt_col = self._returns_df(market_prices, log_returns)
 
@@ -145,11 +147,6 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         -------
         float
             The beta of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = RiskAccessor(ss)
-        >>> beta = accessor.stocks_set_beta()
         """
         benchmark_weights = self.coerce_weights(benchmark_weights)
 
@@ -193,9 +190,11 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         expected_returns : str, optional
             The method to compute the expected returns, by default 'capm'.
         expected_returns_kw : dict, optional
-            Additional keyword arguments for the expected returns method, by default None.
+            Additional keyword arguments for the expected returns method,
+            by default None.
         negative : bool, optional
-            Whether to return the negative of the Treynor ratio, by default True.
+            Whether to return the negative of the Treynor ratio,
+            by default True.
         benchmark_weights : array-like, optional
             The weights of the benchmark stocks set, by default None.
         log_returns : bool, optional
@@ -205,11 +204,6 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         -------
         float
             The Treynor ratio of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = RiskAccessor(ss)
-        >>> ratio = accessor.treynor_ratio()
         """
         ss_return = self._ss.utilities.ss_return(
             expected_returns=expected_returns,
@@ -228,19 +222,16 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         covariance : str, optional
-            The method to compute the covariance matrix, by default 'sample_cov'.
+            The method to compute the covariance matrix,
+            by default 'sample_cov'.
         covariance_kw : dict, optional
-            Additional keyword arguments for the covariance method, by default None.
+            Additional keyword arguments for the covariance method,
+            by default None.
 
         Returns
         -------
         float
             The variance of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = RiskAccessor(ss)
-        >>> var = accessor.stocks_set_variance()
         """
         cov_matrix = self.coerce_covariance_matrix(covariance, covariance_kw)
         return objective_functions.portfolio_variance(
@@ -264,13 +255,17 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         Parameters
         ----------
         expected_returns : str, optional
-            The method to compute the expected returns, by default 'capm'.
+            The method to compute the expected returns,
+            by default 'capm'.
         covariance : str, optional
-            The method to compute the covariance matrix, by default 'sample_cov'.
+            The method to compute the covariance matrix,
+            by default 'sample_cov'.
         expected_returns_kw : dict, optional
-            Additional keyword arguments for the expected returns method, by default None.
+            Additional keyword arguments for the expected returns method,
+            by default None.
         covariance_kw : dict, optional
-            Additional keyword arguments for the covariance method, by default None.
+            Additional keyword arguments for the covariance method,
+            by default None.
         **kwargs
             Additional keyword arguments.
 
@@ -278,11 +273,6 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         -------
         float
             The Sharpe ratio of the stocks set.
-
-        Examples
-        --------
-        >>> accessor = RiskAccessor(ss)
-        >>> ratio = accessor.sharpe_ratio()
         """
         expected_returns = self.coerce_expected_returns(
             expected_returns, expected_returns_kw
@@ -337,11 +327,6 @@ class RiskAccessor(accabc.AccessorABC, _mixins.CoercerMixin):
         -------
         Series
             The Value at Risk (VaR) for each stock in the stocks set.
-
-        Examples
-        --------
-        >>> accessor = RiskAccessor(ss)
-        >>> var = accessor.value_at_risk(alpha=0.05)
         """
         returns = self._ss.as_returns()
 

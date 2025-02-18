@@ -1,19 +1,41 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Prices Accessor."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Prices Accessor.
+
+The prices accessor module offers an accessor class to perform a variety of
+statistical and mathematical operations on stock prices, leveraging a
+predefined whitelist of permitted methods.
+
+Key Features:
+    - Price-related data and methods
+
+Example
+-------
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.prices.describe()
+    >>> ss.prices.log()
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
 import numpy as np
 
-import pandas as pd
-
-from ..utils import accabc
+from ..utils import AccessorABC
 
 # =============================================================================
 # STATISTIC ACCESSOR
@@ -21,40 +43,12 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class PricesAccessor(accabc.AccessorABC):
+class PricesAccessor(AccessorABC):
     """Accessor for price-related data and methods.
 
     The PricesAccessor class provides a convenient interface to perform various
     statistical and mathematical operations on price data, using a predefined
     whitelist of allowable methods.
-
-    Attributes
-    ----------
-    _default_kind : str
-        The default kind of operation, default is "describe".
-    _ss : attr.ib
-        The stocks set object containing price data and other attributes.
-    _DF_WHITELIST : list of str
-        A list of allowable DataFrame methods.
-    _GARPAR_WHITELIST : list of str
-        A list of allowable custom methods.
-    _WHITELIST : list of str
-        A combined list of allowable methods from _DF_WHITELIST and _GARPAR_WHITELIST.
-
-    Methods
-    -------
-    __getattr__(a)
-        Dynamically retrieve whitelisted attributes.
-    __dir__()
-        List available attributes, including whitelisted methods.
-    log()
-        Apply the natural logarithm to the price data.
-    log10()
-        Apply the base 10 logarithm to the price data.
-    log2()
-        Apply the base 2 logarithm to the price data.
-    mad(skipna=True)
-        Compute the mean absolute deviation of the price data.
     """
 
     _default_kind = "describe"
@@ -166,6 +160,14 @@ class PricesAccessor(accabc.AccessorABC):
         return (df - df.mean(axis=0)).abs().mean(axis=0, skipna=skipna)
 
     def mean_tendency_size(self):
+        """Compute the mean size of consecutive winning or losing streaks.
+
+        Returns
+        -------
+        Series
+            A Series with the mean streak size for each asset, representing
+            the average length of consecutive up or down movements in returns.
+        """
 
         def count_consecutive(stock_groups):
             # Calculate the size of each consecutive group

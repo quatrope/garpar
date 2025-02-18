@@ -1,0 +1,13 @@
+Sphinx
+sphinx-autobuild
+sphinx-wagtail-theme
+
+pandoc
+
+ipykernel
+ipython
+nbsphinx
+lxml_html_clean
+
+setuptools
+m2r2

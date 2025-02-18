@@ -1,33 +1,16 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# ==============================================================
+# CI with GitHub Actions
+# ==============================================================
 
-name: GARPAR
+name: Build
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+  - push
+  - pull_request
 
-permissions:
-  contents: read
+env:
+  default-python: '3.13'
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.13
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.13"
-    - name: Install dependencies
-      run: |
-        apt install openblas
-        python -m pip install --upgrade pip
-        if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
-    - name: Test with tox
-      run: |
-        tox
+  testing:
+    uses: quatrope/garpar/.github/workflows/tests.yml@4829b57199f621de22211fab5570c4fa78d9b48e

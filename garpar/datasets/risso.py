@@ -1,11 +1,50 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Risso StocksSet Maker."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Risso StocksSet Makers.
+
+This module provides generators that use the Risso informational entropy
+calculation to determine loss probabilities. Each generator also adheres to a
+specific distribution for generating stock prices.
+
+Key Features:
+    - Entropy-based portfolio simulation
+
+Examples
+--------
+    >>> import garpar
+    >>> ss = garpar.datasets.make_risso_normal(stocks=2, days=20)
+    >>> ss.as_prices()
+    >>> ss.as_returns()
+
+    or
+
+    >>> from garpar.datasets import RissoNormal
+    >>> maker = RissoNormal(
+    ...     mu=10,
+    ...     sigma=0.2,
+    ...     entropy=0.5,
+    ...     random_state=10,
+    ...     n_jobs=None,
+    ...     verbose=0
+    ... )
+    >>> maker.make_stocks_set()
+
+References
+----------
+    Risso, W. A. (2008). The informational efficiency and the
+    financial crashes.
+    https://doi.org/10.1016/j.ribaf.2008.02.005.
+
+"""
 
 # =============================================================================
 # IMPORTS
@@ -18,8 +57,8 @@ import numpy as np
 import scipy.stats
 
 from .ds_base import RandomEntropyStocksSetMakerABC
+from ..constants import EPSILON
 from ..utils import mabc
-from .. import EPSILON
 
 
 # =============================================================================
@@ -28,9 +67,7 @@ from .. import EPSILON
 
 
 def argnearest(arr, v):
-    """
-    Find the index of the element in the array `arr` that is nearest to the
-    value `v`.
+    """Find the index of the element in the array `arr` that is closest to `v`.
 
     Parameters
     ----------
@@ -70,37 +107,16 @@ def argnearest(arr, v):
 
 
 class RissoMixin:
-    """
-    Implementation of a portfolio maker based on entropy calculation by Risso.
+    """Implementation of a stock set maker using Risso's entropy calculation.
 
     This class extends RandomEntropyStocksSetMakerABC and implements methods
     for calculating candidate entropies and selecting loss probabilities based
     on a given window size and target entropy.
-
-    Attributes
-    ----------
-    entropy : float
-        Target entropy value for portfolio optimization.
-    random_state : numpy.random.Generator
-        Random number generator instance for reproducibility.
-    n_jobs : int, optional
-        Number of parallel jobs to run. Default is None.
-    verbose : int, optional
-        Verbosity level. Default is 0.
-
-    Methods
-    -------
-    generate_loss_probabilities(window_size)
-        Calculate candidate entropies and corresponding loss probabilities.
-
-    get_window_loss_probability(window_size, entropy)
-        Get the loss probability that corresponds to the nearest candidate
-        entropy value to the target entropy.
     """
 
-    def generate_loss_probabilities(self, window_size, eps=None):
-        """
-        Calculate candidate entropies and corresponding loss probabilities.
+    def _generate_loss_probabilities(self, window_size, eps=None):
+        """Calculate candidate entropies and corresponding loss probabilities.
+
         Note that for a greater window size, the chances of losing or winning
         are more transparent.
 
@@ -115,23 +131,25 @@ class RissoMixin:
             Tuple containing the calculated modified entropy values and
             corresponding loss probabilities.
         """
-        # Se corrigen probabilidades porque el cálculo de la entropía trabaja
-        # con logaritmo y el logaritmo de cero no puede calcularse
+        # log(0) is undefined
         epsilon = EPSILON if eps is None else eps
 
         loss_probability = np.linspace(
             epsilon, 1.0 - epsilon, num=window_size + 1
         )
 
-        # Calcula entropy
+        # calculate entropy with log2 as Risso with returns
         first_part = loss_probability * np.log2(loss_probability)
-        second_part = (1.0 - loss_probability) * np.log2(1.0 - loss_probability)
+        second_part = (1.0 - loss_probability) * np.log2(
+            1.0 - loss_probability
+        )
 
         modificated_entropy = -1.0 * (first_part + second_part)
         return modificated_entropy, loss_probability
 
     def get_window_loss_probability(self, window_size, entropy, eps=None):
-        """
+        """Get the loss probability that corresponds to the nearest entropy.
+
         Get the loss probability that corresponds to the nearest candidate
         entropy value to the target entropy.
 
@@ -149,21 +167,16 @@ class RissoMixin:
             value to the target entropy.
 
         Example
-        --------
-        If we run this function with window_size=3 and entropy=.99
-        >>> # Example with a sliding window size of 3 and target entropy of 0.99
+        -------
+
         >>> get_window_loss_probability(window_size=3, entropy=0.99)
-        We get the following data
-        Candidates
-        [1.18666621e-14 9.18295834e-01 9.18295834e-01 1.18666621e-14]
-        Entropy
-        0.99
-        Loss probabilities
-        [2.22044605e-16 3.33333333e-01 6.66666667e-01 1.00000000e+00]
-        Loss probability
-        0.3333333333333333
+        ... 0.33333333366666673
+
         """
-        h_candidates, loss_probabilities = self.generate_loss_probabilities(
+        if entropy > 1.0 or entropy < 0.0:
+            raise ValueError("Entropy must be a value between 0.0 and 1.0")
+
+        h_candidates, loss_probabilities = self._generate_loss_probabilities(
             window_size, eps
         )
         idx = argnearest(h_candidates, entropy)
@@ -173,32 +186,16 @@ class RissoMixin:
 
 
 # =============================================================================
-# NORMAL
+# UNIFORM
 # =============================================================================
+
+
 class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
-    Implementation of a portfolio maker using a uniform distribution for
-    price changes.
+    """Implementation of a StocksSets maker using a uniform distribution.
 
     This class extends RissoABC and overrides the method make_stock_price to
     simulate stock price changes based on a uniform distribution within
     specified bounds.
-
-    Attributes
-    ----------
-    low : float, optional
-        Lower bound of the uniform distribution for daily returns.
-        Default is 1.0.
-    high : float, optional
-        Upper bound of the uniform distribution for daily returns.
-        Default is 5.0.
-
-    Methods
-    -------
-    make_stock_price(price, loss, random)
-        Calculate the new stock price based on the current price, loss flag,
-        and a random
-        number generator following a uniform distribution.
 
     Notes
     -----
@@ -210,7 +207,8 @@ class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     high = mabc.hparam(default=5, converter=float)
 
     def make_stock_price(self, price, loss, random):
-        """
+        """Calculate the new stock price.
+
         Calculate the new stock price based on the current price, loss flag,
         and a random number generator following a uniform distribution.
 
@@ -246,7 +244,10 @@ def make_risso_uniform(
     verbose=0,
     **kwargs,
 ):
-    """Create a portfolio using RissoUniform portfolio maker.
+    """Create a StocksSet instance using RissoUniform maker.
+
+    This function is an implementation of the factory method that creates a
+    StocksSet using the RissoUniform maker.
 
     Parameters
     ----------
@@ -271,7 +272,7 @@ def make_risso_uniform(
 
     Returns
     -------
-    StocksSet
+    garpar.core.stocks_set.StocksSet
         Generated portfolio instance.
 
     Notes
@@ -295,27 +296,10 @@ def make_risso_uniform(
 # =============================================================================
 # NORMAL
 # =============================================================================
-class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
-    StocksSet maker implementing a stochastic model with normal
-    distribution for daily returns.
 
-    Parameters
-    ----------
-    mu : float, optional
-        Mean of the normal distribution for daily returns. Default is 0.0.
-    sigma : float, optional
-        Standard deviation of the normal distribution for daily returns.
-        Default is 0.2.
-    entropy : float, optional
-        Entropy parameter controlling the randomness in portfolio creation.
-        Default is 0.5.
-    random_state : {None, int, numpy.random.Generator}, optional
-        Seed or Generator for the random number generator. Default is None.
-    n_jobs : int, optional
-        Number of parallel jobs to run. Default is None.
-    verbose : int, optional
-        Verbosity level. Default is 0.
+
+class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
+    """Implementation of a stocks set maker using a normal distribution.
 
     Notes
     -----
@@ -329,7 +313,8 @@ class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     sigma = mabc.hparam(default=0.2, converter=float)
 
     def make_stock_price(self, price, loss, random):
-        """
+        """Generate a new stock price.
+
         Generate a new stock price based on current price, daily return
         direction, and normal distribution parameters.
 
@@ -395,7 +380,7 @@ def make_risso_normal(
 
     Returns
     -------
-    StocksSet
+    garpar.core.stocks_set.StocksSet
         Generated stocks set instance.
 
     Notes
@@ -448,11 +433,11 @@ class _LStableCache:
         while not cache:
             values = refresher(size=self.refresh_size, random_state=random)
 
-            # lo dividimos en positivos y negaticos
+            # split it into possitive and negatives
             self.negatives.extend(values[values < 0])
             self.positives.extend(values[values >= 0])
 
-            # y la siguiente vez que se le pida valores, pedimos un poco maas
+            # next time ask for more samples
             self.refresh_size = self.refresh_size + int(
                 np.log(10 + self.refresh_size)
             )
@@ -461,31 +446,10 @@ class _LStableCache:
 
 
 class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
-    """
+    """Implementation of a stocks set maker using Levy stable distribution.
+
     StocksSet maker implementing a stochastic model with Levy stable
     distribution for daily returns.
-
-    Parameters
-    ----------
-    alpha : float, optional
-        Shape parameter of the Levy stable distribution.Default is 1.6411.
-    beta : float, optional
-        Scale parameter of the Levy stable distribution. Default is -0.0126.
-    mu : float, optional
-        Location parameter (mean) of the Levy stable distribution.
-        Default is 0.0005.
-    sigma : float, optional
-        Scale parameter (spread) of the Levy stable distribution.
-        Default is 0.005.
-    entropy : float, optional
-        Entropy parameter controlling the randomness in stocks set creation.
-        Default is 0.5.
-    random_state : {None, int, numpy.random.Generator}, optional
-        Seed or Generator for the random number generator. Default is None.
-    n_jobs : int, optional
-        Number of parallel jobs to run. Default is None.
-    verbose : int, optional
-        Verbosity level. Default is 0.
 
     Notes
     -----
@@ -519,7 +483,8 @@ class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
         )
 
     def make_stock_price(self, price, loss, random):
-        """
+        """Generate a new stock price.
+
         Generate a new stock price based on current price, daily return
         direction, and Levy stable distribution parameters.
 
@@ -590,7 +555,7 @@ def make_risso_levy_stable(
 
     Returns
     -------
-    StocksSet
+    garpar.core.stocks_set.StocksSet
         StocksSet object representing the created stocks set.
 
     Notes

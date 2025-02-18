@@ -1,17 +1,49 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Covariance Accessor."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Covariance Accessor.
+
+The covariance accessor module provides an accessor class to compute
+various covariance matrices. The module also defines the CorrelationAccessor
+class, which provides methods for calculating different correlation matrices.
+
+Key Features:
+    - Correlation and covariance analysis
+
+Example
+-------
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.covariance.sample_cov()
+    >>> ss.covariance.exp_cov()
+    >>> ss.covariance.semi_cov()
+    >>> ss.covariance.ledoit_wolf_cov()
+    >>> ss.covariance.oracle_approximating_cov()
+    >>> ss.correlation.sample_corr()
+    >>> ss.correlation.exp_corr()
+    >>> ss.correlation.semi_corr()
+    >>> ss.correlation.ledoit_wolf_corr()
+    >>> ss.correlation.oracle_approximating_corr()
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
 from pypfopt import risk_models
 
-from ..utils import accabc
+from ..utils import AccessorABC
 
 # =============================================================================
 # COVARIANCE ACCESSOR
@@ -19,29 +51,8 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class CovarianceAccessor(accabc.AccessorABC):
-    """Accessor class for calculating various covariance matrices.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of covariance matrix.
-    _ss : StocksSet
-        StocksSet object containing prices data.
-
-    Methods
-    -------
-    sample_cov(**kwargs)
-        Compute the sample covariance matrix.
-    exp_cov(**kwargs)
-        Compute the exponentially-weighted covariance matrix.
-    semi_cov(**kwargs)
-        Compute the semi-covariance matrix.
-    ledoit_wolf_cov(shrinkage_target="constant_variance", **kwargs)
-        Compute the Ledoit-Wolf covariance matrix with optional shrinkage target.
-    oracle_approximating_cov(**kwargs)
-        Compute the Oracle-approximating covariance matrix.
-    """
+class CovarianceAccessor(AccessorABC):
+    """Accessor class for calculating various covariance matrices."""
 
     _default_kind = "sample_cov"
 
@@ -87,7 +98,8 @@ class CovarianceAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `risk_models.semicovariance`.
+            Additional keyword arguments passed to
+            `risk_models.semicovariance`.
 
         Returns
         -------
@@ -99,14 +111,19 @@ class CovarianceAccessor(accabc.AccessorABC):
         )
 
     def ledoit_wolf_cov(self, shrinkage_target="constant_variance", **kwargs):
-        """Compute the Ledoit-Wolf covariance matrix with optional shrinkage target.
+        """Compute the Ledoit-Wolf covariance matrix.
+
+        Compute the Ledoit-Wolf covariance matrix
+        with optional shrinkage target
 
         Parameters
         ----------
         shrinkage_target : str, optional
-            Shrinkage target for Ledoit-Wolf covariance estimation, default is "constant_variance".
+            Shrinkage target for Ledoit-Wolf covariance estimation, default is
+            "constant_variance".
         **kwargs
-            Additional keyword arguments passed to `risk_models.CovarianceShrinkage.ledoit_wolf`.
+            Additional keyword arguments passed to
+            `risk_models.CovarianceShrinkage.ledoit_wolf`.
 
         Returns
         -------
@@ -124,7 +141,8 @@ class CovarianceAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `risk_models.CovarianceShrinkage.oracle_approximating`.
+            Additional keyword arguments passed to
+            `risk_models.CovarianceShrinkage.oracle_approximating`.
 
         Returns
         -------
@@ -137,30 +155,14 @@ class CovarianceAccessor(accabc.AccessorABC):
         return covshrink.oracle_approximating()
 
 
+# =============================================================================
+# CORRELATION ACCESSOR
+# =============================================================================
+
+
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class CorrelationAccessor(accabc.AccessorABC):
-    """Accessor class for calculating various correlation matrices.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of correlation matrix.
-    _ss : StocksSet
-        StocksSet object containing prices data.
-
-    Methods
-    -------
-    sample_corr(**kwargs)
-        Compute the sample correlation matrix.
-    exp_corr(**kwargs)
-        Compute the exponentially-weighted correlation matrix.
-    semi_corr(**kwargs)
-        Compute the semi-correlation matrix.
-    ledoit_wolf_corr(**kwargs)
-        Compute the Ledoit-Wolf correlation matrix.
-    oracle_approximating_corr(**kwargs)
-        Compute the Oracle-approximating correlation matrix.
-    """
+class CorrelationAccessor(AccessorABC):
+    """Accessor class for calculating various correlation matrices."""
 
     _default_kind = "sample_corr"
 
@@ -172,7 +174,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.sample_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.sample_cov`.
 
         Returns
         -------
@@ -188,7 +191,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.exp_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.exp_cov`.
 
         Returns
         -------
@@ -204,7 +208,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.semi_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.semi_cov`.
 
         Returns
         -------
@@ -220,7 +225,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.ledoit_wolf_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.ledoit_wolf_cov`.
 
         Returns
         -------
@@ -236,7 +242,8 @@ class CorrelationAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to `self._ss.covariance.oracle_approximating_cov`.
+            Additional keyword arguments passed to
+            `self._ss.covariance.oracle_approximating_cov`.
 
         Returns
         -------

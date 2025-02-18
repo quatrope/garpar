@@ -1,10 +1,11 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test data module."""
 
 # =============================================================================
 # IMPORTS
@@ -34,6 +35,7 @@ import pytest
     ],
 )
 def test_load_MERVAL(imputation, mean, std):
+    """Test load MERVAL."""
     ss = datasets.load_MERVAL(imputation)
     np.testing.assert_almost_equal(ss.prices.mean().mean(), mean, decimal=13)
     np.testing.assert_almost_equal(ss.prices.std().mean(), std, decimal=13)

@@ -1,36 +1,49 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Mixins for Garpar."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Coercer mixin for Garpar project.
+
+The coercer mixin module provides a specific mixin class used to coerce
+expected returns, weights, and covariance matrices into the desired formats.
+
+Example
+-------
+    >>> from garpar import mkss
+    >>> ss = mkss([...])
+    >>> ss.covariance.sample_cov()
+    >>> ss.covariance.ledoit_wolf_cov()
+    >>> ss.covariance.oracle_approximating_cov()
+    >>> ss.correlation.sample_corr()
+    >>> ss.correlation.oracle_approximating_corr()
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import numpy as np
 
 import pandas as pd
 
+# =============================================================================
+# COERCER MIXIN
+# =============================================================================
+
 
 class CoercerMixin:
     """A mixin class that contains utility methods for various accessors.
 
-    This class provides methods to coerce expected returns, weights, and covariance
-    matrices into desired formats.
-
-    Attributes
-    ----------
-    _FORBIDDEN_METHODS : list of str
-        A list of method names that are forbidden.
-
-    Methods
-    -------
-    coerce_expected_returns(expected_returns, kw, asarray=True)
-        Coerce expected returns into the desired format.
-    coerce_weights(weights, asarray=True)
-        Coerce weights into the desired format.
-    coerce_covariance_matrix(cov_matrix, kw, asarray=True)
-        Coerce covariance matrices into the desired format.
+    This class provides methods to coerce expected returns, weights, and
+    covariance matrices into desired formats.
     """
 
     _FORBIDDEN_METHODS = [
@@ -55,15 +68,12 @@ class CoercerMixin:
         -------
         array-like
             The coerced expected returns.
-
-        Examples
-        --------
-        >>> mixin = CoercerMixin()
-        >>> er = mixin.coerce_expected_returns("capm", kw={"risk_free_rate": 0.02})
         """
         if isinstance(expected_returns, str):
             kw = {} if kw is None else kw
-            expected_returns = self._ss.ereturns(expected_returns.lower(), **kw)
+            expected_returns = self._ss.ereturns(
+                expected_returns.lower(), **kw
+            )
         return np.asarray(expected_returns) if asarray else expected_returns
 
     def coerce_weights(self, weights, asarray=True):
@@ -72,7 +82,8 @@ class CoercerMixin:
         Parameters
         ----------
         weights : None, StocksSet, or array-like
-            The weights specification or values. If None, equal weights are assigned.
+            The weights specification or values. If None, equal weights are
+            assigned.
         asarray : bool, optional
             Whether to return the result as a numpy array, by default True.
 
@@ -80,11 +91,6 @@ class CoercerMixin:
         -------
         array-like
             The coerced weights.
-
-        Examples
-        --------
-        >>> mixin = CoercerMixin()
-        >>> weights = mixin.coerce_weights(None)
         """
         if weights is None:
             cols = len(self._ss.stocks)
@@ -93,8 +99,6 @@ class CoercerMixin:
             bench_weights = weights.weights
 
             stocks = self._ss.stocks
-            # creamos un lugar donde poner los precios en el mismo orden que
-            # en el ss original
             weights = pd.Series(
                 np.zeros(len(stocks), dtype=float), index=stocks
             )
@@ -105,14 +109,16 @@ class CoercerMixin:
         return np.asarray(weights) if asarray else weights
 
     def coerce_covariance_matrix(self, cov_matrix, kw, asarray=True):
-        """Coerce covariance matrices into the desired format.
+        """Coerce covariance matrix into the desired format.
 
         Parameters
         ----------
-        cov_matrix : str or array-like
-            The covariance matrix specification or values.
-        kw : dict
-            Additional keyword arguments for the covariance method.
+        cov_matrix : None, str, or array-like
+            The covariance matrix specification or values. If None, the sample
+            covariance matrix is used.
+        kw : dict, optional
+            Additional keyword arguments for the covariance matrix method,
+            by default None.
         asarray : bool, optional
             Whether to return the result as a numpy array, by default True.
 
@@ -120,11 +126,6 @@ class CoercerMixin:
         -------
         array-like
             The coerced covariance matrix.
-
-        Examples
-        --------
-        >>> mixin = CoercerMixin()
-        >>> cov = mixin.coerce_covariance_matrix("sample_cov", kw={"min_periods": 1})
         """
         if isinstance(cov_matrix, str):
             kw = {} if kw is None else kw

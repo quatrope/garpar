@@ -1,10 +1,11 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test StocksSetPlotterAccessor module."""
 
 from garpar.core.plot_acc import StocksSetPlotterAccessor
 
@@ -15,7 +16,6 @@ import pytest
 import seaborn as sns
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -23,6 +23,7 @@ import seaborn as sns
 def test_StocksSetPlotterAccessor_line(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor line."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -35,7 +36,6 @@ def test_StocksSetPlotterAccessor_line(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -43,6 +43,7 @@ def test_StocksSetPlotterAccessor_line(
 def test_StocksSetPlotterAccessor_heatmap(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor heatmap."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -55,13 +56,13 @@ def test_StocksSetPlotterAccessor_heatmap(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_StocksSetPlotterAccessor_wheatmap(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor wheatmap."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -75,7 +76,6 @@ def test_StocksSetPlotterAccessor_wheatmap(
     ax_ref.set_xlabel("Stocks")
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -83,6 +83,7 @@ def test_StocksSetPlotterAccessor_wheatmap(
 def test_StocksSetPlotterAccessor_hist(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor hist."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -95,13 +96,13 @@ def test_StocksSetPlotterAccessor_hist(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_StocksSetPlotterAccessor_whist(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor whist."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -114,7 +115,6 @@ def test_StocksSetPlotterAccessor_whist(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -122,6 +122,7 @@ def test_StocksSetPlotterAccessor_whist(
 def test_StocksSetPlotterAccessor_box(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor box."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -134,13 +135,13 @@ def test_StocksSetPlotterAccessor_box(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_StocksSetPlotterAccessor_wbox(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor wbox."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -153,7 +154,6 @@ def test_StocksSetPlotterAccessor_wbox(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -161,6 +161,7 @@ def test_StocksSetPlotterAccessor_wbox(
 def test_StocksSetPlotterAccessor_kde(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor kde."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -173,13 +174,13 @@ def test_StocksSetPlotterAccessor_kde(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("price_distribution", pytest.DISTRIBUTIONS)
 def test_StocksSetPlotterAccessor_wkde(
     risso_stocks_set, fig_test, fig_ref, price_distribution
 ):
+    """Test StocksSetPlotterAccessor wkde."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 
@@ -192,7 +193,6 @@ def test_StocksSetPlotterAccessor_wkde(
     ax_ref.set_title(title)
 
 
-@pytest.mark.slow
 @pytest.mark.plot
 @check_figures_equal()
 @pytest.mark.parametrize("returns", [True, False])
@@ -200,6 +200,7 @@ def test_StocksSetPlotterAccessor_wkde(
 def test_StocksSetPlotterAccessor_ogive(
     risso_stocks_set, fig_test, fig_ref, returns, price_distribution
 ):
+    """Test StocksSetPlotterAccessor ogive."""
     ss = risso_stocks_set(random_state=3, distribution=price_distribution)
     plotter = StocksSetPlotterAccessor(ss)
 

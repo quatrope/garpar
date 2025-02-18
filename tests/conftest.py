@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -18,9 +18,9 @@
 
 import garpar as gp
 
-import numpy as np
-
 import matplotlib
+
+import numpy as np
 
 import pytest
 
@@ -34,7 +34,7 @@ DISTRIBUTIONS = {
     "uniform": gp.datasets.make_risso_uniform,
 }
 
-METHODS = [
+MODELS = [
     "min_volatility",
     "max_sharpe",
     "max_quadratic_utility",
@@ -81,4 +81,4 @@ matplotlib.use("agg")
 
 def pytest_configure():
     pytest.DISTRIBUTIONS = DISTRIBUTIONS
-    pytest.METHODS = METHODS
+    pytest.MODELS = MODELS

@@ -1,34 +1,44 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Optimizer base classes module.
+
+This module provides an abstract base class for optimization models and a mixin
+class for defining mean-variance optimization models classes.
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from ..utils import mabc
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+_Unknow = object()
 
 # =============================================================================
 # ABSTRACT OPTIMIZER
 # =============================================================================
 
-_Unknow = object()
-
 
 class OptimizerABC(mabc.ModelABC):
-    """
-    Abstract base class for stocks set optimizers.
+    """Abstract base class for stocks set optimization models.
 
-    Attributes
-    ----------
-    family : str
-        The family of the optimizer.
-
-    Methods
-    -------
-    optimize(ss)
-        Optimize the given stocks set.
-    get_optimizer_family()
-        Get the family of the optimizer.
+    This class is the basic representation of an optimization model, In this
+    context, the subclasses of this class that are not abstract are called
+    optimizers.
     """
 
     family = _Unknow
@@ -41,7 +51,7 @@ class OptimizerABC(mabc.ModelABC):
 
     @mabc.abstractmethod
     def _calculate_weights(self, ss):
-        """Boilerplate method to calculate stocks set weights."""
+        """Abstract method to calculate stocks set weights."""
         raise NotImplementedError()
 
     def optimize(self, ss):
@@ -49,12 +59,12 @@ class OptimizerABC(mabc.ModelABC):
 
         Parameters
         ----------
-        ss : StocksSet
+        ss: garpar.core.stocks_set.StocksSet
             The stocks set to optimize.
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new stocks set with optimized weights.
         """
         weights, metadata = self._calculate_weights(ss)
@@ -72,7 +82,12 @@ class OptimizerABC(mabc.ModelABC):
         return cls.family
 
 
+# =============================================================================
+# MEAN VARIANCE FAMILY MIXIN
+# =============================================================================
+
+
 class MeanVarianceFamilyMixin:
-    """Mixin class for mean-variance family optimizers."""
+    """Mixin class for mean-variance like models."""
 
     family = "mean-variance"

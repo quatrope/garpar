@@ -1,17 +1,41 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Expected Returns Accessor."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Expected Returns Accessor.
+
+The expected returns accessor module provides an accessor class with methods to
+compute expected returns for a given stocks set.
+
+Key Features:
+    - Expected returns estimation
+
+Example
+-------
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.expected_returns.capm()
+    >>> ss.expected_returns.mah()
+    >>> ss.expected_returns.emah()
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
 from pypfopt import expected_returns
 
-from ..utils import accabc
+from ..utils import AccessorABC
 
 # =============================================================================
 # EXPECTED RETURNS
@@ -19,37 +43,21 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class ExpectedReturnsAccessor(accabc.AccessorABC):
-    """Accessor class for computing expected returns of a stocks set.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default method for computing expected returns.
-    _ss : StocksSet
-        StocksSet object containing prices data.
-
-    Methods
-    -------
-    capm(**kwargs)
-        Compute expected returns using the CAPM method.
-    mah(**kwargs)
-        Compute expected returns using the mean historical method.
-    emah(**kwargs)
-        Compute expected returns using the exponential moving average historical method.
-    """
+class ExpectedReturnsAccessor(AccessorABC):
+    """Accessor class for computing expected returns of a stocks set."""
 
     _default_kind = "capm"
 
     _ss = attr.ib()
 
     def capm(self, **kwargs):
-        """Compute expected returns using the CAPM (Capital Asset Pricing Model) method.
+        """Compute expected returns using the CAPM method.
 
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to expected_returns.capm_return.
+            Additional keyword arguments passed to
+            expected_returns.capm_return.
 
         Returns
         -------
@@ -68,7 +76,8 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
         Parameters
         ----------
         **kwargs
-            Additional keyword arguments passed to expected_returns.mean_historical_return.
+            Additional keyword arguments passed to
+            expected_returns.mean_historical_return.
 
         Returns
         -------
@@ -82,17 +91,25 @@ class ExpectedReturnsAccessor(accabc.AccessorABC):
         return returns
 
     def emah(self, **kwargs):
-        """Compute expected returns using the exponential moving average historical method.
+        """Compute expected returns using the emah method.
+
+        Compute expected returns using the
+        exponential moving average historical method.
 
         Parameters
         ----------
-        **kwargs
-            Additional keyword arguments passed to expected_returns.ema_historical_return.
+        **kwargs : keyword arguments
+            Additional keyword arguments passed to
+            `expected_returns.ema_historical_return`. For example, you might
+            pass parameters like `span`, `min_periods`, etc., which control
+            the behavior of the exponential moving average calculation.
 
         Returns
         -------
         pandas.Series
-            Series containing computed expected returns with name "EMAH".
+            A pandas Series containing the computed expected returns using the
+            exponential moving average historical method, with the name
+            "EMAH".
         """
         returns = expected_returns.ema_historical_return(
             prices=self._ss._prices_df, returns_data=False, **kwargs

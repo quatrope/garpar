@@ -1,9 +1,11 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
+
+"""Test ModelABC and hyperparameters."""
 
 
 # =============================================================================
@@ -20,6 +22,7 @@ from garpar.utils import mabc
 
 
 def test_hparam():
+    """Test hparam."""
     result = mabc.hparam(default=1)
     assert result.metadata[mabc.HPARAM_METADATA_FLAG]
     assert result.kw_only
@@ -27,6 +30,7 @@ def test_hparam():
 
 
 def test_mproperty():
+    """Test mproperty."""
     result = mabc.mproperty()
     assert result.metadata[mabc.MPROPERTY_METADATA_FLAG]
     assert result.init is False
@@ -34,6 +38,8 @@ def test_mproperty():
 
 
 def test_ModelABC():
+    """Test ModelABC."""
+
     class TestModel(mabc.ModelABC):
         param = mabc.hparam(default=1)
         prop = mabc.mproperty()

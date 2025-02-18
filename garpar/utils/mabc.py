@@ -1,21 +1,40 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+# =============================================================================
+# DOCS
+# =============================================================================
+
 """Metadata utilities."""
+
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
 
 import attr
 
 from abc import ABCMeta, abstractmethod  # noqa
+
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
 
 HPARAM_METADATA_FLAG = "__hparam__"
 
 MPROPERTY_METADATA_FLAG = "__mproperty__"
 
 MODEL_CONFIG = "__model_cls_config__"
+
+
+# =============================================================================
+# MODEL ABC
+# =============================================================================
 
 
 def hparam(**kwargs):
@@ -30,8 +49,8 @@ def hparam(**kwargs):
         Additional keyword arguments are passed and are documented in
         ``attr.ib()``.
 
-    Return
-    ------
+    Returns
+    -------
     Hyper parameter with a default value.
 
     Notes
@@ -61,8 +80,8 @@ def mproperty(**kwargs):
         Additional keyword arguments are passed and are documented in
         ``attr.ib()``.
 
-    Return
-    ------
+    Returns
+    -------
     Hyper parameter with a default value.
 
     Notes
@@ -83,15 +102,6 @@ class ModelABC(metaclass=ABCMeta):
     designed to be used with the `attrs` library, and it ensures that all
     inherited classes are decorated with `attr.s()` and have a frozen
     configuration.
-
-    Parameters
-    ----------
-    None
-
-    Attributes
-    ----------
-    __model_cls_config__ : dict
-        Class configuration for `attr.s()`.
     """
 
     __model_cls_config__ = {"repr": False, "frozen": True}

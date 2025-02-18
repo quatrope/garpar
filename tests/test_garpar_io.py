@@ -1,10 +1,11 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
+"""Test garpar IO module."""
 
 # =============================================================================
 # IMPORTS
@@ -12,7 +13,7 @@
 
 from io import BytesIO
 
-from garpar import StocksSet, io
+from garpar import StocksSet, garpar_io
 
 import pandas as pd
 
@@ -22,7 +23,8 @@ import pandas as pd
 
 
 def test_StocksSet_to_hdf5_read_hdf5():
-    ss = StocksSet.from_dfkws(
+    """Test StocksSet to hdf5 and read hdf5."""
+    ss = StocksSet.from_prices(
         prices=pd.DataFrame(
             {
                 "stock0": [1, 2, 3, 4, 5],
@@ -35,8 +37,8 @@ def test_StocksSet_to_hdf5_read_hdf5():
     )
 
     buff = BytesIO()
-    io.to_hdf5(buff, ss)
+    garpar_io.to_hdf5(buff, ss)
     buff.seek(0)
-    result = io.read_hdf5(buff)
+    result = garpar_io.read_hdf5(buff)
 
     assert ss == result

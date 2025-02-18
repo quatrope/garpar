@@ -1,11 +1,65 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""StocksSet."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Financial Portfolio/market Analysis with StocksSet.
+
+A comprehensive toolset for analyzing and managing financial portfolios/markets
+through the StocksSet class. Provides functionality for portfolio/market
+optimization, risk assessment, and performance analysis.
+
+Key Features:
+    - Portfolio/market construction and rebalancing
+    - Market data handling and validation
+
+Examples
+--------
+    >>> import garpar
+    >>> prices_df = [[...], [...]]  # Your price data
+    >>> ss = garpar.mkss(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=30
+    ... )
+    >>> ss.risk.value_at_risk()
+    >>> ss.plot.returns()
+
+    or
+
+    >>> import garpar
+    >>> prices_df = pd.DataFrame(...)  # Your price data
+    >>> ss = garpar.StocksSet.from_prices(
+    ...     prices=prices_df,
+    ...     weights=[0.4, 0.3, 0.3],
+    ...     window_size=30
+    ... )
+    >>> ss.risk.value_at_risk()
+    >>> ss.plot.returns()
+
+
+See Also
+--------
+    PyPortfolioOpt: https://pyportfolioopt.readthedocs.io/
+
+References
+----------
+    Markowitz, H.M. (1952). Portfolio Selection
+    https://doi.org/10.1111/j.1540-6261.1952.tb01525.x
+
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
+import functools
 
 import attr
 from attr import validators as vldt
@@ -26,13 +80,12 @@ from . import (
     risk_acc,
     utilities_acc,
 )
+from ..constants import EPSILON, GARPAR_METADATA_KEY
 from ..utils import Bunch, df_temporal_header, entropy, scalers
 
 # =============================================================================
 # CONSTANTS
 # =============================================================================
-
-GARPAR_METADATA_KEY = "__garpar_metadata__"
 
 _SCALERS = {
     "proportion": scalers.proportion_scaler,
@@ -43,24 +96,89 @@ _SCALERS = {
 
 _ENTROPY_CALCULATORS = {"shannon": entropy.shannon}
 
+# =============================================================================
+# HELPERS
+# =============================================================================
+
 
 def _as_float_array(arr):
     return np.asarray(arr, dtype=float)
 
 
 # =============================================================================
+# SLICER
+# =============================================================================
+
+
+class _Loc:
+    """Locator abstraction.
+
+    this class ensures that the correct objectives and weights are applied to
+    the sliced ``StocksSet``.
+
+    """
+
+    def __init__(self, name, slicer, weights, entropy, window_size, metadata):
+        self._name = name
+        self._slicer = slicer
+        self._weights = weights
+        self._entropy = entropy
+        self._window_size = window_size
+        self._metadata = metadata
+
+    @property
+    def name(self):
+        """The name of the locator."""
+        return self._name
+
+    def __getitem__(self, slc):
+        """dm[slc] <==> dm.__getitem__(slc)."""
+        prices = self._slicer.__getitem__(slc)
+        if isinstance(prices, pd.Series):
+            prices = prices.to_frame().T
+
+            dtypes = self._slicer.obj.dtypes
+            dtypes = dtypes[dtypes.index.isin(prices.columns)]
+
+            prices = prices.astype(dtypes)
+
+        weights = self._weights
+        weights = weights[weights.index.isin(prices.columns)].to_numpy()
+
+        entropy = self._entropy
+        entropy = entropy[entropy.index.isin(prices.columns)].to_numpy()
+
+        window_size = self._window_size
+        metadata = dict(self._metadata)
+
+        return StocksSet(
+            prices_df=prices,
+            weights=weights,
+            entropy=entropy,
+            window_size=window_size,
+            metadata=metadata,
+        )
+
+
+# =============================================================================
 # STOCKS SET
 # =============================================================================
+
+
 @attr.s(repr=False, cmp=False)
 class StocksSet:
-    """
-    Represents a financial stocks set with utilities for analysis and manipulation.
+    """Represents a financial stocks set.
+
+    Represents a financial stocks set with utilities for
+    analysis and manipulation.
     """
 
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
     _weights = attr.ib(converter=_as_float_array)
     _entropy = attr.ib(converter=_as_float_array)
-    _window_size = attr.ib(converter=lambda v: (None if pd.isna(v) else int(v)))
+    _window_size = attr.ib(
+        converter=lambda v: (None if pd.isna(v) else int(v))
+    )
     _metadata = attr.ib(factory=dict, converter=lambda d: Bunch("metadata", d))
 
     # accessors
@@ -119,7 +237,8 @@ class StocksSet:
         Raises
         ------
         ValueError
-            If the number of weights or entropy values does not match the number of stocks.
+            If the number of weights or entropy values does not match the
+            number of stocks.
         """
         stocks_number = self.stocks_number
 
@@ -137,16 +256,17 @@ class StocksSet:
 
     # ALTERNATIVE CONSTRUCTOR
     @classmethod
-    def from_dfkws(
+    def from_prices(
         cls,
         prices,
+        *,
         weights=None,
         entropy=None,
         window_size=None,
         stocks=None,
         **metadata,
     ):
-        """Alternative constructor to create a StocksSet instance from various inputs.
+        """Alternative constructor to create a StocksSet instance.
 
         Parameters
         ----------
@@ -165,7 +285,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new StocksSet instance.
         """
         prices = (
@@ -199,12 +319,12 @@ class StocksSet:
 
     # INTERNALS
     def __len__(self):
-        """Return the number of days in the price DataFrame.
+        """Return the number of days in the StocksSet instance.
 
         Returns
         -------
         int
-            Number of days in the price DataFrame.
+            Number of days in the StocksSet instance.
         """
         return len(self._prices_df)
 
@@ -213,7 +333,7 @@ class StocksSet:
 
         Parameters
         ----------
-        other : StocksSet
+        other : garpar.core.stocks_set.StocksSet
             Another StocksSet instance to compare with.
 
         Returns
@@ -235,7 +355,7 @@ class StocksSet:
 
         Parameters
         ----------
-        other : StocksSet
+        other : garpar.core.stocks_set.StocksSet
             Another StocksSet instance to compare with.
 
         Returns
@@ -255,7 +375,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new StocksSet instance sliced by the key.
         """
         prices = self._prices_df.__getitem__(key)
@@ -283,6 +403,42 @@ class StocksSet:
         return sliced
 
     # PROPERTIES ==============================================================
+
+    @property
+    def loc(self):
+        """Access a group of days and stocks by label(s) or a boolean array.
+
+        ``.loc[]`` is primarily label based, but may also be used with a
+        boolean array.
+
+        """
+        return _Loc(
+            "loc",
+            slicer=self._prices_df.loc,
+            weights=self.weights,
+            entropy=self.entropy,
+            window_size=self.window_size,
+            metadata=self.metadata,
+        )
+
+    @property
+    def iloc(self):
+        """Access a group of days and stocks by positions.
+
+        ``.iloc[]`` is primarily integer position based (from ``0`` to
+        ``length-1`` of the axis), but may also be used with a boolean
+        array.
+
+        """
+        return _Loc(
+            "iloc",
+            slicer=self._prices_df.iloc,
+            weights=self.weights,
+            entropy=self.entropy,
+            window_size=self.window_size,
+            metadata=self.metadata,
+        )
+
     @property
     def weights(self):
         """Return the weights as a pandas Series.
@@ -333,12 +489,13 @@ class StocksSet:
 
     @property
     def metadata(self):
-        """Return the metadata as a Bunch object.
+        """Return the metadata as a dict-like object.
 
         Returns
         -------
-        Bunch
-            Bunch object containing metadata.
+        garpar.utils.bunch.Bunch
+            A dict like object containing metadata.
+
         """
         return self._metadata
 
@@ -378,7 +535,7 @@ class StocksSet:
         return self._prices_df.shape
 
     # UTILS ===================================================================
-    # TODO: Hacer que copy pueda elegir desde que dia hasta que dia copiar
+
     def copy(
         self,
         *,
@@ -411,7 +568,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A new StocksSet instance with the specified modifications.
         """
         new_prices_df = (self._prices_df if prices is None else prices).copy()
@@ -421,10 +578,12 @@ class StocksSet:
             self._window_size if window_size is None else window_size
         )
 
-        new_metadata = self._metadata.to_dict() if preserve_old_metadata else {}
+        new_metadata = (
+            self._metadata.to_dict() if preserve_old_metadata else {}
+        )
         new_metadata.update(metadata)
 
-        new_ss = self.from_dfkws(
+        new_ss = self.from_prices(
             new_prices_df,
             weights=new_weights,
             entropy=new_entropy,
@@ -449,9 +608,9 @@ class StocksSet:
         -------
         None
         """
-        from .. import io
+        from .. import garpar_io
 
-        return io.to_hdf5(stream_or_buff, self, **kwargs)
+        return garpar_io.to_hdf5(stream_or_buff, self, **kwargs)
 
     def to_dataframe(self):
         """Convert the StocksSet object to a pandas DataFrame.
@@ -486,7 +645,7 @@ class StocksSet:
         return df
 
     def as_returns(self, **kwargs):
-        """Convert prices to returns using PyStocksSetOpt's expected_returns module.
+        """Convert prices to returns using PyPortfolioOpt's module.
 
         Parameters
         ----------
@@ -514,7 +673,7 @@ class StocksSet:
 
     # PRUNNING ================================================================
 
-    def weights_prune(self, threshold=1e-4):
+    def weights_prune(self, threshold=EPSILON):
         """Prune the stocks set based on a weight threshold.
 
         Parameters
@@ -524,7 +683,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A pruned StocksSet instance.
         """
         # get all data to prune
@@ -562,7 +721,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A pruned StocksSet instance.
         """
         # get all data to prune
@@ -608,7 +767,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A StocksSet instance with scaled weights.
         """
         """Reajusta los pesos en un rango de [0, 1]"""
@@ -623,6 +782,7 @@ class StocksSet:
         return self.copy(weights=scaled_weights)
 
     # CALCULATE ENTROPY =======================================================
+
     def refresh_entropy(self, *, entropy="shannon", entropy_kws=None):
         """Refresh entropy values using a specified entropy calculation method.
 
@@ -635,7 +795,7 @@ class StocksSet:
 
         Returns
         -------
-        StocksSet
+        garpar.core.stocks_set.StocksSet
             A StocksSet instance with refreshed entropy values.
         """
         entropy_calc = _ENTROPY_CALCULATORS.get(entropy, entropy)
@@ -701,7 +861,7 @@ class StocksSet:
         return dim
 
     def __repr__(self):
-        """Return a string representation of the StocksSet. Mainly for Jupyter notebooks.
+        """Return a string representation of the StocksSet.
 
         Returns
         -------
@@ -745,3 +905,14 @@ class StocksSet:
         )
 
         return html
+
+
+# =============================================================================
+# MAKER
+# =============================================================================
+
+
+@functools.wraps(StocksSet.from_prices)
+def mkss(*args, **kwargs):
+    """StocksSet.from_prices wrapper."""
+    return StocksSet.from_prices(*args, **kwargs)

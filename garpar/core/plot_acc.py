@@ -1,11 +1,30 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Plot Accessor."""
+# =============================================================================
+# DOCS
+# =============================================================================
+
+"""Plot Accessor.
+
+The plot accessor module provides an accessor class to visualize stocks set
+data, including line plots, heatmaps, and other visualizations.
+
+Key Features:
+    - Portfolio/market visualization tools
+
+Example
+-------
+    >>> import garpar
+    >>> ss = garpar.mkss(prices=[...])
+    >>> ss.plot.line()
+    >>> ss.plot.heatmap()
+
+"""
 
 # =============================================================================
 # IMPORTS
@@ -15,8 +34,7 @@ import attr
 
 import seaborn as sns
 
-from ..utils import accabc
-
+from ..utils import AccessorABC
 
 # =============================================================================
 # PLOTTER OBJECT
@@ -24,39 +42,8 @@ from ..utils import accabc
 
 
 @attr.s(frozen=True, cmp=False, slots=True, repr=False)
-class StocksSetPlotterAccessor(accabc.AccessorABC):
-    """Accessor class for plotting stocks set data.
-
-    Attributes
-    ----------
-    _default_kind : str
-        Default kind of plot.
-    _ss : StocksSet
-        StocksSet object containing data to plot.
-
-    Methods
-    -------
-    line(returns=False, **kwargs)
-        Plot data as a line plot.
-    heatmap(returns=False, **kwargs)
-        Plot data as a heatmap.
-    wheatmap(**kwargs)
-        Plot weights as a heatmap.
-    hist(returns=False, **kwargs)
-        Plot data as a histogram.
-    whist(**kwargs)
-        Plot weights as a histogram.
-    box(returns=False, **kwargs)
-        Plot data as a box plot.
-    wbox(**kwargs)
-        Plot weights as a box plot.
-    kde(returns=False, **kwargs)
-        Plot data as a kernel density estimate plot.
-    wkde(**kwargs)
-        Plot weights as a kernel density estimate plot.
-    ogive(returns=False, **kwargs)
-        Plot data as an ogive (empirical cumulative distribution function).
-    """
+class StocksSetPlotterAccessor(AccessorABC):
+    """Accessor class for plotting stocks set data."""
 
     _default_kind = "line"
 

@@ -1,6 +1,6 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
@@ -9,7 +9,8 @@
 # DOCS
 # =============================================================================
 
-"""Accessor base class."""
+"""Accessor abstract base class for Garpar project."""
+
 
 # =============================================================================
 # IMPORTS
@@ -17,8 +18,9 @@
 
 import abc
 
+
 # =============================================================================
-# ACESSOR ABC
+# CONSTANTS
 # =============================================================================
 
 # This constans are used to mark a class attribute as abstract, and prevet an
@@ -26,8 +28,13 @@ import abc
 _ABSTRACT = property(abc.abstractmethod(lambda: ...))
 
 
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+
 class AccessorABC(abc.ABC):
-    """Generalization of the accessor idea for use in scikit-criteria.
+    """Generalization of the accessor idea for use in Garpar.
 
     Instances of this class are callable and accept as the first
     parameter 'kind' the name of a method to be executed followed by all the

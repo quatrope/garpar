@@ -1,13 +1,24 @@
 # This file is part of the
 #   Garpar Project (https://github.com/quatrope/garpar).
-# Copyright (c) 2021, 2022, 2023, 2024, Diego Gimenez, Nadia Luczywo,
+# Copyright (c) 2021-2025 Diego Gimenez, Nadia Luczywo,
 # Juan Cabral and QuatroPe
 # License: MIT
 #   Full Text: https://github.com/quatrope/garpar/blob/master/LICENSE
 
-"""Entropy."""
+# =============================================================================
+# DOCS
+# =============================================================================
 
-from collections import Counter
+"""Entropy measure module.
+
+A collection of functions for calculating entropy measures.
+"""
+
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
+import warnings
 
 import numpy as np
 
@@ -15,35 +26,20 @@ import pypfopt
 
 from scipy import stats
 
-import warnings
+
+# =============================================================================
+# ENTROPY
+# =============================================================================
 
 
-def _computeMarks(prices, **kwargs):
-    """
-    Compute the marks for a given set of prices based on returns.
-
-    Parameters
-    ----------
-    prices : pd.DataFrame
-        DataFrame containing price data with assets as columns.
-    **kwargs
-        Additional keyword arguments to pass to returns_from_prices.
-
-    Returns
-    -------
-    np.ndarray
-        A binary array where 0 represents returns below the average
-        and 1 represents returns above or equal to the average.
-    """
+def _compute_marks(prices, **kwargs):
     returns = pypfopt.expected_returns.returns_from_prices(
         prices=prices, **kwargs
     )
 
     avg_returns = returns.mean(axis=0)
 
-    marks = (returns.values >= avg_returns.values).astype(int)
-
-    return marks
+    return (returns.values >= avg_returns.values).astype(int)
 
 
 def shannon(prices, window_size=None, **kwargs):
@@ -89,22 +85,24 @@ def risso(prices, window_size=None, **kwargs):
 
     Returns
     -------
-    None
+    array-like
+        The Risso entropy of the prices.
     """
-    if not window_size or window_size < 1 or window_size > prices.shape[0]:
-        raise ValueError("'window_size' must be >= 1 and lower than the total amount of days")
+    if window_size <= 0 or window_size > prices.shape[0]:
+        raise ValueError("'window_size' must be in the interval (0, days]")
 
-    marks = _computeMarks(prices, **kwargs)
+    marks = _compute_marks(prices, **kwargs)
 
     entropies = []
 
     for i in range(prices.shape[1]):
         asset_marks = marks[:, i]
 
-        sequences = [
-            tuple(asset_marks[i : i + window_size])
-            for i in range(len(asset_marks) - window_size + 1)
-        ]
+        sequences = []
+        for idx in range(len(asset_marks) - window_size + 1):
+            first, last = idx, idx + window_size
+            sequence = asset_marks[first:last]
+            sequences.append(tuple(sequence))
 
         sequence_counts = {}
         for seq in sequences:
@@ -129,35 +127,38 @@ def risso(prices, window_size=None, **kwargs):
     return entropies
 
 
-def HOne(weights):
-    weights = np.asarray(weights)
-    return 1 - np.sum(weights**2)
+def yager_one(weights):
+    """Compute Yager's entropy for a fuzzy set and z=1.
 
+    Parameters
+    ----------
+    weights : array-like
+        List of membership degrees (values in [0, 1])
 
-def HInf(weights):
-    weights = np.asarray(weights)
-    return 1 - np.max(weights)
-
-
-def yagerOne(weights):
+    Returns
+    -------
+    float
+        Yager's entropy for z->1
     """
-    Computes Yager's entropy for a fuzzy set.
-
-    Parameters:
-    - weights: array-like, list of membership degrees (values in [0, 1])
-    - p: float, parameter to control sensitivity (default = 1)
-
-    Returns:
-    - entropy: float, Yager's entropy
-    """
-
     n = len(weights)
     weights = np.asarray(weights)
 
-    return sum(weights - 1 / n)
+    return sum(abs(weights - 1 / n))
 
 
-def yagerInf(weigths):
+def yager_inf(weigths):
+    """Compute Yager's entropy for a fuzzy set and z->inf.
+
+    Parameters
+    ----------
+    weights : array-like
+        List of membership degrees (values in [0, 1])
+
+    Returns
+    -------
+    float
+        Yager's entropy for z->inf
+    """
     weigths = np.asarray(weigths)
     n = len(weigths)
 
