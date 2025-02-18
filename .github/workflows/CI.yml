@@ -1,0 +1,16 @@
+# ==============================================================
+# CI with GitHub Actions
+# ==============================================================
+
+name: Build
+
+on:
+  - push
+  - pull_request
+
+env:
+  default-python: '3.11'
+
+jobs:
+  testing:
+    uses: quatrope/garpar/.github/workflows/tests.yml@4829b57199f621de22211fab5570c4fa78d9b48e
