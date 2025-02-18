@@ -40,7 +40,7 @@ jobs:
         run: sudo apt-get install pandoc
 
       # tox steps
-      - name: Set up Default Python
+      - name: Set up python environments for coverage
         if: ${{ contains(matrix.tox_env, 'coverage') }}
         uses: actions/setup-python@v4
         with:
@@ -50,7 +50,7 @@ jobs:
               3.12
               3.13
 
-      - name: Set up Default Python
+      - name: Set up Default Python for regular validations
         if: ${{ !contains(matrix.tox_env, '3.') }}
         uses: actions/setup-python@v4
         with:
