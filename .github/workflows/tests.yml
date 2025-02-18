@@ -5,11 +5,7 @@
 name: Testing
 
 on:
-  - push
-  - pull_request
-
-# on:
-#   workflow_call:
+  workflow_call:
 
 env:
   default-python: '3.13'
