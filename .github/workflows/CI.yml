@@ -11,4 +11,4 @@ env:
 
 jobs:
   testing:
-    uses: quatrope/garpar/.github/workflows/tests.yml@be1cf013cb672467cf01fcff33638016b18ed253
+    uses: quatrope/garpar/.github/workflows/tests.yml@d19f4d3397a03387311b516f04be7a7066424aa0
