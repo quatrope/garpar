@@ -44,7 +44,7 @@ jobs:
       - name: Set up Python ${{ matrix.tox_env || env.default-python }}
         uses: actions/setup-python@v2
         with:
-          python-version: ${{ matrix.tox_env || env.default-python }}
+          python-version: ${{ env.default-python }}
 
       - name: Install tox
         run: pip install tox
