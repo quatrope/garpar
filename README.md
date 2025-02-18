@@ -9,8 +9,6 @@
 
 -------------------------------------------
 
-**Garpar**
-
 <!-- BODY -->
 
 ## Introduction
@@ -69,5 +67,3 @@ Bibtex entry:
 ```
 
 **Full Publication:**
-
-
