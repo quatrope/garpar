@@ -131,14 +131,14 @@ class RissoMixin:
             Tuple containing the calculated modified entropy values and
             corresponding loss probabilities.
         """
-        # log(0) is undefined
         epsilon = EPSILON if eps is None else eps
 
+        # log(0) is undefined
         loss_probability = np.linspace(
             epsilon, 1.0 - epsilon, num=window_size + 1
         )
 
-        # calculate entropy with log2 as Risso with returns
+        # calculate entropy with log2 as it represents winning or losing
         first_part = loss_probability * np.log2(loss_probability)
         second_part = (1.0 - loss_probability) * np.log2(
             1.0 - loss_probability
