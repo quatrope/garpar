@@ -91,6 +91,7 @@ html_theme_options = dict(
     logo_height=59,
     logo_url="/",
     logo_width=45,
+    github_url = "https://github.com/quatrope/garpar/tree/master/docs/source/",
 )
 
 
