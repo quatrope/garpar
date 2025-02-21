@@ -4,7 +4,7 @@
 
 ---
 
-## Version 1.1
+## Version 1.5
 
 First stable relase
 
