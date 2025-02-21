@@ -10,6 +10,7 @@ exclude tox.ini
 exclude .header-template
 exclude requirements.txt
 exclude requirements_dev.txt
+exclude .readthedocs.yml
 
 recursive-exclude tests *
 recursive-exclude assets *
