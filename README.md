@@ -35,7 +35,10 @@ Key Features:
 
 ## Contact
 
-**You can contact me at:** <jbcabral@unc.edu.ar>
+**You can contact me at:**
+
+- <diego.gimenez@unc.edu.ar>
+- <jbcabral@unc.edu.ar>
 
 ## Support
 
