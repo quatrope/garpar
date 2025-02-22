@@ -12,6 +12,7 @@
 .. image:: _static/logo.png
     :align: center
     :scale: 40 %
+    :class: responsive-logo
 
 ----
 

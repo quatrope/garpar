@@ -5,6 +5,23 @@
 .image-reference {
     display: flex;
     justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .image-reference {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .responsive-logo>img {
+        content: url("./logo_right_text.png"); /* Image for small screens */
+        width: 80% !important;
+        height: 80% !important;
+    }
 }
 
 .portfolio {
@@ -40,5 +57,6 @@
 }
 
 .external {
-    display: inline-flex;
+    display: inline-flex !important;
+    width: fit-content;
 }
