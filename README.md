@@ -12,7 +12,7 @@
 <!-- BODY -->
 
 [![Build](https://github.com/quatrope/garpar/actions/workflows/CI.yml/badge.svg)](https://github.com/quatrope/garpar/actions/workflows/CI.yml)
-
+[![Docs](https://readthedocs.org/projects/garpar/badge/?version=latest&style=flat)](https://garpar.readthedocs.io/en/latest/)
 ## Introduction
 
 Generation and analysis of artificial and real portfolio returns.

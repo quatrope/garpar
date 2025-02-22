@@ -33,12 +33,12 @@
     border-radius: 5px;
 }
 
-#wagtail-theme {
-    display: none !important;
-}
-
 .version {
     color: white !important;
     text-align: center;
-    background-color: #2e1f5e;
+    background-color: #120c24;
+}
+
+.external {
+    display: inline-flex;
 }
