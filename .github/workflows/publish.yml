@@ -4,8 +4,11 @@
 name: Upload Python Package
 
 on:
-  - push
-  - pull_request
+  workflow_dispatch:
+    inputs:
+        pypi_token:
+          description: 'PyPI API Token'
+          required: true
   # release:
   #   types: [created]
 
