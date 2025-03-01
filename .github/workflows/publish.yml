@@ -4,8 +4,10 @@
 name: Upload Python Package
 
 on:
-  release:
-    types: [created]
+  - push
+  - pull_request
+  # release:
+  #   types: [created]
 
 jobs:
   testing:
@@ -40,3 +42,5 @@ jobs:
 
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
