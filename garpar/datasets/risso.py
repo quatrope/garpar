@@ -193,24 +193,19 @@ class RissoMixin:
 class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     """Implementation of a StocksSets maker using a uniform distribution.
 
-    This class extends RissoABC and overrides the method make_stock_price to
-    simulate stock price changes based on a uniform distribution within
-    specified bounds.
-
-    Notes
-    -----
-    Inherits from RissoABC and utilizes its methods for entropy-based portfolio
-    optimization.
+    This class extends RissoABC and implements a portfolio maker using a
+    uniform distribution model for daily returns.
     """
 
     low = mabc.hparam(default=1, converter=float)
     high = mabc.hparam(default=5, converter=float)
 
     def make_stock_price(self, price, loss, random):
-        """Calculate the new stock price.
+        """Calculate a new stock price.
 
-        Calculate the new stock price based on the current price, loss flag,
-        and a random number generator following a uniform distribution.
+        This method calculates a new stock price based on the current price,
+        the direction of daily return (loss or gain), and the parameters of
+        the normal distribution (low, high).
 
         Parameters
         ----------
@@ -246,8 +241,9 @@ def make_risso_uniform(
 ):
     """Create a StocksSet instance using RissoUniform maker.
 
-    This function is an implementation of the factory method that creates a
-    StocksSet using the RissoUniform maker.
+    This function is intended to create a StocksSet instance using the
+    RissoUniform class and the make_stocks_set method, without directly
+    instantiating the class.
 
     Parameters
     ----------
@@ -274,12 +270,6 @@ def make_risso_uniform(
     -------
     garpar.core.stocks_set.StocksSet
         Generated portfolio instance.
-
-    Notes
-    -----
-    This function initializes a RissoUniform portfolio maker with specified
-    parameters, generates a portfolio using those parameters, and returns the
-    resulting portfolio object.
     """
     maker = RissoUniform(
         low=low,
@@ -301,12 +291,8 @@ def make_risso_uniform(
 class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     """Implementation of a stocks set maker using a normal distribution.
 
-    Notes
-    -----
     This class extends RissoABC and implements a portfolio maker using a
-    normal distribution model for daily returns. The make_stock_price method
-    generates stock prices based on the normal distribution parameters
-    (mu, sigma).
+    normal distribution model for daily returns.
     """
 
     mu = mabc.hparam(default=0, converter=float)
@@ -315,8 +301,9 @@ class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     def make_stock_price(self, price, loss, random):
         """Generate a new stock price.
 
-        Generate a new stock price based on current price, daily return
-        direction, and normal distribution parameters.
+        This method calculates a new stock price based on the current price,
+        the direction of daily return (loss or gain), and the parameters of
+        the normal distribution (mu, sigma).
 
         Parameters
         ----------
@@ -331,12 +318,6 @@ class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
         -------
         float
             New price of the stock after daily price change.
-
-        Notes
-        -----
-        This method calculates a new stock price based on the current price,
-        the direction of daily return (loss or gain), and the parameters of
-        the normal distribution (mu, sigma).
         """
         if price == 0.0:
             return 0.0
@@ -356,7 +337,11 @@ def make_risso_normal(
     verbose=0,
     **kwargs,
 ):
-    """Create a stocks set using RissoNormal stocks set maker.
+    """Create a StocksSet instance using RissoNormal maker.
+
+    This function is intended to create a StocksSet instance using the
+    RissoNormal class and the make_stocks_set method, without directly
+    instantiating the class.
 
     Parameters
     ----------
@@ -382,12 +367,6 @@ def make_risso_normal(
     -------
     garpar.core.stocks_set.StocksSet
         Generated stocks set instance.
-
-    Notes
-    -----
-    This function initializes a RissoNormal stocks set maker with specified
-    parameters, generates a stocks set using those parameters, and returns
-    the resulting stocks set object.
     """
     maker = RissoNormal(
         mu=mu,
@@ -448,15 +427,8 @@ class _LStableCache:
 class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
     """Implementation of a stocks set maker using Levy stable distribution.
 
-    StocksSet maker implementing a stochastic model with Levy stable
-    distribution for daily returns.
-
-    Notes
-    -----
     This class extends RissoABC and implements a stocks set maker using Levy
-    stable distribution model for daily returns. The make_stock_price
-    method generates stock prices based on the Levy stable distribution
-    parameters (alpha, beta, mu, sigma).
+    stable distribution model for daily returns.
     """
 
     alpha = mabc.hparam(default=1.6411, converter=float)  # shape
@@ -485,8 +457,9 @@ class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
     def make_stock_price(self, price, loss, random):
         """Generate a new stock price.
 
-        Generate a new stock price based on current price, daily return
-        direction, and Levy stable distribution parameters.
+        This method calculates a new stock price based on the current price,
+        the direction of daily return (loss or gain), and the parameters of
+        the Levy stable distribution (alpha, beta, mu, sigma).
 
         Parameters
         ----------
@@ -501,12 +474,6 @@ class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
         -------
         float
             New price of the stock after daily price change.
-
-        Notes
-        -----
-        This method calculates a new stock price based on the current price,
-        the direction of daily return (loss or gain), and the parameters of
-        the Levy stable distribution (alpha, beta, mu, sigma).
         """
         if price == 0.0:
             return 0.0
@@ -529,7 +496,11 @@ def make_risso_levy_stable(
     verbose=0,
     **kwargs,
 ):
-    """Create a stocks set using the RissoLevyStable stocks set maker.
+    """Create a StocksSet instance using the RissoLevyStable maker.
+
+    This function is intended to create a StocksSet instance using the
+    RissoLevyStable class and the make_stocks_set method, without directly
+    instantiating the class.
 
     Parameters
     ----------
@@ -557,12 +528,6 @@ def make_risso_levy_stable(
     -------
     garpar.core.stocks_set.StocksSet
         StocksSet object representing the created stocks set.
-
-    Notes
-    -----
-    This function initializes a RissoLevyStable stocks set maker with the
-    provided parameters and creates a stocks set using the
-    make_stocks_set method.
     """
     maker = RissoLevyStable(
         alpha=alpha,
