@@ -115,7 +115,6 @@ class _Loc:
 
     this class ensures that the correct objectives and weights are applied to
     the sliced ``StocksSet``.
-
     """
 
     def __init__(self, name, slicer, weights, entropy, window_size, metadata):
@@ -169,8 +168,10 @@ class _Loc:
 class StocksSet:
     """Represents a financial stocks set.
 
-    Represents a financial stocks set with utilities for
-    analysis and manipulation.
+    This class is a core component of the Garpar project, designed to
+    aggregate assets along with their weight proportions that represent the
+    percentage of invested capital in each asset, entropy measures, and
+    metadata.
     """
 
     _prices_df = attr.ib(validator=vldt.instance_of(pd.DataFrame))
@@ -266,7 +267,7 @@ class StocksSet:
         stocks=None,
         **metadata,
     ):
-        """Alternative constructor to create a StocksSet instance.
+        """Alternative constructor for the StocksSet class.
 
         Parameters
         ----------
@@ -645,7 +646,7 @@ class StocksSet:
         return df
 
     def as_returns(self, **kwargs):
-        """Convert prices to returns using PyPortfolioOpt's module.
+        """Convert prices to returns.
 
         Parameters
         ----------
@@ -662,7 +663,7 @@ class StocksSet:
         )
 
     def as_prices(self):
-        """Return a copy of the prices DataFrame.
+        """Return a copy of the prices as a DataFrame.
 
         Returns
         -------
@@ -674,7 +675,7 @@ class StocksSet:
     # PRUNNING ================================================================
 
     def weights_prune(self, threshold=EPSILON):
-        """Prune the stocks set based on a weight threshold.
+        """Returns a pruned copy of the object based on weight threshold.
 
         Parameters
         ----------
@@ -717,7 +718,7 @@ class StocksSet:
     wprune = weights_prune
 
     def delisted_prune(self):
-        """Prunes the stocks set by removing delisted stocks.
+        """Returns copy of the object with the delisted stocks removed.
 
         Returns
         -------
