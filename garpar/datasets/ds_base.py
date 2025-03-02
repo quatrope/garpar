@@ -9,10 +9,10 @@
 # DOCS
 # =============================================================================
 
-"""Abstract classes for StocksSet makers.
+"""Abstract classes for StocksSets makers.
 
-This module provides abstract base classes for StocksSet makers.
-StocksSetsMakerABC is the base class for all StocksSet makers. While
+This module provides abstract classes for StocksSet makers. StocksSetsMakerABC
+is the base class for all StocksSet makers. While
 RandomEntropyStocksSetMakerABC is the base class for all random entropy-based
 StocksSet makers.
 
@@ -46,7 +46,6 @@ class StocksSetMakerABC(mabc.ModelABC):
 
     This class provides a base for all stocks set makers in the project and
     ensures that all subclasses implement a make_stocks_set method.
-
     """
 
     _MKSS_SIGNATURE = {

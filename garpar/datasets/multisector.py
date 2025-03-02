@@ -49,20 +49,7 @@ from ..utils import Bunch, mabc, unique_names
 
 
 class MultiSector(StocksSetMakerABC):
-    """StocksSet maker for creating a multi-sector StocksSet.
-
-    Attributes
-    ----------
-    makers : tuple
-        Tuple of (maker_name, StocksSetMakerABC) pairs representing different
-        sector makers.
-
-    Notes
-    -----
-    This class extends StocksSetMakerABC and allows for creating a stocks set
-    with multiple sectors, each handled by a different StocksSetMakerABC
-    instance.
-    """
+    """StocksSet maker for creating a multi-sector StocksSet."""
 
     makers = mabc.hparam(converter=lambda v: tuple(dict(v).items()))
 
@@ -193,6 +180,10 @@ class MultiSector(StocksSetMakerABC):
 def make_multisector(*makers, **kwargs):
     """Create a multi-sector StocksSet using specified sector makers.
 
+    This function creates a multi-sector stocks set by initializing a
+    MultiSector object with unique names for each sector maker and then
+    calling make_stocks_set with specified parameters.
+
     Parameters
     ----------
     *makers : variable-length arguments
@@ -204,12 +195,6 @@ def make_multisector(*makers, **kwargs):
     -------
     garpar.core.stocks_set.StocksSet
         StocksSet object representing the generated multi-sector stocks set.
-
-    Notes
-    -----
-    This function creates a multi-sector stocks set by initializing a
-    MultiSector object with unique names for each sector maker and then
-    calling make_stocks_set with specified parameters.
 
     Example
     -------
