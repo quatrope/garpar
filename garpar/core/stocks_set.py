@@ -646,7 +646,7 @@ class StocksSet:
         return df
 
     def as_returns(self, **kwargs):
-        """Convert prices to returns.
+        """Returns a DataFrame of returns corresponding to the prices.
 
         Parameters
         ----------

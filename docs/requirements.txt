@@ -1,4 +1,4 @@
-Sphinx<8.2
+Sphinx
 sphinx-autobuild
 sphinx-wagtail-theme
 
