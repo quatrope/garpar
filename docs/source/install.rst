@@ -4,7 +4,7 @@ Installation
 
 You can also `install garpar from PyPI`_ using pip:
 
-.. code:: bash
+.. code-block:: bash
 
    $ pip install garpar
 
@@ -13,14 +13,14 @@ garpar `directly from GitHub`_:
 
 However you can install the development version from `directly from GitHub`_:
 
-.. code:: bash
+.. code-block:: bash
 
    $ pip install git+https://github.com/quatrope/garpar/
 
-.. This is useful if there is some feature that you want to try, but we did
-.. not release it yet as a stable version. Although you might find some
-.. unpolished details, these development installations should work without
-.. problems.
+This is useful if there is some feature that you want to try, but we did
+not release it yet as a stable version. Although you might find some
+unpolished details, these development installations should work without
+problems.
 
 If you find any problem, please open an issue in the `issue tracker`_.
 
