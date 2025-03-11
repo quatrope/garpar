@@ -2,17 +2,16 @@
 Installation
 ==========================
 
-.. You can also `install garpar from PyPI`_ using pip:
+You can also `install garpar from PyPI`_ using pip:
 
 .. code:: bash
+
    $ pip install garpar
 
-.. Finally, you can also install the latest development version of
-.. garpar `directly from GitHub`_:
+Finally, you can also install the latest development version of
+garpar `directly from GitHub`_:
 
-At the moment there is no version of Garpar published in PyPI.
-
-However you can install it `directly from GitHub`_:
+However you can install the development version from `directly from GitHub`_:
 
 .. code:: bash
 
