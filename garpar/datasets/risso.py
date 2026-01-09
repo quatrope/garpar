@@ -197,8 +197,8 @@ class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
     uniform distribution model for daily returns.
     """
 
-    low = mabc.hparam(default=1, converter=float)
-    high = mabc.hparam(default=5, converter=float)
+    low = mabc.hparam(default=0.01, converter=float)
+    high = mabc.hparam(default=0.05, converter=float)
 
     def make_stock_price(self, price, loss, random):
         """Calculate a new stock price.
@@ -225,13 +225,13 @@ class RissoUniform(RissoMixin, RandomEntropyStocksSetMakerABC):
             return 0.0
         sign = -1 if loss else 1
         day_return = sign * np.abs(random.uniform(self.low, self.high))
-        new_price = price + day_return
+        new_price = price * (1 + day_return)
         return 0.0 if new_price < 0 else new_price
 
 
 def make_risso_uniform(
-    low=1,
-    high=5,
+    low=0.01,
+    high=0.05,
     *,
     entropy=0.5,
     random_state=None,
@@ -249,10 +249,10 @@ def make_risso_uniform(
     ----------
     low : float, optional
         Lower bound of the uniform distribution for daily returns.
-        Default is 1.0.
+        Default is 0.01.
     high : float, optional
         Upper bound of the uniform distribution for daily returns.
-        Default is 5.0.
+        Default is 0.05.
     entropy : float, optional
         Entropy parameter controlling the randomness in portfolio creation.
         Default is 0.5.
@@ -295,8 +295,8 @@ class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
     normal distribution model for daily returns.
     """
 
-    mu = mabc.hparam(default=0, converter=float)
-    sigma = mabc.hparam(default=0.2, converter=float)
+    mu = mabc.hparam(default=0.01, converter=float)
+    sigma = mabc.hparam(default=0.002, converter=float)
 
     def make_stock_price(self, price, loss, random):
         """Generate a new stock price.
@@ -323,13 +323,13 @@ class RissoNormal(RissoMixin, RandomEntropyStocksSetMakerABC):
             return 0.0
         sign = -1 if loss else 1
         day_return = sign * np.abs(random.normal(self.mu, self.sigma))
-        new_price = price + day_return
+        new_price = price * (1 + day_return)
         return 0.0 if new_price < 0 else new_price
 
 
 def make_risso_normal(
-    mu=0,
-    sigma=0.2,
+    mu=0.01,
+    sigma=0.002,
     *,
     entropy=0.5,
     random_state=None,
@@ -346,10 +346,10 @@ def make_risso_normal(
     Parameters
     ----------
     mu : float, optional
-        Mean of the normal distribution for daily returns. Default is 0.0.
+        Mean of the normal distribution for daily returns. Default is 0.01.
     sigma : float, optional
         Standard deviation of the normal distribution for daily returns.
-        Default is 0.2.
+        Default is 0.002.
     entropy : float, optional
         Entropy parameter controlling the randomness in stocks set creation.
         Default is 0.5.
@@ -478,9 +478,10 @@ class RissoLevyStable(RissoMixin, RandomEntropyStocksSetMakerABC):
         if price == 0.0:
             return 0.0
         sign = -1 if loss else 1
-        new_price = price + self._days_returns_cache.get_value(
+        day_return = self._days_returns_cache.get_value(
             sign, self.levy_stable_.rvs, random
         )
+        new_price = price * (1 + day_return)
         return 0.0 if new_price < 0 else new_price
 
 

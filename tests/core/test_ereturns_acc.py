@@ -12,19 +12,16 @@
 
 import pandas as pd
 
-import pytest
-
 # =============================================================================
 # DIVERSIFICATION TESTS
 # =============================================================================
 
 
-@pytest.fixture(scope="function")
 def test_ExpectedReturnsAccessor_capm(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.Series(
-        [0.0022135262278279444, -0.001443074293966784],
+        [0.069596, -0.468277],
         name="CAPM",
         index=["S0", "S1"],
     )
@@ -39,7 +36,7 @@ def test_ExpectedReturnsAccessor_mah(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.Series(
-        [-0.211807, 0.269168],
+        [-0.726869, 1.292289],
         name="MAH",
         index=["S0", "S1"],
     )
@@ -54,7 +51,7 @@ def test_ExpectedReturnsAccessor_emah(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=2)
 
     expected = pd.Series(
-        [-0.210689, 0.269546],
+        [-0.724145, 1.326126],
         name="EMAH",
         index=["S0", "S1"],
     )

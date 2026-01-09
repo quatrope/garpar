@@ -89,9 +89,9 @@ def test_MVOptimizer_get_optimizer(risso_stocks_set, price_distribution):
 @pytest.mark.parametrize(
     "volatiliy, price_distribution",
     [
-        (0.0005845375959651712, pytest.DISTRIBUTIONS["levy-stable"]),
-        (0.009733987973370875, pytest.DISTRIBUTIONS["normal"]),
-        (0.1473086199704777, pytest.DISTRIBUTIONS["uniform"]),
+        (0.058466543088023085, pytest.DISTRIBUTIONS["levy-stable"]),
+        (0.049554276048933324, pytest.DISTRIBUTIONS["normal"]),
+        (0.1548078308469367, pytest.DISTRIBUTIONS["uniform"]),
     ],
 )
 def test_MVOptimizer_coerce_risk(volatiliy, price_distribution):

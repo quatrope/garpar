@@ -22,7 +22,7 @@ import pandas as pd
 
 def test_DiversificationMetricsAccessor_ratio(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = 0.044195384210418555
+    expected = 0.08220563283314589
     np.testing.assert_allclose(ss.div.ratio(), expected)
 
 
@@ -30,7 +30,7 @@ def test_DiversificationMetricsAccessor_mrc(risso_stocks_set):
     ss = risso_stocks_set(random_state=42, stocks=3)
 
     expected = pd.Series(
-        [0.006913, 0.003705, 0.006710],
+        [0.079321, 0.009458, 0.037640],
         name="MRC",
         index=["S0", "S1", "S2"],
     )
@@ -43,7 +43,7 @@ def test_DiversificationMetricsAccessor_mrc(risso_stocks_set):
 
 def test_DiversificationMetricsAccessor_pdi(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = 2.9637573582423076
+    expected = 3.3457830043335077
     np.testing.assert_allclose(ss.div.pdi(), expected)
 
 
@@ -61,5 +61,5 @@ def test_DiversificationMetricsAccessor_cross_entropy(risso_stocks_set):
 
 def test_DiversificationMetricsAccessor_ke_zang_entropy(risso_stocks_set):
     ss = risso_stocks_set(random_state=42)
-    expected = 2.1576946493324085
+    expected = 2.1707733994283176
     np.testing.assert_allclose(ss.div.ke_zang_entropy(), expected)

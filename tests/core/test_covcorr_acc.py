@@ -24,8 +24,8 @@ def test_CovarianceAccessor_sample_cov(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [0.000697, 0.000312],
-            [0.000312, 0.000904],
+            [0.017491, -0.020134],
+            [-0.020134, 0.037914],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -43,8 +43,8 @@ def test_CovarianceAccessor_exp_cov(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [0.000555, 0.000245],
-            [0.000245, 0.000723],
+            [0.014119, -0.016239],
+            [-0.016239, 0.030361],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -62,8 +62,8 @@ def test_CovarianceAccessor_semi_cov(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [0.000813, 0.000214],
-            [0.000214, 0.000132],
+            [0.016261, 0.002881],
+            [0.002881, 0.010445],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -81,8 +81,8 @@ def test_CovarianceAccessor_ledoit_wolf_cov(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [0.00064, 0.00000],
-            [0.00000, 0.00064],
+            [0.017351, -0.009486],
+            [-0.009486, 0.026973],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -100,8 +100,8 @@ def test_CovarianceAccessor_oracle_approximating_cov(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [0.00064, 0.00000],
-            [0.00000, 0.00064],
+            [0.021505, -0.001295],
+            [-0.001295, 0.022819],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -124,8 +124,8 @@ def test_CorrelationAccessor_sample_corr(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [1.00000, 0.39243],
-            [0.39243, 1.00000],
+            [1.000000, -0.781834],
+            [-0.781834, 1.000000],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -143,8 +143,8 @@ def test_CorrelationAccessor_exp_corr(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [1.000000, 0.387138],
-            [0.387138, 1.000000],
+            [1.000000, -0.784361],
+            [-0.784361, 1.000000],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -162,8 +162,8 @@ def test_CorrelationAccessor_semi_corr(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [1.000000, 0.651742],
-            [0.651742, 1.000000],
+            [1.00000, 0.22103],
+            [0.22103, 1.00000],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -181,8 +181,8 @@ def test_CorrelationAccessor_ledoit_wolf_corr(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [1.0, 0.0],
-            [0.0, 1.0],
+            [1.000000, -0.438457],
+            [-0.438457, 1.000000],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
@@ -200,8 +200,8 @@ def test_CorrelationAccessor_oracle_approximating_corr(risso_stocks_set):
 
     expected = pd.DataFrame(
         [
-            [1.0, 0.0],
-            [0.0, 1.0],
+            [1.00000, -0.05847],
+            [-0.05847, 1.00000],
         ],
         index=["S0", "S1"],
         columns=["S0", "S1"],
