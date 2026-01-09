@@ -14,7 +14,7 @@ on:
 
 jobs:
   testing:
-    uses: quatrope/garpar/.github/workflows/tests.yml@0264fbc76b79401c1d60bf9249eb2f9e45af4458
+    uses: quatrope/garpar/.github/workflows/tests.yml@cb2991bc7f7c38dbd4070bd83bc0a5177bd06d52
 
   pypi-publish:
     name: upload release to PyPI

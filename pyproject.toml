@@ -3,7 +3,7 @@ checks = ["all"]
 
 [tool.black]
 line-length = 79
-target-version = ['py310', 'py311', 'py312', 'py313']
+target-version = ['py310', 'py311', 'py312', 'py313', 'py314']
 
 [tool.check-manifest]
 ignore = [
@@ -31,7 +31,7 @@ addopts = "-m 'not slow' -n auto -p no:warnings"
 
 [project]
 name = "garpar"
-version = "1.5.0dev1"
+version = "1.5.1dev1"
 authors = [
     { name = "Diego N Gimenez Irusta", email = "d.gimenez0101@unc.edu.ar" },
     { name = "Nadia A Luczywo", email = "nadia.luczywo@unc.edu.ar" },
@@ -56,6 +56,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: CPython",
     "Topic :: Scientific/Engineering",
     "Topic :: Office/Business :: Financial",
