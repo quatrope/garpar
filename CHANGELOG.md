@@ -4,6 +4,15 @@
 
 ---
 
+## Version *1.5.1* - 2026-01
+
+- Added Python 3.14 support and compatibility.
+- Updated Risso datasets return calculation for improved accuracy.
+- Adjusted test expected values across multiple test modules.
+- Updated CI and publish workflow references.
+
+---
+
 ## Version *1.5.0* - 2025-02
 
 - First stable relase
