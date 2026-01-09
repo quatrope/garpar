@@ -646,7 +646,7 @@ class StocksSet:
         return df
 
     def as_returns(self, **kwargs):
-        """Returns a DataFrame of returns corresponding to the prices.
+        """Return a DataFrame of returns corresponding to the prices.
 
         Parameters
         ----------
@@ -675,7 +675,7 @@ class StocksSet:
     # PRUNNING ================================================================
 
     def weights_prune(self, threshold=EPSILON):
-        """Returns a pruned copy of the object based on weight threshold.
+        """Return a pruned copy of the object based on weight threshold.
 
         Parameters
         ----------
@@ -718,7 +718,7 @@ class StocksSet:
     wprune = weights_prune
 
     def delisted_prune(self):
-        """Returns copy of the object with the delisted stocks removed.
+        """Return copy of the object with the delisted stocks removed.
 
         Returns
         -------
