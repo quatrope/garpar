@@ -31,7 +31,7 @@ addopts = "-m 'not slow' -n auto -p no:warnings"
 
 [project]
 name = "garpar"
-version = "1.6.0dev1"
+version = "1.6.0"
 authors = [
     { name = "Diego N Gimenez Irusta", email = "d.gimenez0101@unc.edu.ar" },
     { name = "Nadia A Luczywo", email = "nadia.luczywo@unc.edu.ar" },
