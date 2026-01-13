@@ -1,6 +1,6 @@
 # Garpar
 
-![logo](res/logo_bw.png)
+![logo](https://raw.githubusercontent.com/quatrope/garpar/refs/heads/master/res/logo_bw.png)
 
 **Generación y análisis de retornos de portafolios artificiales y reales**
 
