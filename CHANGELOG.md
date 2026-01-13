@@ -4,12 +4,19 @@
 
 ---
 
-## Version *1.5.1* - 2026-01
+## Version *1.6.0* - 2026-01
 
-- Added Python 3.14 support and compatibility.
-- Updated Risso datasets return calculation for improved accuracy.
-- Adjusted test expected values across multiple test modules.
-- Updated CI and publish workflow references.
+- **Python 3.14 Support**: Added official support and testing for Python 3.14.
+- **Risso Datasets**: Updated return calculation methodology in `garpar.datasets.risso` for improved accuracy and consistency.
+- **Dependencies**: Updated all project dependencies to their latest stable versions.
+- **Tox Configuration**: Enhanced test environment configuration with:
+  - Descriptive documentation for each test environment
+  - Environment categorization using labels (static/dynamic/docs)
+  - Enabled isolated builds for better dependency isolation
+  - Enabled notebook execution in documentation build process
+  - Updated workflow references and configuration
+- **Code Quality**: Fixed docstring style to use imperative mood, achieving pydocstyle D401 compliance.
+
 
 ---
 
