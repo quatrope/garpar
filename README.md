@@ -12,6 +12,9 @@ _Generation and analysis of artificial and real portfolio returns_
 [![Build](https://github.com/quatrope/garpar/actions/workflows/CI.yml/badge.svg)](https://github.com/quatrope/garpar/actions/workflows/CI.yml)
 [![Documentation Status](https://readthedocs.org/projects/garpar/badge/?version=latest&style=flat)](https://garpar.readthedocs.io/en/latest/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![PyPI](https://img.shields.io/pypi/v/garpar)](https://pypi.org/project/garpar/)
+[![PyPI - Downloads](https://img.shields.io/pypi/dw/garpar?label=PyPi%20Downloads)](https://pypistats.org/packages/garpar)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://badge.fury.io/py/garpar)
 
 **Garpar** is a comprehensive toolset for analyzing and managing financial portfolios and markets through advanced quantitative methods. It provides functionality for portfolio optimization, risk assessment, and performance analysis, integrated into the scientific Python stack. The library is open source and commercially usable.
 
